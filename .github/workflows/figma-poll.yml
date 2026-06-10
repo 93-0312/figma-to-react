@@ -8,7 +8,8 @@ name: Figma poll
 
 on:
   schedule:
-    - cron: "*/30 * * * *" # 30분마다 (Figma /versions 는 가벼워 안전, 필요시 조정)
+    - cron: "*/5 * * * *" # 5분마다 (테스트용. GitHub 스케줄은 지연 흔함 → 즉시 테스트는 수동 dispatch.
+    #                        테스트 끝나면 비용 위해 */30 등으로 되돌리기 권장)
   workflow_dispatch: {} # 수동 실행 버튼
 
 permissions:
