@@ -51,10 +51,13 @@ jobs:
             2. `npm run check:figma` 실행 (FIGMA_TOKEN 은 env 에 있음).
                - exit 0(최신) → "변경 없음" 으로 종료(아무 변경도 만들지 말 것).
                - exit 10(변경) → 계속.
-            3. 변경분을 코드에 반영한다. Figma 데이터 접근은 다음 우선순위로 시도:
-               (a) 사용 가능한 Figma MCP 도구(get_variable_defs/get_design_context, fileKey 기반),
-               (b) 없으면 Figma REST API (X-Figma-Token: $FIGMA_TOKEN) 로 노드 값을 읽어 해석.
-               토큰이 바뀌었으면 src/index.css(:root/.dark) + tailwind.config.js 양쪽을 갱신한다.
+            3. **변경분만 타겟 추출**한다 (비용 절감 — 전체 재추출/무거운 페이로드 금지):
+               - 먼저 각 컴포넌트의 **가벼운 값만** 읽어 코드 토큰과 비교:
+                 REST `GET /v1/files/:key/nodes?ids=<nodeId>` 로 **해당 노드만** (무거운 전체 파일 GET 금지).
+               - **차이가 있는 컴포넌트에만** 깊게 분석·수정한다. 차이 없는 건 절대 건드리지 말 것.
+               - 토큰이 바뀌었으면 src/index.css(:root/.dark) + tailwind.config.js 양쪽을 갱신.
+               - 큰 페이로드(전체 design_context 등)는 **구조 변경처럼 꼭 필요할 때만** 1회 사용.
+               - (Figma MCP 도구가 있으면 fileKey 기반 get_variable_defs 우선 — 더 가벼움.)
             4. `npm run verify` (tsc + vite build) 를 통과시킨다. 실패하면 고치고 재실행. 통과 전엔 커밋 금지.
             5. 변경이 있으면 `figma-sync/<날짜>` 브랜치 생성 → 커밋 → push →
                **반드시 `gh pr create --base main --head <브랜치>` 로 PR 을 생성**한다.
@@ -66,7 +69,7 @@ jobs:
 
             불확실하면 추측해서 커밋하지 말고, 무엇이 막혔는지 로그로 명확히 남겨라.
           claude_args: |
-            --max-turns 40
+            --max-turns 30
             --allowedTools Bash,Read,Edit,Write,Glob,Grep
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
