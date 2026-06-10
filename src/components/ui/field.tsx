@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
  * Figma 의 `Type` 변형(상호 배타) → 보조 영역의 종류로 매핑:
  *  | Type        | 보조 영역 렌더                                            |
  *  | Default     | 없음                                                      |
- *  | Error       | <p> 에러 텍스트 (destructive-foreground, text-xs)         |
+ *  | Error       | <p> 에러 텍스트 (success-foreground, text-xs) ※Figma 에서 녹색으로 변경됨 |
  *  | Description | <p> 설명 텍스트 (muted-foreground, text-xs)               |
  *  | Validity    | muted 배경 박스(radius-lg) + 텍스트 (foreground, text-xs) |
  *
@@ -57,7 +57,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
             >
               {label}
               {required && (
-                <span className="text-destructive-foreground" aria-hidden>
+                <span className="text-success-foreground" aria-hidden>
                   *
                 </span>
               )}
@@ -68,7 +68,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
 
         {/* 보조 영역 */}
         {error != null ? (
-          <p className="text-xs leading-[14px] tracking-[0.12px] text-destructive-foreground">
+          <p className="text-xs leading-[14px] tracking-[0.12px] text-success-foreground">
             {error}
           </p>
         ) : description != null ? (
