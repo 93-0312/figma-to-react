@@ -2,8 +2,8 @@
   "$schema": "./figma.manifest.schema.json",
   "fileKey": "LFA5EyNbUdPvi8Rbuf2tJC",
   "fileName": "BO UI Kit",
-  "lastSyncedVersion": "2363350229562994124",
-  "lastSyncedAt": "2026-06-10T06:30:00Z",
+  "lastSyncedVersion": "2363357604577234260",
+  "lastSyncedAt": "2026-06-10T07:08:04Z",
   "tokens": {
     "css": "src/index.css",
     "tailwind": "tailwind.config.js",
@@ -23,9 +23,26 @@
       "figmaPage": "1606:9458",
       "figmaNodeId": "1692:74",
       "variants": {
-        "type": ["Default", "Outline", "Secondary", "Destructive", "DestructiveOutline", "Link", "Ghost"],
-        "size": ["Extra-small", "Small", "Default", "Large", "Extra-large"],
-        "disabled": [false, true]
+        "type": [
+          "Default",
+          "Outline",
+          "Secondary",
+          "Destructive",
+          "DestructiveOutline",
+          "Link",
+          "Ghost"
+        ],
+        "size": [
+          "Extra-small",
+          "Small",
+          "Default",
+          "Large",
+          "Extra-large"
+        ],
+        "disabled": [
+          false,
+          true
+        ]
       },
       "notes": "icon/rightIcon 슬롯. PillButton(rounded-full) 변형은 미추출."
     },
@@ -36,10 +53,22 @@
       "figmaPage": "1606:9460",
       "figmaNodeId": "5667:129",
       "variants": {
-        "isSelected": [false, true],
-        "isParent": [false, true],
-        "disabled": [false, true],
-        "mobile": [false, true]
+        "isSelected": [
+          false,
+          true
+        ],
+        "isParent": [
+          false,
+          true
+        ],
+        "disabled": [
+          false,
+          true
+        ],
+        "mobile": [
+          false,
+          true
+        ]
       },
       "notes": "라벨 없는 .Selector 박스 전용. IsSelected 가 마스터 게이트(checked=false→빈 박스). Title/Description/Card 가 붙은 CheckBox(1719:1533)는 사용 예시라 미추출."
     },
@@ -59,8 +88,16 @@
       "figmaPage": "5651:4444",
       "figmaNodeId": "7745:713",
       "variants": {
-        "type": ["Default", "Error", "Description", "Validity"],
-        "isRequired": [false, true]
+        "type": [
+          "Default",
+          "Error",
+          "Description",
+          "Validity"
+        ],
+        "isRequired": [
+          false,
+          true
+        ]
       },
       "notes": "label+필수*+control children+보조영역. Type→보조영역 prop(error/description/validity) 매핑. label 은 Figma Inter→프로젝트 Pretendard 로 변환."
     }

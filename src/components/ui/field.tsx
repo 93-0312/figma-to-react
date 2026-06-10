@@ -57,7 +57,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
             >
               {label}
               {required && (
-                <span className="text-success-foreground" aria-hidden>
+                <span className="text-destructive-foreground" aria-hidden>
                   *
                 </span>
               )}
