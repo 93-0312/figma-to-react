@@ -45,17 +45,38 @@ Figma 파일이 변경되면 컴포넌트를 자동 추출·업데이트하고 �
 0-3. 검증 게이트 스크립트 — `npm run verify`(tsc + build + 핵심 DOM 단언)
 0-4. git 자동화 — `figma-sync/<version>` 브랜치 커밋·푸시 → PR 생성(`gh pr create`)
 
-### Phase 1 — 반자동 (변경 감지 추가)
-1-1. Figma `version` 폴링/스케줄(스케줄 스킬 또는 /loop)
-1-2. version 변동 시 Phase 0 트리거 + Diff(4)로 변경 컴포넌트만
+### Phase 1 — 반자동 (변경 감지 추가)  ← 진행 중
+- ✅ 1-1. 감지 스크립트 `scripts/check-figma-version.mjs` + `npm run check:figma`
+  - REST `GET /v1/files/:key?depth=1` 의 `version` 을 매니페스트 `lastSyncedVersion` 과 비교
+  - 종료코드 0=최신 / 10=변경 / 2=오류. `--record` 로 동기화 후 version 기록
+  - **플랜 무관**(모든 플랜에서 PAT 로 동작). 토큰: `.env` 의 `FIGMA_TOKEN`(.env.example 참고)
+- ⬜ 1-2. 트리거: 변경 시 `/sync-figma` 자동 실행
+  - 옵션 A: 스케줄 루틴(schedule 스킬/cron)이 주기적으로 `check:figma` → 변경이면 헤드리스 Claude 로 `/sync-figma`
+  - 옵션 B: `/loop` 로 세션 폴링
+  - 옵션 C: 수동 — `npm run check:figma` 확인 후 `/sync-figma`
+- ⬜ 1-3. Diff(4)로 변경된 컴포넌트만 추림(현재는 노드 단위 재추출)
+
+**남은 사용자 액션**: `figma.com → Settings → Security` 에서 PAT(File content: read) 발급 →
+`figma-to-react/.env` 에 `FIGMA_TOKEN=...` 저장 → `npm run check:figma` 로 라이브 확인.
 
 ### Phase 2 — 무인 CI
 2-1. Figma webhook(FILE_UPDATE) 수신 엔드포인트
 2-2. 헤드리스 Claude Agent SDK 실행(REST API 기반 수집)
 2-3. CI에서 검증 → PR 자동 생성/라벨링
 
+## ⚠️ Figma REST 레이트 리밋 (실측, 2026-06-10)
+
+- `GET /v1/files/:key` 는 **파일 크기 비례 비용 기반 리밋**. 대형 파일("BO UI Kit")은
+  한두 번 호출로 예산 소진 → **429 시 `Retry-After`=320841초 ≈ 89시간(~3.7일)** 실측됨.
+- **교훈**:
+  - 무거운 `GET /v1/files/:key` **폴링 금지**. 대신 가벼운 `GET /v1/files/:key/versions` 사용.
+  - 429 에 **자동 재시도(backoff) 하지 말 것** — 비용 폭주로 리밋을 더 키운다. Retry-After 만 알리고 종료.
+  - 폴링 주기는 **분 단위 ❌ → 시간/일 단위**. 잦은 변경 감지가 필요하면 **webhook**(push, 폴링비용 0)으로.
+- 회복: 리밋 창 대기 / (per-token 리밋이면) 새 토큰 발급 시도 / webhook 전환.
+
 ## 다음 결정 포인트
 
 - Phase 0 부터 만들기 시작할지, 어느 0-x 부터 할지.
 - 토큰 결정적 동기화 도구 선택(Style Dictionary vs 자체 스크립트).
 - Figma 플랜 확인(webhook/variables API 가용성) — Phase 2 전 필요.
+- 레이트 리밋 회복 방법 선택(대기 vs 새 토큰 vs webhook).
