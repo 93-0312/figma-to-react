@@ -1,0 +1,68 @@
+name: Figma sync (headless Claude)
+
+# 레벨 2 — 헤드리스 Claude 자동 추출 → 자동 PR.
+# 트리거: 수동(workflow_dispatch) + repository_dispatch(향후 webhook/외부 트리거용).
+#
+# 필요한 Secret:
+#   - CLAUDE_CODE_OAUTH_TOKEN  : `claude setup-token` 으로 발급(Max/Pro 구독). 헤드리스 Claude 인증.
+#   - FIGMA_TOKEN              : Figma PAT (이미 등록됨). 변경 감지/REST 용.
+#
+# 주의: CI 에서 Figma "추출" 방식(원격 MCP 인증 vs REST)은 첫 실행으로 검증 필요.
+
+on:
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [figma-changed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: figma-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install deps (for verify gate)
+        run: npm ci
+
+      - name: Headless Claude — Figma sync
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            너는 이 저장소(figma-to-react)의 Figma→React 동기화를 헤드리스로 수행한다.
+            반드시 `CLAUDE.md` 규칙(특히 ★ Variant 매핑 규칙)을 지킨다.
+
+            절차:
+            1. `figma.manifest.json` 을 읽어 fileKey 와 components[] 를 확보한다.
+            2. `npm run check:figma` 실행 (FIGMA_TOKEN 은 env 에 있음).
+               - exit 0(최신) → "변경 없음" 으로 종료(아무 변경도 만들지 말 것).
+               - exit 10(변경) → 계속.
+            3. 변경분을 코드에 반영한다. Figma 데이터 접근은 다음 우선순위로 시도:
+               (a) 사용 가능한 Figma MCP 도구(get_variable_defs/get_design_context, fileKey 기반),
+               (b) 없으면 Figma REST API (X-Figma-Token: $FIGMA_TOKEN) 로 노드 값을 읽어 해석.
+               토큰이 바뀌었으면 src/index.css(:root/.dark) + tailwind.config.js 양쪽을 갱신한다.
+            4. `npm run verify` (tsc + vite build) 를 통과시킨다. 실패하면 고치고 재실행. 통과 전엔 커밋 금지.
+            5. 변경이 있으면 `figma-sync/<날짜>` 브랜치 생성 → 커밋 → push → PR 생성.
+               - 커밋/PR 본문 끝에 Co-Authored-By 및 생성 표기.
+               - main 직접 push 금지. 항상 브랜치 + PR.
+            6. 변경이 없으면 PR 을 만들지 말고 그대로 종료한다.
+
+            불확실하면 추측해서 커밋하지 말고, 무엇이 막혔는지 로그로 명확히 남겨라.
+          claude_args: |
+            --max-turns 40
+            --allowedTools Bash,Read,Edit,Write,Glob,Grep
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
