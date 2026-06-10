@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * 디자인 토큰 — "BO UI Kit" (Figma) 파운데이션에서 추출.
+ * 색상은 Tailwind 불투명도 유틸리티 지원을 위해 RGB 채널(공백 구분)로 저장한다.
+ */
+:root {
+  --background: 248 250 252; /* #f8fafc */
+  --foreground: 2 6 24; /* #020618 */
+  --card: 255 255 255; /* #ffffff */
+  --card-foreground: 2 6 24; /* #020618 */
+  --primary: 43 127 255; /* #2b7fff */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --secondary: 226 232 240; /* #e2e8f0 */
+  --secondary-foreground: 2 6 24; /* #020618 */
+  --destructive: 239 68 68; /* #ef4444 */
+  --destructive-foreground: 185 28 28; /* #b91c1c */
+  --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
+  --border: 15 23 43; /* #0f172b @ 8% (border 토큰에서 알파 적용) */
+  --ring: 43 127 255; /* #2b7fff */
+
+  --radius: 10px;
+}
+
+/**
+ * 다크 테마 — Figma "Dark Mode Preview" 기준 근사값(검증 전 TODO).
+ * 정확한 다크 토큰이 필요하면 해당 프레임에서 추가 추출 가능.
+ */
+.dark {
+  --background: 2 6 24;
+  --foreground: 248 250 252;
+  --card: 15 23 43;
+  --card-foreground: 248 250 252;
+  --primary: 43 127 255;
+  --primary-foreground: 255 255 255;
+  --secondary: 30 41 59;
+  --secondary-foreground: 248 250 252;
+  --destructive: 239 68 68;
+  --destructive-foreground: 248 113 113;
+  --muted-foreground: 148 163 184;
+  --border: 248 250 252;
+  --ring: 43 127 255;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
