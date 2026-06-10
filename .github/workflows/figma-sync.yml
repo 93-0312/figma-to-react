@@ -56,9 +56,12 @@ jobs:
                (b) 없으면 Figma REST API (X-Figma-Token: $FIGMA_TOKEN) 로 노드 값을 읽어 해석.
                토큰이 바뀌었으면 src/index.css(:root/.dark) + tailwind.config.js 양쪽을 갱신한다.
             4. `npm run verify` (tsc + vite build) 를 통과시킨다. 실패하면 고치고 재실행. 통과 전엔 커밋 금지.
-            5. 변경이 있으면 `figma-sync/<날짜>` 브랜치 생성 → 커밋 → push → PR 생성.
-               - 커밋/PR 본문 끝에 Co-Authored-By 및 생성 표기.
-               - main 직접 push 금지. 항상 브랜치 + PR.
+            5. 변경이 있으면 `figma-sync/<날짜>` 브랜치 생성 → 커밋 → push →
+               **반드시 `gh pr create --base main --head <브랜치>` 로 PR 을 생성**한다.
+               - IMPORTANT: push 만 하고 끝내지 말 것. PR 생성이 이 작업의 필수 마지막 단계다.
+               - IMPORTANT: manifest 갱신은 `lastSyncedVersion`/`lastSyncedAt` **그 두 값만** 문자열 치환으로
+                 수정하고, 파일 전체를 재직렬화/재포맷하지 말 것(기존 들여쓰기·인라인 배열 형식 유지).
+               - 커밋/PR 본문 끝에 Co-Authored-By 및 생성 표기. main 직접 push 금지.
             6. 변경이 없으면 PR 을 만들지 말고 그대로 종료한다.
 
             불확실하면 추측해서 커밋하지 말고, 무엇이 막혔는지 로그로 명확히 남겨라.
@@ -68,3 +71,21 @@ jobs:
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 안전판(결정적): 에이전트가 브랜치만 push 하고 PR 을 안 만들었으면 여기서 생성
+      - name: Ensure PR exists
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin --prune >/dev/null 2>&1 || true
+          for BR in $(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's#^origin/##' | grep '^figma-sync/' || true); do
+            AHEAD=$(git rev-list --count "origin/main..origin/$BR" 2>/dev/null || echo 0)
+            OPEN=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state open --json number --jq 'length' 2>/dev/null || echo 0)
+            if [ "${AHEAD:-0}" -gt 0 ] && [ "${OPEN:-0}" = "0" ]; then
+              echo "PR 없음 → 생성: $BR (ahead $AHEAD)"
+              gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$BR" \
+                --title "feat(sync): Figma 동기화 (headless Claude)" \
+                --body "헤드리스 Claude 자동 동기화 결과입니다. 리뷰 후 머지하세요." || true
+            fi
+          done
