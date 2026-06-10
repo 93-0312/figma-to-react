@@ -8,13 +8,13 @@
  */
 :root {
   --background: 248 250 252; /* #f8fafc */
-  --foreground: 2 6 24; /* #020618 */
+  --foreground: 29 41 61; /* #1d293d */
   --card: 255 255 255; /* #ffffff */
   --card-foreground: 2 6 24; /* #020618 */
   --primary: 43 127 255; /* #2b7fff */
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
-  --secondary-foreground: 2 6 24; /* #020618 */
+  --secondary-foreground: 49 65 88; /* #314158 */
   --destructive: 239 68 68; /* #ef4444 */
   --destructive-foreground: 185 28 28; /* #b91c1c */
   --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
