@@ -75,11 +75,24 @@
     {
       "name": "Input",
       "file": "src/components/ui/input.tsx",
-      "story": null,
+      "story": "src/stories/input.story.tsx",
       "figmaPage": "5651:4474",
       "figmaNodeId": "7745:699",
+      "variants": {
+        "type": ["Default", "MultiSelect", "Focus", "Error", "ErrorFocused", "Disabled", "File", "InnerLabel"],
+        "size": ["Small", "Default", "Large"],
+        "fill": [false, true]
+      },
+      "notes": "슬롯형 입력(left/right icon, prefix/suffix). 상태: Default/Error(border destructive)/Disabled(opacity64)/Focus(ring). 사이즈 sm/md/lg(h28/32/36). 미구현: 인라인 Button/Badge/Kbd/MultiSelect/File/InnerLabel/Fill=True/darkBackground."
+    },
+    {
+      "name": "Label",
+      "file": "src/components/ui/label.tsx",
+      "story": "src/stories/label.story.tsx",
+      "figmaPage": "5651:4492",
+      "figmaNodeId": "7658:2157",
       "variants": {},
-      "notes": "네이티브 입력. Field 데모에서 함께 사용."
+      "notes": "접근성 라벨(label 요소). text-xs Medium, foreground. htmlFor 로 컨트롤 연결."
     },
     {
       "name": "Field",

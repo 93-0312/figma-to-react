@@ -3,9 +3,17 @@ import { Playground } from "./playground/Playground";
 import type { Story } from "./playground/types";
 import { buttonStory } from "./stories/button.story";
 import { checkboxStory } from "./stories/checkbox.story";
+import { inputStory } from "./stories/input.story";
+import { labelStory } from "./stories/label.story";
 import { fieldStory } from "./stories/field.story";
 
-const STORIES: Story[] = [buttonStory, checkboxStory, fieldStory];
+const STORIES: Story[] = [
+  buttonStory,
+  checkboxStory,
+  inputStory,
+  labelStory,
+  fieldStory,
+];
 
 export default function App() {
   const [active, setActive] = React.useState(0);
