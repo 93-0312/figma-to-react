@@ -4,7 +4,7 @@ import type { Story } from "../playground/types";
 
 export const labelStory: Story = {
   name: "Label",
-  docs: "https://coss.com/ui/docs/components/label",
+  docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7658-2157",
   controls: [
     { type: "text", name: "text", label: "text", default: "Label" },
     { type: "boolean", name: "withInput", label: "연결된 Input 보기", default: true },

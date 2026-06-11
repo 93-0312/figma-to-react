@@ -7,7 +7,7 @@ const SIZES: NonNullable<InputProps["inputSize"]>[] = ["sm", "md", "lg"];
 
 export const inputStory: Story = {
   name: "Input",
-  docs: "https://coss.com/ui/docs/components/input",
+  docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7745-699",
   controls: [
     { type: "select", name: "inputSize", label: "size", options: SIZES, default: "md" },
     { type: "text", name: "placeholder", label: "placeholder", default: "Label" },
