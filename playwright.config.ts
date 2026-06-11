@@ -22,7 +22,12 @@ export default defineConfig({
     // 같은 환경(로컬↔로컬 / CI↔CI)에선 렌더가 결정적이라 거의 0 diff.
     // maxDiffPixels 를 작게 잡아 트리비얼 AA 노이즈만 허용하고 실제 변경(수십~수천 px)은 잡는다.
     // (이전 maxDiffPixelRatio 0.02=2% 는 너무 느슨해 작은 컴포넌트 변경을 놓쳤음)
-    toHaveScreenshot: { maxDiffPixels: 100, animations: "disabled" },
+    //
+    // threshold: 픽셀 단위 색차 민감도(YIQ perceptual). Playwright 기본값 0.2 는 밝기(Y)를
+    // 색상(I·Q)보다 크게 가중해, 밝기가 비슷한 hue 변경(예: 파랑#2b7fff→보라#615fff,
+    // delta 660 < 기본기준 1409)을 "같다"고 놓친다. 0.1(기준 352)로 낮춰 등명도 색상 변경도
+    // 잡는다. CI 는 동일 Linux 렌더라 노이즈가 없어 false positive 위험이 낮다.
+    toHaveScreenshot: { maxDiffPixels: 100, threshold: 0.1, animations: "disabled" },
   },
   webServer: {
     command: "npm run dev",
