@@ -19,6 +19,7 @@ permissions:
   pull-requests: write
   issues: write
   id-token: write # claude-code-action 이 OIDC 토큰 교환에 필요
+  actions: write # PR 생성 후 Visual regression 을 gh workflow run 으로 트리거(dispatch)하는 데 필요
 
 concurrency:
   group: figma-sync
