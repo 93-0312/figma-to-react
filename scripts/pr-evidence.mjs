@@ -66,10 +66,13 @@ async function fetchFigma(name, nodeId, outPath) {
 
 const diffs = walk(RESULTS);
 const changed = [];
+const seen = new Set(); // CI 의 retry 가 같은 컴포넌트의 -diff.png 를 중복 생성 → 컴포넌트당 1회만
 
 for (const diffPath of diffs) {
   const dir = diffPath.slice(0, diffPath.lastIndexOf("/") >= 0 ? diffPath.lastIndexOf("/") : diffPath.lastIndexOf("\\"));
   const base = diffPath.split(/[\\/]/).pop().replace(/-diff\.png$/, ""); // "Button"
+  if (seen.has(base)) continue;
+  seen.add(base);
   const expected = join(dir, `${base}-expected.png`);
   const actual = join(dir, `${base}-actual.png`);
   const out = join(EVIDENCE, base);
