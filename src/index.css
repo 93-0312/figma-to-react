@@ -11,7 +11,7 @@
   --foreground: 29 41 61; /* #1d293d */
   --card: 255 255 255; /* #ffffff */
   --card-foreground: 2 6 24; /* #020618 */
-  --primary: 43 127 255; /* #2b7fff */
+  --primary: 97 95 255; /* #615fff — [데모] 등명도 hue 변경(파랑→보라) */
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
@@ -34,7 +34,7 @@
   --foreground: 248 250 252;
   --card: 15 23 43;
   --card-foreground: 248 250 252;
-  --primary: 43 127 255;
+  --primary: 97 95 255; /* #615fff — [데모] 등명도 hue 변경 */
   --primary-foreground: 255 255 255;
   --secondary: 30 41 59;
   --secondary-foreground: 248 250 252;
