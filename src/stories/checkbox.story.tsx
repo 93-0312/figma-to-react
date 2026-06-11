@@ -4,7 +4,7 @@ import type { Story } from "../playground/types";
 
 export const checkboxStory: Story = {
   name: "Checkbox",
-  docs: "https://coss.com/ui/docs/components/checkbox",
+  docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=5667-129",
   controls: [
     { type: "boolean", name: "checked", label: "checked (selected)", default: true },
     { type: "boolean", name: "indeterminate", label: "indeterminate (부모)", default: false },

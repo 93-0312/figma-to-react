@@ -4,7 +4,7 @@ import type { Story } from "../playground/types";
 
 export const fieldStory: Story = {
   name: "Field",
-  docs: "https://coss.com/ui/docs/components/field",
+  docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7745-713",
   controls: [
     { type: "text", name: "label", label: "label", default: "Label" },
     { type: "boolean", name: "required", label: "required (*)", default: true },

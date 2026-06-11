@@ -17,7 +17,7 @@ const SIZES: NonNullable<ButtonProps["size"]>[] = ["xs", "sm", "md", "lg", "xl"]
 
 export const buttonStory: Story = {
   name: "Button",
-  docs: "https://coss.com/ui/docs/components/button",
+  docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=1692-74",
   controls: [
     { type: "select", name: "variant", label: "variant", options: VARIANTS, default: "default" },
     { type: "select", name: "size", label: "size", options: SIZES, default: "md" },
