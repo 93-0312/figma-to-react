@@ -100,5 +100,17 @@ jobs:
             if [ -n "$NUM" ]; then
               echo "Visual regression dispatch → PR #$NUM"
               gh workflow run "Visual regression" --repo "$GITHUB_REPOSITORY" -f pr="$NUM" || true
+
+              # 변경 감지 이슈를 PR 에 연결(Closes #N) → 머지 시 이슈 자동 종료(셀프 클로즈 불필요)
+              ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title Figma 변경 감지' --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+              if [ -n "$ISSUE" ]; then
+                BODY=$(gh pr view "$NUM" --repo "$GITHUB_REPOSITORY" --json body --jq .body 2>/dev/null || echo "")
+                case "$BODY" in
+                  *"Closes #$ISSUE"*) echo "이미 연결됨: PR #$NUM ↔ issue #$ISSUE" ;;
+                  *) printf '%s\n\nCloses #%s\n' "$BODY" "$ISSUE" \
+                       | gh pr edit "$NUM" --repo "$GITHUB_REPOSITORY" --body-file - \
+                       && echo "연결: PR #$NUM ↔ issue #$ISSUE (머지 시 자동 종료)" || true ;;
+                esac
+              fi
             fi
           done
