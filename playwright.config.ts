@@ -7,6 +7,10 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests",
+  // 시각 회귀는 CI(Linux) 전용 — baseline 도 Linux 만 커밋한다.
+  // 로컬(특히 Windows)은 렌더가 달라 baseline 이 불일치하고 stray 스냅샷을 만들므로
+  // 비교를 건너뛴다. 로컬 개발자의 시각 점검은 PR 증거 코멘트(Linux 렌더)로 대체된다.
+  ignoreSnapshots: !process.env.CI,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
