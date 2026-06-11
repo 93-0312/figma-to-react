@@ -75,8 +75,11 @@ jobs:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 안전판(결정적): 에이전트가 브랜치만 push 하고 PR 을 안 만들었으면 여기서 생성
-      - name: Ensure PR exists
+      # 안전판(결정적): 에이전트가 브랜치만 push 하고 PR 을 안 만들었으면 여기서 생성하고,
+      # 열린 sync PR 마다 Visual regression 을 명시적으로 dispatch 한다.
+      # (자동화가 GITHUB_TOKEN 으로 연 PR 은 pull_request 이벤트로 워크플로가 트리거되지 않는다 —
+      #  단 workflow_dispatch 는 그 재귀 방지의 예외라 GITHUB_TOKEN 으로도 호출된다.)
+      - name: Ensure PR exists + trigger visual evidence
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -84,11 +87,17 @@ jobs:
           git fetch origin --prune >/dev/null 2>&1 || true
           for BR in $(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's#^origin/##' | grep '^figma-sync/' || true); do
             AHEAD=$(git rev-list --count "origin/main..origin/$BR" 2>/dev/null || echo 0)
-            OPEN=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state open --json number --jq 'length' 2>/dev/null || echo 0)
-            if [ "${AHEAD:-0}" -gt 0 ] && [ "${OPEN:-0}" = "0" ]; then
+            [ "${AHEAD:-0}" -gt 0 ] || continue
+            NUM=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+            if [ -z "$NUM" ]; then
               echo "PR 없음 → 생성: $BR (ahead $AHEAD)"
               gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$BR" \
                 --title "feat(sync): Figma 동기화 (headless Claude)" \
                 --body "헤드리스 Claude 자동 동기화 결과입니다. 리뷰 후 머지하세요." || true
+              NUM=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+            fi
+            if [ -n "$NUM" ]; then
+              echo "Visual regression dispatch → PR #$NUM"
+              gh workflow run "Visual regression" --repo "$GITHUB_REPOSITORY" -f pr="$NUM" || true
             fi
           done

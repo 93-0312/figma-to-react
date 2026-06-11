@@ -15,6 +15,10 @@ on:
         description: "Linux baseline 새로 생성(→ PR)"
         type: boolean
         default: false
+      pr:
+        description: "이 PR 번호의 브랜치를 검사 + 증거 코멘트(자동화 PR 용)"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -32,6 +36,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      # 자동화(GITHUB_TOKEN) PR 은 pull_request 이벤트로 못 잡으므로 figma-sync 가
+      # `gh workflow run -f pr=<N>` 으로 호출 → 여기서 그 PR 브랜치로 체크아웃해 검사한다.
+      - name: PR 브랜치 체크아웃 (dispatch 호출 시)
+        if: ${{ github.event.inputs.pr != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr checkout "${{ github.event.inputs.pr }}"
+
       - run: npm ci
       - run: npx playwright install --with-deps chromium
 
@@ -45,11 +57,11 @@ jobs:
 
       # ── PR 시각 증거: Figma 원본 + Before/After/Diff 를 evidence 브랜치에 올리고 PR 에 코멘트 ──
       - name: PR 시각 증거 + 코멘트
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ always() && (github.event_name == 'pull_request' || github.event.inputs.pr != '') }}
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number }}
+          PR: ${{ github.event.pull_request.number || github.event.inputs.pr }}
         run: |
           node scripts/pr-evidence.mjs || true
           if [ ! -s evidence/comment.md ]; then echo "시각 변경 없음 → 코멘트 생략"; exit 0; fi
