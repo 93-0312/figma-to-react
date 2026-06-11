@@ -25,9 +25,9 @@ const inputVariants = cva(
   {
     variants: {
       inputSize: {
-        sm: "h-7 px-2",
+        sm: "h-7 px-1.5",
         md: "h-8 px-2",
-        lg: "h-9 px-2.5",
+        lg: "h-9 px-2",
       },
       invalid: {
         true: "border-destructive focus-within:ring-destructive",
