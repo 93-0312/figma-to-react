@@ -3,6 +3,12 @@ dist/
 dist-ssr/
 *.local
 
+# playwright (스냅샷 baseline 은 tests/**-snapshots/ 에 커밋, 결과물은 제외)
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # secrets / env (FIGMA_TOKEN 등 절대 커밋 금지)
 .env
 .env.*

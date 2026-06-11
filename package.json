@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "verify": "tsc --noEmit && vite build",
-    "check:figma": "node --env-file-if-exists=.env scripts/check-figma-version.mjs"
+    "check:figma": "node --env-file-if-exists=.env scripts/check-figma-version.mjs",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -19,6 +21,7 @@
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
