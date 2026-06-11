@@ -108,7 +108,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               viewBox="0 0 8 8"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.25"
+              strokeWidth="1.5"
               className={mobile ? "size-2.5" : "size-2"}
               aria-hidden
             >
@@ -120,7 +120,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             </svg>
           )}
           {showMinus && (
-            <span className="h-0.5 w-1.5 rounded-full bg-primary" />
+            <span className={cn("h-0.5 rounded-full bg-primary", mobile ? "w-2" : "w-1.5")} />
           )}
         </span>
       </label>
