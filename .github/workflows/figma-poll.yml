@@ -8,7 +8,7 @@ name: Figma poll
 
 on:
   schedule:
-    - cron: "*/15 * * * *" # 15분마다 (GitHub 스케줄은 지연 흔함 → 즉시 테스트는 수동 dispatch)
+    - cron: "7,22,37,52 * * * *" # ~15분 간격. 정시/15·30·45분은 혼잡해 지연·누락이 잦아 7분 오프셋 사용 (즉시 테스트는 수동 dispatch)
   workflow_dispatch: {} # 수동 실행 버튼
 
 permissions:
