@@ -15,8 +15,10 @@ export default defineConfig({
     baseURL: "http://localhost:5173",
   },
   expect: {
-    // 폰트/렌더 미세차 허용. 애니메이션(transition)은 고정해 안정화.
-    toHaveScreenshot: { maxDiffPixelRatio: 0.02, animations: "disabled" },
+    // 같은 환경(로컬↔로컬 / CI↔CI)에선 렌더가 결정적이라 거의 0 diff.
+    // maxDiffPixels 를 작게 잡아 트리비얼 AA 노이즈만 허용하고 실제 변경(수십~수천 px)은 잡는다.
+    // (이전 maxDiffPixelRatio 0.02=2% 는 너무 느슨해 작은 컴포넌트 변경을 놓쳤음)
+    toHaveScreenshot: { maxDiffPixels: 100, animations: "disabled" },
   },
   webServer: {
     command: "npm run dev",
