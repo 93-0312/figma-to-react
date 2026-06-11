@@ -36,6 +36,7 @@ export default {
           DEFAULT: "rgb(var(--destructive) / <alpha-value>)",
           foreground: "rgb(var(--destructive-foreground) / <alpha-value>)",
         },
+        caution: "rgb(var(--caution) / <alpha-value>)",
         success: {
           foreground: "rgb(var(--success-foreground) / <alpha-value>)",
         },
