@@ -35,8 +35,8 @@ const buttonVariants = cva(
         xs: "h-6 min-w-6 rounded-radius-lg px-1 text-xs [&_svg]:size-4",
         sm: "h-7 min-w-7 rounded-radius px-1.5 text-sm [&_svg]:size-4",
         md: "h-8 min-w-8 rounded-radius px-1.5 text-sm [&_svg]:size-[18px]",
-        lg: "h-9 min-w-9 rounded-radius px-2 text-sm [&_svg]:size-5",
-        xl: "h-10 min-w-10 rounded-radius px-2.5 text-base [&_svg]:size-5",
+        lg: "h-9 min-w-9 rounded-radius px-2 text-sm [&_svg]:size-5 [&_[data-label]]:px-1.5",
+        xl: "h-10 min-w-10 rounded-radius px-2.5 text-base [&_svg]:size-5 [&_[data-label]]:px-1.5",
       },
     },
     defaultVariants: {
@@ -71,7 +71,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {icon ? (
           <span className="inline-flex shrink-0 opacity-80">{icon}</span>
         ) : null}
-        {children != null ? <span className="px-1">{children}</span> : null}
+        {children != null ? <span data-label className="px-1">{children}</span> : null}
         {rightIcon ? (
           <span className="inline-flex shrink-0 opacity-80">{rightIcon}</span>
         ) : null}
