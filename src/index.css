@@ -11,7 +11,7 @@
   --foreground: 29 41 61; /* #1d293d */
   --card: 255 255 255; /* #ffffff */
   --card-foreground: 2 6 24; /* #020618 */
-  --primary: 97 95 255; /* #615fff */
+  --primary: 43 127 255; /* #2B7FFF */
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
@@ -21,7 +21,7 @@
   --success-foreground: 4 120 87; /* #047857 */
   --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
   --border: 15 23 43; /* #0f172b @ 8% (border 토큰에서 알파 적용) */
-  --ring: 97 95 255; /* #615fff — primary 와 동일 */
+  --ring: 43 127 255; /* #2B7FFF — primary 와 동일 */
 
   --radius: 10px;
 }
@@ -35,7 +35,7 @@
   --foreground: 248 250 252;
   --card: 15 23 43;
   --card-foreground: 248 250 252;
-  --primary: 97 95 255;
+  --primary: 43 127 255;
   --primary-foreground: 255 255 255;
   --secondary: 30 41 59;
   --secondary-foreground: 248 250 252;
@@ -45,7 +45,7 @@
   --success-foreground: 52 211 153; /* #34d399 (dark 근사) */
   --muted-foreground: 148 163 184;
   --border: 248 250 252;
-  --ring: 97 95 255;
+  --ring: 43 127 255;
 }
 
 @layer base {
