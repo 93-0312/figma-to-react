@@ -70,7 +70,7 @@ jobs:
 
             불확실하면 추측해서 커밋하지 말고, 무엇이 막혔는지 로그로 명확히 남겨라.
           claude_args: |
-            --max-turns 30
+            --max-turns 50
             --allowedTools Bash,Read,Edit,Write,Glob,Grep
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
