@@ -15,9 +15,8 @@
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
-  --destructive: 239 68 68; /* #ef4444 — 폼 에러(Input border, Field error text) */
+  --destructive: 239 68 68; /* #ef4444 — Destructive 버튼 채움 + 폼 에러(Input border, Field error text) */
   --destructive-foreground: 185 28 28; /* #b91c1c */
-  --caution: 245 158 11; /* #f59e0b — Destructive 버튼 채움 색 (amber) */
   --success-foreground: 4 120 87; /* #047857 */
   --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
   --border: 15 23 43; /* #0f172b @ 8% (border 토큰에서 알파 적용) */
@@ -41,7 +40,6 @@
   --secondary-foreground: 248 250 252;
   --destructive: 239 68 68;
   --destructive-foreground: 248 113 113;
-  --caution: 245 158 11;
   --success-foreground: 52 211 153; /* #34d399 (dark 근사) */
   --muted-foreground: 148 163 184;
   --border: 248 250 252;
