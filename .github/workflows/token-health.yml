@@ -1,0 +1,46 @@
+name: Token health
+
+# 자격증명 만료/무효 조기 경보 (결정적 — Claude 미사용, $0 헤드리스).
+#
+# - FIGMA_TOKEN: 매일 /v1/me 로 능동 검증. 무효면 Issue 로 알리고, 복구되면 자동 종료.
+# - CLAUDE_CODE_OAUTH_TOKEN: 사전 검증 = Claude 호출 = 크레딧 소모이므로 여기서 검사하지 않는다.
+#   대신 figma-sync 실패 시 reactive 로 알린다(figma-sync.yml 의 실패 알림 스텝).
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # 매일 1회(UTC 06:17 = KST 15:17). 만료 전 며칠 여유로 알림 충분.
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: token-health
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: FIGMA_TOKEN 검증 (/v1/me)
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CODE=$(curl -s -o /tmp/me.json -w "%{http_code}" -H "X-Figma-Token: ${FIGMA_TOKEN}" https://api.figma.com/v1/me || echo "000")
+          OPEN=$(gh issue list --state open --search 'in:title FIGMA_TOKEN' --json number --jq '.[0].number // empty')
+          if [ "$CODE" = "200" ]; then
+            echo "FIGMA_TOKEN ✅ 유효 (HTTP 200)"
+            if [ -n "$OPEN" ]; then
+              gh issue close "$OPEN" --comment "FIGMA_TOKEN 이 다시 유효합니다(자동 복구 감지) → 종료."
+            fi
+          else
+            echo "FIGMA_TOKEN ❌ HTTP $CODE"
+            if [ -z "$OPEN" ]; then
+              gh issue create --title "⚠️ 토큰 점검 — FIGMA_TOKEN 만료/무효 (HTTP ${CODE})" \
+                --body "$(printf 'FIGMA_TOKEN 이 Figma API 에서 거부되었습니다 (HTTP %s).\n\n**영향:** poll(변경 감지) · sync(추출) · PR 시각 증거의 Figma 호출이 전부 실패합니다.\n\n**조치:**\n1. Figma → Settings → Security → Personal access tokens 에서 새 PAT(File content: read 이상) 발급.\n2. GitHub repo Settings → Secrets and variables → Actions → `FIGMA_TOKEN` 갱신.\n3. 로컬 `.env` 의 `FIGMA_TOKEN` 도 같이 갱신.\n4. 계정 `it@eromnet.com` 의 Dev seat/조직 멤버십도 함께 확인(만료가 아니라 권한 회수일 수 있음).\n\n— 자동 점검(.github/workflows/token-health.yml). 토큰이 복구되면 이 이슈는 자동으로 닫힙니다.' "$CODE")"
+            else
+              echo "이미 열린 점검 이슈 #$OPEN — 생략(중복 방지)"
+            fi
+          fi

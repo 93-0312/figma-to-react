@@ -122,3 +122,16 @@ jobs:
               fi
             fi
           done
+
+      # 헤드리스 실행이 실패한 경우 알림(가장 흔한 원인: CLAUDE_CODE_OAUTH_TOKEN 만료/크레딧 소진).
+      # Figma 토큰은 token-health 가 능동 점검하므로, 여기선 Claude 쪽을 reactive 로 커버한다.
+      - name: 헤드리스 실패 알림
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OPEN=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title Figma sync 실패' --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          [ -z "$OPEN" ] || { echo "이미 열린 실패 이슈 #$OPEN — 생략"; exit 0; }
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "⚠️ Figma sync 실패 — 점검 필요" \
+            --body "$(printf '헤드리스 Figma sync 가 실패했습니다.\n\n실행 로그: %s\n\n**흔한 원인:**\n- **CLAUDE_CODE_OAUTH_TOKEN 만료/무효** (auth 에러면 가장 유력) → 로컬에서 `claude setup-token` 재발급 후 Secret 갱신.\n- 월 헤드리스 크레딧 소진.\n- max-turns 초과 / 일시 오류 → 재실행으로 해결될 수 있음.\n\n로그의 auth/credit 메시지를 확인하세요. 해결 후 이 이슈는 직접 닫으면 됩니다.\n\n— 자동 알림(.github/workflows/figma-sync.yml)' "$RUN_URL")"
