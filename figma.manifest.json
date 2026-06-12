@@ -2,8 +2,8 @@
   "$schema": "./figma.manifest.schema.json",
   "fileKey": "LFA5EyNbUdPvi8Rbuf2tJC",
   "fileName": "BO UI Kit",
-  "lastSyncedVersion": "2363744838276398387",
-  "lastSyncedAt": "2026-06-11T08:06:15Z",
+  "lastSyncedVersion": "2364131712282327004",
+  "lastSyncedAt": "2026-06-12T09:14:50Z",
   "tokens": {
     "css": "src/index.css",
     "tailwind": "tailwind.config.js",
@@ -79,9 +79,25 @@
       "figmaPage": "5651:4474",
       "figmaNodeId": "7745:699",
       "variants": {
-        "type": ["Default", "MultiSelect", "Focus", "Error", "ErrorFocused", "Disabled", "File", "InnerLabel"],
-        "size": ["Small", "Default", "Large"],
-        "fill": [false, true]
+        "type": [
+          "Default",
+          "MultiSelect",
+          "Focus",
+          "Error",
+          "ErrorFocused",
+          "Disabled",
+          "File",
+          "InnerLabel"
+        ],
+        "size": [
+          "Small",
+          "Default",
+          "Large"
+        ],
+        "fill": [
+          false,
+          true
+        ]
       },
       "notes": "슬롯형 입력(left/right icon, prefix/suffix). 상태: Default/Error(border destructive)/Disabled(opacity64)/Focus(ring). 사이즈 sm/md/lg(h28/32/36). 미구현: 인라인 Button/Badge/Kbd/MultiSelect/File/InnerLabel/Fill=True/darkBackground."
     },
