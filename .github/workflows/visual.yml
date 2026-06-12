@@ -93,24 +93,27 @@ jobs:
       # 머지 시 코드+baseline 이 원자적으로 반영 → 수동 dispatch 불필요.
       # baseline 을 "무조건" 갱신하면 gate 가 무의미해지므로, 신뢰된 자동 동기화(figma-sync/*)에만 적용한다.
       # (사람 PR 은 회귀를 자동 수락하면 안 되므로 제외 — 그쪽은 gate red 로 남겨 작성자가 직접 판단.)
-      - name: sync PR baseline 자동 갱신
+      - name: sync PR baseline + 노드 지문 자동 갱신
         if: ${{ always() && github.event.inputs.pr != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         run: |
           BR=$(gh pr view "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --json headRefName -q .headRefName)
           case "$BR" in
             figma-sync/*) ;;
-            *) echo "비-sync PR($BR) → baseline 자동 갱신 생략"; exit 0;;
+            *) echo "비-sync PR($BR) → 자동 갱신 생략"; exit 0;;
           esac
           npx playwright test --update-snapshots || true
-          if git diff --quiet -- tests; then echo "baseline 변화 없음 → 커밋 생략"; exit 0; fi
+          # 노드 지문도 현재 Figma 상태로 갱신(poll 의 2차 게이트 기준점) → 머지 후 동일 변경 재감지 방지
+          node scripts/check-figma-nodes.mjs --record || true
+          if git diff --quiet -- tests figma.fingerprints.json; then echo "baseline/지문 변화 없음 → 커밋 생략"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add tests
-          git commit -m "test(visual): sync 렌더에 맞춰 Linux baseline 자동 갱신"
+          git add tests figma.fingerprints.json
+          git commit -m "test(visual): sync 렌더에 맞춰 Linux baseline + 노드 지문 자동 갱신"
           git push origin "HEAD:${BR}"
-          echo "baseline 자동 갱신 커밋 → ${BR}"
+          echo "baseline + 지문 자동 갱신 커밋 → ${BR}"
 
       - name: diff 리포트 업로드 (실패 시)
         if: ${{ failure() }}
