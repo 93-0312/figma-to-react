@@ -14,6 +14,7 @@ on:
 permissions:
   issues: write
   contents: read
+  actions: write # 변경 감지 시 Figma sync 워크플로를 gh workflow run 으로 자동 트리거
 
 concurrency:
   group: figma-poll
@@ -42,7 +43,7 @@ jobs:
           VER=$(printf '%s' "$OUT" | grep -oE '"currentVersion": *"[0-9]+"' | grep -oE '[0-9]+' | head -1)
           echo "version=$VER" >> "$GITHUB_OUTPUT"
 
-      - name: Notify on change (open issue)
+      - name: Notify on change (open issue) + trigger sync
         if: steps.check.outputs.exitcode == '10'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -52,10 +53,12 @@ jobs:
           if [ "$EXISTING" = "0" ]; then
             gh issue create \
               --title "🎨 Figma 변경 감지 — version ${VER}" \
-              --body "$(printf 'Figma 파일이 변경되었습니다 (version: `%s`).\n\n**Figma sync (headless Claude)** 워크플로를 실행하면 변경분을 자동 추출해 PR 을 만들고, 그 PR 에 이 이슈가 `Closes #N` 으로 연결됩니다.\n→ **PR 이 머지되면 이 이슈는 자동으로 닫힙니다** (수동 종료 불필요).\n\n— 자동 감지(.github/workflows/figma-poll.yml)' "${VER}")"
+              --body "$(printf 'Figma 파일이 변경되었습니다 (version: `%s`).\n\n**Figma sync (headless Claude)** 가 자동 실행돼 변경분을 추출하고 PR 을 만듭니다. 그 PR 에 이 이슈가 `Closes #N` 으로 연결됩니다.\n→ **PR 이 머지되면 이 이슈는 자동으로 닫힙니다** (수동 종료 불필요).\n\n— 자동 감지(.github/workflows/figma-poll.yml)' "${VER}")"
             echo "변경 알림 이슈 생성."
+            # 변경당 1회만: 새 이슈를 만든 이번에만 sync 를 자동 트리거(이슈가 열려있는 동안엔 위 dedup 으로 재트리거 안 됨)
+            gh workflow run "Figma sync (headless Claude)" && echo "Figma sync 자동 트리거." || echo "::warning::sync 트리거 실패"
           else
-            echo "이미 열린 변경 이슈가 있어 생략 (중복 방지)."
+            echo "이미 열린 변경 이슈가 있어 생략 (중복 방지 + sync 재트리거 안 함)."
           fi
 
       - name: Report error (non-blocking)
