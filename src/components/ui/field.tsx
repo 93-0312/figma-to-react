@@ -78,7 +78,7 @@ const Field = React.forwardRef<HTMLDivElement, FieldProps>(
         ) : null}
 
         {validity != null && (
-          <div className="rounded-radius-lg bg-muted p-2">
+          <div className="rounded-radius-lg bg-secondary p-2">
             <p className="text-xs leading-[14px] tracking-[0.12px] text-foreground">
               {validity}
             </p>
