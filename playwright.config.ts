@@ -25,9 +25,13 @@ export default defineConfig({
     //
     // threshold: 픽셀 단위 색차 민감도(YIQ perceptual). Playwright 기본값 0.2 는 밝기(Y)를
     // 색상(I·Q)보다 크게 가중해, 밝기가 비슷한 hue 변경(예: 파랑#2b7fff→보라#615fff,
-    // delta 660 < 기본기준 1409)을 "같다"고 놓친다. 0.1(기준 352)로 낮춰 등명도 색상 변경도
-    // 잡는다. CI 는 동일 Linux 렌더라 노이즈가 없어 false positive 위험이 낮다.
-    toHaveScreenshot: { maxDiffPixels: 100, threshold: 0.1, animations: "disabled" },
+    // delta 660 < 기본기준 1409)을 "같다"고 놓친다.
+    // 0.03(기준 ~32)까지 낮춘다: 옅은 회색끼리의 미묘한 변경(예: bg-muted #foreground4%
+    // → bg-secondary #e2e8f0, delta 57)도 잡기 위함. CI 는 동일 Linux·동일 Chromium·폰트
+    // 로드 대기·애니메이션 비활성으로 렌더가 결정적 → 미변경 컴포넌트는 delta 0 이라
+    // 임계값을 낮춰도 false positive 가 나지 않는다(실제 변경만 잡힘). maxDiffPixels:100 이
+    // 잔여 버퍼.
+    toHaveScreenshot: { maxDiffPixels: 100, threshold: 0.03, animations: "disabled" },
   },
   webServer: {
     command: "npm run dev",
