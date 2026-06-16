@@ -1,0 +1,21 @@
+{
+  "name": "@eromnet/bo-ui-kit-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "@eromnet/bo-ui-kit 을 외부 프로젝트처럼 설치·사용하는 예시 + 스모크 테스트.",
+  "scripts": {
+    "dev": "vite --port 5174 --strictPort",
+    "build": "vite build",
+    "smoke": "node smoke.mjs"
+  },
+  "dependencies": {
+    "@eromnet/bo-ui-kit": "file:../..",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

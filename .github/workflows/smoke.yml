@@ -1,0 +1,50 @@
+name: Consumer smoke
+
+# 라이브러리(@eromnet/bo-ui-kit)가 외부 프로젝트에서 정상 설치·렌더되는지 검증.
+# examples/consumer(워크스페이스)를 실제로 띄워 브라우저에서 토큰 스타일을 단언한다.
+# → 빌드/exports/CSS 가 소비자 관점에서 깨지면 PR 에서 잡힌다. (결정적, Claude 미사용)
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "lib/**"
+      - "vite.lib.config.ts"
+      - "tailwind.lib.config.js"
+      - "tailwind.config.js"
+      - "scripts/build-lib.mjs"
+      - "package.json"
+      - "examples/**"
+      - ".github/workflows/smoke.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - name: 라이브러리 빌드 (예시가 import)
+        run: npm run build:lib
+      - run: npx playwright install --with-deps chromium
+      - name: 소비 앱 띄우고 스모크 단언
+        run: |
+          npm --prefix examples/consumer run dev > /tmp/consumer-dev.log 2>&1 &
+          node examples/consumer/smoke.mjs
+      - name: 스모크 스크린샷 업로드
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consumer-smoke
+          path: examples/consumer/smoke.png
+          retention-days: 7
