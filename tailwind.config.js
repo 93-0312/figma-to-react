@@ -27,6 +27,14 @@ export default {
           DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
           foreground: "rgb(var(--secondary-foreground) / <alpha-value>)",
         },
+        accent: {
+          DEFAULT: "rgb(var(--accent) / <alpha-value>)",
+          foreground: "rgb(var(--accent-foreground) / <alpha-value>)",
+        },
+        popover: {
+          DEFAULT: "rgb(var(--popover) / <alpha-value>)",
+          foreground: "rgb(var(--popover-foreground) / <alpha-value>)",
+        },
         muted: {
           DEFAULT: "rgb(var(--foreground) / 0.04)", // #0f172b0a 근사
           // muted-foreground 토큰(#0f172b80)은 50% 알파가 적용된 값
@@ -67,6 +75,9 @@ export default {
         xs: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
         // 채워진 버튼 전용: 하단 그림자 + 상단 내부 하이라이트
         btn: "0 1px 1px rgba(38, 38, 38, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16)",
+        // Select/팝오버 패널 (Figma shadow-lg)
+        popover:
+          "0px 10px 15px -3px rgba(0, 0, 0, 0.05), 0px 4px 6px -4px rgba(0, 0, 0, 0.05)",
       },
     },
   },
