@@ -13,7 +13,7 @@
 import { chromium } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 
-const URL = "http://localhost:5174";
+const BASE_URL = "http://localhost:5174";
 const SHOT = fileURLToPath(new URL("smoke.png", import.meta.url));
 
 async function waitForServer(url, tries = 60) {
@@ -40,14 +40,14 @@ function assertTrue(name, cond, detail = "") {
   console.log(`✓ ${name}${detail ? ` (${detail})` : ""}`);
 }
 
-console.log(`» 서버 대기: ${URL}`);
-await waitForServer(URL);
+console.log(`» 서버 대기: ${BASE_URL}`);
+await waitForServer(BASE_URL);
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 480, height: 900 } });
 let failed = false;
 try {
-  await page.goto(URL, { waitUntil: "networkidle" });
+  await page.goto(BASE_URL, { waitUntil: "networkidle" });
   await page.waitForSelector('[data-test="buttons"] button', { timeout: 15000 });
   await page.evaluate(() => document.fonts.ready);
 
