@@ -1,0 +1,21 @@
+{
+  "name": "bo-ui-kit-pack-consumer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "심볼릭 링크 없이 npm pack tarball(실제 배포물)만 설치해 검증하는 소비 프로젝트.",
+  "scripts": {
+    "dev": "vite --port 5175 --strictPort",
+    "build": "vite build",
+    "smoke": "node smoke.mjs"
+  },
+  "dependencies": {
+    "@eromnet/bo-ui-kit": "file:./bo-ui-kit.tgz",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}

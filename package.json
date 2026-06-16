@@ -34,6 +34,7 @@
     "verify": "tsc --noEmit && vite build",
     "build:lib": "node scripts/build-lib.mjs",
     "prepack": "node scripts/build-lib.mjs",
+    "pack:test": "node scripts/pack-test.mjs",
     "check:figma": "node --env-file-if-exists=.env scripts/check-figma-version.mjs",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots"
