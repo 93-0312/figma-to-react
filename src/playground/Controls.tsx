@@ -1,4 +1,9 @@
+import { Input } from "../components/ui";
 import type { Args, Control } from "./types";
+
+/** select/토글에 쓰는 포커스 링 — Input 컴포넌트(Figma Focus)와 동일한 회색 3px 글로우 */
+const focusRing =
+  "outline-none focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07]";
 
 interface ControlsProps {
   controls: Control[];
@@ -21,7 +26,10 @@ export function Controls({ controls, args, onChange }: ControlsProps) {
             <select
               value={String(args[c.name])}
               onChange={(e) => onChange(c.name, e.target.value)}
-              className="h-8 rounded-radius border border-input bg-card px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className={
+                "h-8 rounded-radius border border-input bg-card px-2 text-sm text-foreground transition-colors focus-visible:border-disabled/30 " +
+                focusRing
+              }
             >
               {c.options.map((o) => (
                 <option key={o} value={o}>
@@ -39,6 +47,8 @@ export function Controls({ controls, args, onChange }: ControlsProps) {
               onClick={() => onChange(c.name, !args[c.name])}
               className={
                 "relative h-6 w-10 shrink-0 rounded-full border transition-colors " +
+                focusRing +
+                " " +
                 (args[c.name]
                   ? "border-primary bg-primary"
                   : "border-input bg-secondary")
@@ -54,11 +64,10 @@ export function Controls({ controls, args, onChange }: ControlsProps) {
           )}
 
           {c.type === "text" && (
-            <input
+            <Input
               type="text"
               value={String(args[c.name])}
               onChange={(e) => onChange(c.name, e.target.value)}
-              className="h-8 rounded-radius border border-input bg-card px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           )}
         </label>
