@@ -1,134 +1,150 @@
-# Figma → React Design-to-Code 동기화 파이프라인 (프로젝트 기록)
+# Figma → React Design-to-Code 파이프라인 (프로젝트 기록)
 
-> 내부 레퍼런스용 문서. Figma "BO UI Kit"을 React 컴포넌트로 추출하고, 변경을 자동 감지·동기화하는 파이프라인의 전체 구성과 운영 방법을 기록한다.
+> 내부 레퍼런스. Figma "BO UI Kit"을 React 컴포넌트로 추출하고, 변경을 **완전 무인으로** 감지 → 동기화 → 검증 → 배포 가능 상태로 만드는 파이프라인의 구성·운영을 기록한다.
 
 ---
 
 ## 1. 개요
 
-- **목적**: Figma 디자인(BO UI Kit)을 React/Tailwind 컴포넌트로 추출하고, Figma 변경을 자동 감지 → 헤드리스 동기화 → PR 까지 잇는다.
-- **한 줄 요약**: *디자인 변경 → 크론 감지 → GitHub Issue 알림 → 헤드리스 Claude 추출 → 자동 PR → 사람 리뷰·머지.*
+- **목적**: Figma(BO UI Kit) → React/Tailwind 컴포넌트 추출 + 디자인 변경 자동 동기화 + npm 라이브러리 배포.
+- **한 줄 요약**: *디자인 변경 → 노드 단위 감지 → 헤드리스 Claude 추출 → 시각 증거 PR → 사람 머지 → 이슈 자동 종료.*
 - **저장소**: `https://github.com/93-0312/figma-to-react` (public)
-- **Figma 파일**: BO UI Kit, fileKey `LFA5EyNbUdPvi8Rbuf2tJC` (Figma 팀 "plan's team", Pro)
+- **Figma 파일**: BO UI Kit, fileKey `LFA5EyNbUdPvi8Rbuf2tJC` (팀 "plan's team", Pro)
+- **npm 패키지**: `@eromnet/bo-ui-kit` (0.1.0, 발행 직전)
 
 ## 2. 기술 스택
 
 Vite + React 18 + TypeScript + Tailwind v3 + class-variance-authority(cva) + tailwind-merge.
-컴포넌트는 `src/components/ui/`, 토큰은 `src/index.css`(CSS 변수) + `tailwind.config.js`.
+컴포넌트 `src/components/ui/`, **토큰 단일 소스 `src/tokens.css`**(앱 `index.css`와 라이브러리 빌드가 공유) + `tailwind.config.js`.
 
-## 3. 아키텍처
+## 3. 아키텍처 (완전 무인 루프)
 
 ```
 Figma (BO UI Kit, fileKey)
-   │ 버전 변경 (오토세이브 포함)
+   │ 디자인 변경 (오토세이브 포함)
    ▼
-[감지] GitHub Actions cron (figma-poll.yml, REST /versions)
-   │ 현재 version ≠ manifest.lastSyncedVersion
+[감지 1차] figma-poll.yml cron — REST /versions 로 파일 버전 변화
+   │ 버전이 바뀜
    ▼
-[알림] GitHub Issue 자동 생성 (열린 이슈 1개 = 디바운스)
-   │
+[감지 2차] check-figma-nodes — 추적 노드의 실제 내용 해시(figma.fingerprints.json) 비교
+   │ autosave/무관 변경 → 워터마크만 전진하고 종료(헤드리스 미실행)
+   │ 실제 컴포넌트 변경 → 계속
    ▼
-[추출] 헤드리스 Claude (figma-sync.yml, claude-code-action)
-   │ 원격 MCP(fileKey) 또는 REST 로 토큰·구조 추출 → 코드와 diff
+[알림+트리거] Issue 생성 + figma-sync 자동 dispatch (변경당 1회)
    ▼
-[기록] 검증(tsc+build) → figma-sync/* 브랜치 → PR (closes #issue)
+[추출] figma-sync.yml — 헤드리스 Claude(claude-code-action)가 변경분만 추출 → 검증(tsc+build) → figma-sync/* 브랜치 → PR(Closes #이슈)
    ▼
-[종료] 머지 → Issue 자동 종료 → baseline 갱신 → 다음 사이클
+[검증] visual.yml — 시각 회귀 gate + Figma/Before/After/Diff 증거 코멘트 + baseline·지문 자동 갱신
+        smoke.yml — 소비자(consumer/pack-consumer) 설치·렌더·exports 검증
+   ▼
+[종료] 사람이 증거 보고 머지 → 이슈 자동 종료 → 다음 사이클
 ```
 
-**감지(클라우드/REST) ↔ 추출(에이전트/MCP) 분리**가 핵심. 감지는 Figma 안 켜도 서버에서 fileKey 로 동작, 추출은 헤드리스 Claude 가 수행.
+**핵심 설계**: ① 감지(클라우드/REST, $0)와 추출(헤드리스 에이전트)을 분리. ② **노드 지문**으로 autosave 노이즈를 걸러 헤드리스 비용 0 유지. ③ 사람의 유일한 수동 단계는 **PR 머지**.
 
-## 4. 추출된 컴포넌트
+## 4. 추출된 컴포넌트 (10종)
 
 | 컴포넌트 | 파일 | Figma node | 비고 |
 |---|---|---|---|
-| Button | `src/components/ui/button.tsx` | 1692:74 | 7 variant × 5 size, icon 슬롯 |
-| Checkbox | `src/components/ui/checkbox.tsx` | 5667:129 | 박스 전용(.Selector). checked/indeterminate/disabled/mobile |
-| Input | `src/components/ui/input.tsx` | 7745:699 | 슬롯형. sm/md/lg + invalid/disabled/focus + icon·prefix/suffix |
-| Label | `src/components/ui/label.tsx` | 7658:2157 | 접근성 label |
-| Field | `src/components/ui/field.tsx` | 7745:713 | 폼 래퍼(label + control + 보조영역) |
+| Button | `button.tsx` | 1692:74 | 7 variant × 5 size, icon 슬롯 |
+| Checkbox | `checkbox.tsx` | 5667:129 | .Selector 박스. IsSelected 마스터 게이트 |
+| Input | `input.tsx` | 7745:699 | 슬롯형. sm/md/lg + invalid/disabled/focus |
+| Label | `label.tsx` | 7658:2157 | 접근성 label |
+| Field | `field.tsx` | 7745:713 | 폼 래퍼(label+control+보조영역) |
+| Input OTP | `input-otp.tsx` | 8060:1580 | 슬롯형 OTP(6자리 3-3), isLarge |
+| Meter | `meter.tsx` | 7664:31 | role=meter + aria-value*, value/min/max |
+| Toggle | `toggle.tsx` | 5685:204 | 2-state 버튼, pressed/hover/disabled |
+| Toggle Group | `toggle-group.tsx` | 5686:270 | 세그먼티드, single/multiple |
+| Select | `select.tsx` | 7751:1561 | 드롭다운, popover 패널 |
 
-- 미니 플레이그라운드: `src/playground/` + `src/stories/*.story.tsx` (자체 구현, 실제 Storybook 패키지 아님)
-- 매니페스트(추출 대상 단일 소스): `figma.manifest.json`
+- 플레이그라운드: `src/playground/` + `src/stories/*.story.tsx`(자체 구현, 실제 Storybook 아님)
+- 추출 대상 단일 소스: `figma.manifest.json` · 노드 지문: `figma.fingerprints.json`
 
-## 5. 자동 동기화 파이프라인 구성요소
+## 5. 파이프라인 구성요소
 
 | 파일 | 역할 |
 |---|---|
-| `figma.manifest.json` | 노드↔파일 매핑 + `lastSyncedVersion`(baseline) |
-| `scripts/check-figma-version.mjs` (`npm run check:figma`) | REST `/versions` 로 변경 감지. exit 0=최신/10=변경/2=오류 |
-| `.github/workflows/figma-poll.yml` | cron(15분) + 수동. 변경 시 Issue 생성(중복 방지) |
-| `.github/workflows/figma-sync.yml` | 헤드리스 Claude(claude-code-action) 추출→검증→PR. PR 자동생성 폴백 스텝 포함 |
-| `AX_LAB/.claude/commands/sync-figma.md` | 대화형 `/sync-figma` 명령(원격 MCP 우선 추출) |
-| `CLAUDE.md` | 프로젝트 규칙(특히 ★ Variant 매핑 규칙) |
-| `SYNC_PLAN.md`, `LEVEL2_SETUP.md` | 계획·셋업 가이드 |
+| `figma.manifest.json` | 노드↔파일 매핑 + `lastSyncedVersion`(워터마크) |
+| `figma.fingerprints.json` | 추적 노드의 내용 해시(2차 감지 기준점) |
+| `scripts/check-figma-version.mjs` | REST `/versions` 1차 감지(가벼움). exit 0/10/2 |
+| `scripts/check-figma-nodes.mjs` | `/nodes` 노드 해시 2차 감지(버전 변화 시 1회). exit 0/10/2 |
+| `scripts/build-lib.mjs` | 라이브러리 빌드(vite lib + tsc + tailwind CLI) |
+| `scripts/pr-evidence.mjs` | PR 시각 증거(Figma + Before/After/Diff) 수집 |
+| `scripts/pack-test.mjs` | tarball 만들어 pack-consumer에 설치(배포물 검증) |
+| `.github/workflows/figma-poll.yml` | cron 감지(KST 04~24시) → 실제 변경 시 Issue + sync 트리거 |
+| `.github/workflows/figma-sync.yml` | 헤드리스 Claude 추출 → 검증 → PR(Closes #N) + visual dispatch |
+| `.github/workflows/visual.yml` | 시각 회귀 + 증거 코멘트 + sync PR baseline·지문 자동 갱신 |
+| `.github/workflows/smoke.yml` | 소비자 설치·렌더 + tarball·CJS 검증 |
+| `.github/workflows/token-health.yml` | FIGMA_TOKEN 매일 점검(만료 시 Issue, 복구 시 자동 종료) |
+| `CLAUDE.md` | 프로젝트 규칙(★ Variant 매핑) |
 
-## 6. 시크릿 / 계정
+## 6. 시각 회귀 (visual.yml)
+
+- Playwright `toHaveScreenshot`로 플레이그라운드 컴포넌트를 스냅샷 비교. **CI(Linux) 전용** baseline(`tests/**-snapshots/*-linux.png`), 로컬은 `ignoreSnapshots`로 비교 생략.
+- `maxDiffPixels: 100` + **`threshold: 0.03`** — 등명도 색상(파랑↔보라)·옅은 회색 변경까지 잡도록 민감하게(pixelmatch가 밝기 위주라 기본값은 놓침).
+- sync PR(`figma-sync/*`)은 증거를 남긴 뒤 **baseline + 노드 지문을 자동 갱신**해 PR에 커밋 → 머지 시 원자적 반영(수동 dispatch 불필요).
+- **PR 시각 증거**: 변경 컴포넌트의 Figma 원본 + Before/After/Diff PNG를 orphan 브랜치에 올려 PR 코멘트로 인라인 첨부.
+
+## 7. npm 라이브러리
+
+- 빌드(`npm run build:lib`, `prepack` 자동): vite lib → `dist/index.js`(ESM) + `dist/index.cjs`(CJS), tsc → `*.d.ts`, tailwind CLI → `dist/styles.css`(토큰 + 컴포넌트 유틸, preflight off).
+- `package.json`: `exports`(import/require/types/styles.css), `files:["dist"]`, peer react, deps cva/clsx/tailwind-merge, `publishConfig.access:public`.
+- 토큰 단일 소스 `src/tokens.css` → 앱·라이브러리 드리프트 방지.
+- 소비자 검증: `examples/consumer`(워크스페이스 링크, 브라우저 렌더) + `examples/pack-consumer`(tarball만, files 경계·exports·ESM/CJS).
+- 발행: `npm publish --access public` (단 `@eromnet` npm org + 로그인 필요). 비공개는 GitHub Packages/유료 private.
+
+## 8. 시크릿 / 계정
 
 | 항목 | 값/위치 | 비고 |
 |---|---|---|
-| `FIGMA_TOKEN` | 저장소 Actions Secret + 로컬 `.env`(gitignore) | Figma PAT. 변경 감지/REST 용 |
-| `CLAUDE_CODE_OAUTH_TOKEN` | 저장소 Actions Secret | `claude setup-token`(Max/Pro 구독)으로 발급. 헤드리스 Claude 인증 |
-| GitHub 계정 | `93-0312` | gh CLI 인증 |
-| **Figma seat** | **it@eromnet.com = Dev seat** (plan's team) | 원격 MCP 200/일. dlwogus432@gmail.com=View(6/월)이라 사용 금지 |
-| Actions PR 권한 | "Allow GitHub Actions to create and approve pull requests" = **ON** | 안 켜면 GITHUB_TOKEN PR 생성 실패 |
+| `FIGMA_TOKEN` | Actions Secret + 로컬 `.env` | Figma PAT(it@eromnet.com Dev seat). 만료일은 API로 안 보임 → token-health가 점검 |
+| `CLAUDE_CODE_OAUTH_TOKEN` | Actions Secret | `claude setup-token`(Max 구독). 만료 시 sync 실패 → 알림 |
+| `GITHUB_TOKEN` | 자동(워크플로 per-run) | 무관리 |
+| GitHub 계정 | `93-0312` | |
+| Actions 권한 | "Allow GitHub Actions to create and approve PRs" = **ON** + 워크플로 권한에 `actions:write` | poll→sync dispatch, sync→visual dispatch에 필요 |
 
-## 7. 운영 가이드
+## 9. 운영 가이드
 
-### 변경 감지 (수동 확인)
+```bash
+npm run check:figma                          # 변경 감지(수동)
+gh workflow run "Figma sync (headless Claude)"  # 헤드리스 동기화 수동 실행
+gh workflow run "Visual regression" -f update_baselines=true   # Linux baseline 재시드
+gh workflow run "Token health"               # 토큰 점검 수동
 ```
-npm run check:figma   # exit 10=변경, 0=최신
-```
 
-### 동기화 (대화형)
-1. (원격 MCP 사용 시) Figma MCP 가 **it@eromnet.com(Dev seat)** 으로 인증돼 있어야 함
-2. `/sync-figma` 실행 → 원격 MCP(fileKey)로 추출 → 코드 diff → 검증 → 브랜치 → PR
+- 폴링: `figma-poll.yml` cron `7,22,37,52 0-14,19-23 * * *`(UTC) = **KST 00~04시 정지**, 그 외 ~15분.
+- 자동 흐름: 실제 컴포넌트 변경 → 이슈 + sync 자동 → PR(증거+baseline) → **사람은 머지만**.
 
-### 동기화 (헤드리스/CI)
-```
-gh workflow run "Figma sync (headless Claude)"
-```
-→ 변경 있으면 추출→검증→PR 자동 생성. (CI 는 원격 MCP 인증 없음 → REST 로 추출)
+## 10. 알려진 제약 / 함정 (실전 학습)
 
-### 변경 감지 자동 실행
-- `figma-poll.yml` cron(15분, best-effort) — 변경 시 Issue 자동 생성
-- 정밀 주기가 필요하면 webhook(Cloudflare Worker) 검토 (Figma 웹훅 = 유료 플랜)
+1. **GITHUB_TOKEN으로 만든 PR/푸시는 워크플로를 트리거 안 함**(재귀 방지). 단 `workflow_dispatch`/`repository_dispatch`는 예외 → poll→sync, sync→visual은 dispatch로 연결.
+2. **claude-code-action은 봇 시작 워크플로를 차단** → `allowed_bots: "github-actions"` 필요(poll이 봇으로 sync 트리거).
+3. **pixelmatch는 밝기(Y) 위주** → 등명도 색상 변경을 기본 threshold(0.2)가 놓침. 0.03으로 낮춤.
+4. **시각 baseline은 OS별**(win32≠linux) → CI(Linux)만 진실의 원천, 로컬은 비교 생략.
+5. **autosave가 파일 버전을 올림** → 노드 지문 2차 게이트로 걸러야 헤드리스 헛돈 실행·좀비 이슈 방지.
+6. **GitHub schedule = best-effort**(지연·누락). 정밀 주기엔 외부 스케줄러/webhook.
+7. **Figma seat 한도**: View=6/월, Dev=200/일. 인증 계정 seat이 곧 쿼터. 변수 REST API는 Enterprise 전용(Pro는 노드 fill 해석).
+8. **헤드리스 OIDC**: `permissions: id-token: write` 필요. 토큰 발행 PR엔 LICENSE 필드 누락(발행 전 보완).
 
-## 8. 비용
+## 11. ★ 핵심 규칙 (CLAUDE.md)
 
-| 항목 | 비용 |
-|---|---|
-| 감지(figma-poll, REST) | $0 (Claude 미사용) |
-| 헤드리스 sync 1회(실제 추출, Sonnet) | ~$1.1~1.4 상당 |
-| GitHub Actions 분 | $0 (public 저장소 무료) |
-| 원격 MCP 호출 | $0 (Dev seat 쿼터 200/일 중 소비) |
+- **Variant 1:1 매핑**(평탄화 금지), 2^N 조합+엣지 확인, 게이팅은 Figma 조건식이 진실, 진리표 JSDoc.
+- 토큰 하드코딩 금지(전부 CSS 변수/Tailwind 토큰), 새 토큰은 `tokens.css`+`tailwind.config.js` 양쪽.
+- 동기화는 **값 + 바인딩** 2축 검증(토큰 값 같아도 참조 바뀐 경우 잡기), Figma에 없는 토큰 발명 금지.
+- main 직접 push 금지, 항상 브랜치+PR.
 
-- 인증: ~2026-06-15 전엔 **공유 구독 한도**(5h 롤링+주간), 이후 헤드리스는 **Agent SDK 별도 월간 크레딧**(Pro $20 / Max5 $100 / Max20 $200, 빌링주기 리셋, 이월X).
+## 12. 최신 변경 내역 (changelog)
 
-## 9. 알려진 제약 / 함정
-
-1. **GitHub schedule = best-effort**: cron 이 정확히 N분마다 안 돈다(초기 지연 + 누락, 실측 2~3.5h 간격). 정밀 주기엔 외부 스케줄러/webhook 필요.
-2. **Figma MCP seat 한도**: View seat = **6회/월**, Dev/Full = 200~600/일. 인증 계정의 seat 종류가 곧 쿼터.
-3. **원격 MCP vs 앱 커넥터 vs CLI MCP**: figma MCP 는 `plugin:figma:figma`(mcp.figma.com). `claude mcp add` 로 중복 항목 만들면 충돌. 계정 변경 시 `mcp__plugin_figma_figma__authenticate` → 올바른 계정으로 브라우저 승인 → `complete_authentication(callback_url)`. 앱 재시작 필요할 수 있음.
-4. **Actions PR 권한**: 저장소 설정 "Allow GitHub Actions to create and approve pull requests" 가 OFF 면 PR 자동생성 실패.
-5. **헤드리스 OIDC**: claude-code-action 은 `permissions: id-token: write` 필요.
-6. **Figma 변수 REST API**: Enterprise 전용. Pro 는 노드 fill 해석으로 우회.
-
-## 10. ★ 핵심 규칙 (CLAUDE.md)
-
-- **Variant 속성 1:1 매핑**(평탄화 금지), **2^N 조합 전체+엣지 확인**, 게이팅/우선순위는 Figma 조건식이 진실의 원천, 진리표 JSDoc 주석.
-- 토큰 하드코딩 금지(전부 CSS 변수/Tailwind 토큰).
-- 동기화는 **값 + 바인딩** 2축 검증. **모든 매니페스트 컴포넌트 재추출**(한 노드만 보면 다른 변경 놓침).
-- main 직접 push 금지, 항상 브랜치 + PR(사람 리뷰 게이트).
-
-## 11. 다음 단계 / 백로그
-
-- webhook(Cloudflare Worker, 무료) → "게시 즉시" 트리거 (Figma 웹훅 유료 플랜 필요)
-- "게시된 버전(Components published)만 감지" 필터로 노이즈/비용↓
-- Input 특수 변형(인라인 Button/Badge/Kbd/MultiSelect/File/InnerLabel/Fill) 추가
-- 컴포넌트 확장: Textarea, Select, Switch, Radio, Card, Dialog …
-- 다크모드 토큰 정밀화(현재 근사값)
+- **2026-06-16**
+  - 컴포넌트 추가: Input OTP, Meter, Toggle, Toggle Group, Select (총 10종).
+  - **npm 라이브러리화**: ESM+CJS dual 빌드, 프리빌드 CSS(Tailwind 불필요), 타입, 토큰 단일 소스(`tokens.css`). `@eromnet/bo-ui-kit`.
+  - **소비자 스모크 CI**(`smoke.yml`): `examples/consumer`(브라우저 렌더) + `examples/pack-consumer`(tarball 전용, files 경계·exports·ESM/CJS).
+  - **노드 단위 감지**(`check-figma-nodes` + `figma.fingerprints.json`): autosave 헛돈 sync·좀비 이슈 제거.
+  - **완전 무인화**: poll이 실제 변경 시 sync를 자동 트리거(`allowed_bots`), 이슈 `Closes #N` 자동 종료, 폴링 새벽(KST 00~04) 정지.
+  - **시각 회귀 정밀화**: threshold 0.1→0.03(등명도/회색 변경 감지), sync PR baseline+지문 자동 갱신, win32 baseline 제거(CI Linux 단일화).
+  - **토큰 헬스체크**(`token-health.yml`) + sync 실패 알림.
+- **2026-06-11**: 초기 파이프라인(폴링 감지 → Issue → 헤드리스 추출 → PR), 컴포넌트 5종(Button/Checkbox/Input/Label/Field), 시각 회귀 도입.
 
 ---
 
-*최종 갱신: 2026-06-11. 작성: design-to-code 동기화 파이프라인 작업 세션 기록.*
+*최종 갱신: 2026-06-16. 작성: design-to-code 파이프라인 작업 세션 기록.*
