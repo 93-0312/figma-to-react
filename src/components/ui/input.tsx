@@ -10,7 +10,10 @@ import { cn } from "../../lib/utils";
  *  - Default : border input-border
  *  - Error   : border destructive(#ef4444 빨강)   → `invalid` prop
  *  - Disabled: 컨테이너 opacity 64%               → input `disabled`
- *  - Focus   : 포커스 링 (focus-within)
+ *  - Focus   : 테두리가 disabled(#45556c@30%)로 진해지고 3px 회색 글로우 링
+ *              (Figma Focus 노드 7745:700 Stroke: 3px disabled@30% × opacity23% ≈ @7%, offset 없음).
+ *              ErrorFocused(8060:3643)는 테두리 destructive + 3px destructive@15% 링.
+ *              ※ Figma 의 회색 링이며 shadcn 기본 파란 ring 이 아님.
  * 사이즈(Figma Size): Small h28 / Default h32 / Large h36.
  *
  * ※ 미구현(특수 변형 — 필요 시 추가): 인라인 Button, Badge, Kbd 단축키, MultiSelect,
@@ -20,7 +23,7 @@ import { cn } from "../../lib/utils";
  */
 const inputVariants = cva(
   "flex w-full items-center gap-1 rounded-radius border bg-card text-sm text-foreground shadow-xs transition-colors " +
-    "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-background " +
+    "focus-within:ring-[3px] focus-within:ring-offset-0 " +
     "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-[0.64]",
   {
     variants: {
@@ -30,8 +33,8 @@ const inputVariants = cva(
         lg: "h-9 px-2",
       },
       invalid: {
-        true: "border-destructive focus-within:ring-destructive",
-        false: "border-input",
+        true: "border-destructive focus-within:ring-destructive/[0.15]",
+        false: "border-input focus-within:border-disabled/30 focus-within:ring-disabled/[0.07]",
       },
     },
     defaultVariants: { inputSize: "md", invalid: false },
