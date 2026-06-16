@@ -17,13 +17,13 @@ export const toggleStory: Story = {
     { type: "boolean", name: "disabled", label: "disabled", default: false },
     { type: "text", name: "label", label: "label", default: "Label" },
   ],
-  render: (args) => (
+  render: (args, setArg) => (
     <Toggle
       variant={args.variant as ToggleProps["variant"]}
       size={args.size as ToggleProps["size"]}
       iconOnly={Boolean(args.iconOnly)}
       pressed={Boolean(args.pressed)}
-      onPressedChange={() => {}}
+      onPressedChange={(v) => setArg("pressed", v)}
       disabled={Boolean(args.disabled)}
     >
       {args.iconOnly ? <PlusIcon /> : String(args.label)}
