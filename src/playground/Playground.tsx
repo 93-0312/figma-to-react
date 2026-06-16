@@ -31,7 +31,7 @@ export function Playground({ story }: { story: Story }) {
             backgroundSize: "16px 16px",
           }}
         >
-          {story.render(args)}
+          {story.render(args, onChange)}
         </div>
 
         {/* 컨트롤 패널 */}
