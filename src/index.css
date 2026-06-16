@@ -21,6 +21,7 @@
   --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
   --border: 15 23 43; /* #0f172b @ 8% (border 토큰에서 알파 적용) */
   --ring: 43 127 255; /* #2B7FFF — primary 와 동일 */
+  --disabled: 69 85 108; /* #45556c — Figma `disabled` 토큰. OTP active 슬롯 테두리/링 등 */
 
   --radius: 10px;
 }
@@ -44,6 +45,7 @@
   --muted-foreground: 148 163 184;
   --border: 248 250 252;
   --ring: 43 127 255;
+  --disabled: 69 85 108;
 }
 
 @layer base {

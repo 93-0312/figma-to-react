@@ -43,6 +43,7 @@ export default {
         border: "rgb(var(--border) / 0.08)",
         input: "rgb(var(--border) / 0.08)",
         ring: "rgb(var(--ring) / <alpha-value>)",
+        disabled: "rgb(var(--disabled) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],
