@@ -6,6 +6,7 @@ import { checkboxStory } from "./stories/checkbox.story";
 import { inputStory } from "./stories/input.story";
 import { labelStory } from "./stories/label.story";
 import { fieldStory } from "./stories/field.story";
+import { inputOtpStory } from "./stories/input-otp.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -13,6 +14,7 @@ const STORIES: Story[] = [
   inputStory,
   labelStory,
   fieldStory,
+  inputOtpStory,
 ];
 
 export default function App() {

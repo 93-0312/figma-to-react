@@ -129,6 +129,19 @@
         ]
       },
       "notes": "label+필수*+control children+보조영역. Type→보조영역 prop(error/description/validity) 매핑. label 은 Figma Inter→프로젝트 Pretendard 로 변환."
+    },
+    {
+      "name": "Input OTP",
+      "file": "src/components/ui/input-otp.tsx",
+      "story": "src/stories/input-otp.story.tsx",
+      "figmaNodeId": "8060:1580",
+      "variants": {
+        "isLarge": [
+          false,
+          true
+        ]
+      },
+      "notes": "슬롯형 OTP(title+슬롯행+belowText). 6자리 3-3 그룹(InputOTPSeparator). IsLarge→isLarge(32px/36px). 슬롯 상태: 기본/채움(char)/active(다음 입력 위치, disabled 색 링). active 슬롯 색은 Figma `disabled`(#45556c) 토큰 → --disabled 신규 추가."
     }
   ]
 }

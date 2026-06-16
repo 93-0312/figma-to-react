@@ -8,3 +8,5 @@ export { Label } from "./label";
 export type { LabelProps } from "./label";
 export { Field } from "./field";
 export type { FieldProps } from "./field";
+export { InputOTP, InputOTPSlot, InputOTPSeparator, slotVariants } from "./input-otp";
+export type { InputOTPProps, InputOTPSlotProps } from "./input-otp";
