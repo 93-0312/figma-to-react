@@ -13,7 +13,7 @@ export const toggleStory: Story = {
     { type: "select", name: "variant", label: "variant", options: VARIANTS, default: "default" },
     { type: "select", name: "size", label: "size", options: SIZES, default: "md" },
     { type: "boolean", name: "iconOnly", label: "icon only", default: false },
-    { type: "boolean", name: "defaultPressed", label: "pressed", default: false },
+    { type: "boolean", name: "pressed", label: "pressed", default: false },
     { type: "boolean", name: "disabled", label: "disabled", default: false },
     { type: "text", name: "label", label: "label", default: "Label" },
   ],
@@ -22,7 +22,8 @@ export const toggleStory: Story = {
       variant={args.variant as ToggleProps["variant"]}
       size={args.size as ToggleProps["size"]}
       iconOnly={Boolean(args.iconOnly)}
-      defaultPressed={Boolean(args.defaultPressed)}
+      pressed={Boolean(args.pressed)}
+      onPressedChange={() => {}}
       disabled={Boolean(args.disabled)}
     >
       {args.iconOnly ? <PlusIcon /> : String(args.label)}
