@@ -36,6 +36,8 @@ jobs:
       - run: npm ci
       - name: 라이브러리 빌드 (예시가 import)
         run: npm run build:lib
+      - name: CJS require 검증 (CommonJS 소비자)
+        run: node -e "const ui=require('@eromnet/bo-ui-kit'); const need=['Button','Meter','InputOTP','Field','Input','Checkbox','Label']; const miss=need.filter(k=>!ui[k]); if(miss.length){console.error('CJS export 누락:',miss);process.exit(1)} console.log('✓ CJS require OK —',Object.keys(ui).length,'exports')"
       - run: npx playwright install --with-deps chromium
       - name: 소비 앱 띄우고 스모크 단언
         run: |
