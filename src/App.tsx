@@ -7,6 +7,7 @@ import { inputStory } from "./stories/input.story";
 import { labelStory } from "./stories/label.story";
 import { fieldStory } from "./stories/field.story";
 import { inputOtpStory } from "./stories/input-otp.story";
+import { meterStory } from "./stories/meter.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -15,6 +16,7 @@ const STORIES: Story[] = [
   labelStory,
   fieldStory,
   inputOtpStory,
+  meterStory,
 ];
 
 export default function App() {

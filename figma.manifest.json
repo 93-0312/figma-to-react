@@ -142,6 +142,23 @@
         ]
       },
       "notes": "슬롯형 OTP(title+슬롯행+belowText). 6자리 3-3 그룹(InputOTPSeparator). IsLarge→isLarge(32px/36px). 슬롯 상태: 기본/채움(char)/active(다음 입력 위치, disabled 색 링). active 슬롯 색은 Figma `disabled`(#45556c) 토큰 → --disabled 신규 추가."
+    },
+    {
+      "name": "Meter",
+      "file": "src/components/ui/meter.tsx",
+      "story": "src/stories/meter.story.tsx",
+      "figmaNodeId": "7664:31",
+      "variants": {
+        "showLabels": [
+          false,
+          true
+        ],
+        "showSecondaryLabel": [
+          false,
+          true
+        ]
+      },
+      "notes": "수치 표시 막대(role=meter+aria-value*). 라벨행(label·valueLabel) + 8px 트랙(bg-input)+인디케이터(bg-primary, width=value%). value/min/max prop, 채움% 자동. .MeterBlock(7664:32)은 내부 빌딩블록이라 미추출."
     }
   ]
 }

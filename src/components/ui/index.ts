@@ -10,3 +10,5 @@ export { Field } from "./field";
 export type { FieldProps } from "./field";
 export { InputOTP, InputOTPSlot, InputOTPSeparator, slotVariants } from "./input-otp";
 export type { InputOTPProps, InputOTPSlotProps } from "./input-otp";
+export { Meter } from "./meter";
+export type { MeterProps } from "./meter";
