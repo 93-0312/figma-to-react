@@ -9,6 +9,7 @@ export const inputStory: Story = {
   name: "Input",
   docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7745-699",
   controls: [
+    { type: "text", name: "value", label: "value", default: "" },
     { type: "select", name: "inputSize", label: "size", options: SIZES, default: "md" },
     { type: "text", name: "placeholder", label: "placeholder", default: "Label" },
     { type: "boolean", name: "invalid", label: "invalid (error)", default: false },
@@ -17,7 +18,7 @@ export const inputStory: Story = {
     { type: "text", name: "prefix", label: "prefix", default: "" },
     { type: "text", name: "suffix", label: "suffix", default: "" },
   ],
-  render: (args) => (
+  render: (args, setArg) => (
     <div className="w-[260px]">
       <Input
         inputSize={args.inputSize as InputProps["inputSize"]}
@@ -27,6 +28,8 @@ export const inputStory: Story = {
         leftIcon={args.leftIcon ? <PlusIcon /> : undefined}
         prefix={args.prefix ? String(args.prefix) : undefined}
         suffix={args.suffix ? String(args.suffix) : undefined}
+        value={String(args.value)}
+        onChange={(e) => setArg("value", e.target.value)}
       />
     </div>
   ),

@@ -16,12 +16,13 @@ export const selectStory: Story = {
   name: "Select",
   docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7751-1561",
   controls: [
+    { type: "select", name: "value", label: "value", options: OPTIONS.map((o) => o.value), default: "banana" },
     { type: "select", name: "inputSize", label: "size", options: SIZES, default: "md" },
     { type: "text", name: "placeholder", label: "placeholder", default: "Select a fruit…" },
     { type: "boolean", name: "invalid", label: "invalid (error)", default: false },
     { type: "boolean", name: "disabled", label: "disabled", default: false },
   ],
-  render: (args) => (
+  render: (args, setArg) => (
     <div className="w-[260px]">
       <Select
         options={OPTIONS}
@@ -29,7 +30,8 @@ export const selectStory: Story = {
         placeholder={String(args.placeholder)}
         invalid={Boolean(args.invalid)}
         disabled={Boolean(args.disabled)}
-        defaultValue="banana"
+        value={String(args.value)}
+        onValueChange={(v) => setArg("value", v)}
       />
     </div>
   ),

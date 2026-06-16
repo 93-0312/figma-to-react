@@ -15,27 +15,50 @@ export const toggleGroupStory: Story = {
   docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=5686-270",
   controls: [
     { type: "select", name: "type", label: "type", options: ["single", "multiple"], default: "single" },
+    { type: "text", name: "value", label: "value (콤마구분)", default: "Left" },
     { type: "select", name: "variant", label: "variant", options: VARIANTS, default: "outline" },
     { type: "select", name: "size", label: "size", options: SIZES, default: "md" },
     { type: "select", name: "orientation", label: "orientation", options: ["horizontal", "vertical"], default: "horizontal" },
   ],
-  render: (args) => (
-    <ToggleGroup
-      // key 로 type 변경 시 내부 상태 초기화
-      key={String(args.type)}
-      type={args.type as "single"}
-      variant={args.variant as ToggleGroupProps["variant"]}
-      size={args.size as ToggleGroupProps["size"]}
-      orientation={args.orientation as "horizontal" | "vertical"}
-      defaultValue={args.type === "multiple" ? (["Left"] as never) : ("Left" as never)}
-    >
-      {ITEMS.map((v) => (
-        <ToggleGroupItem key={v} value={v}>
-          {v}
-        </ToggleGroupItem>
-      ))}
-    </ToggleGroup>
-  ),
+  render: (args, setArg) => {
+    const type = args.type as "single" | "multiple";
+    const vals = String(args.value)
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const shared = {
+      variant: args.variant as ToggleGroupProps["variant"],
+      size: args.size as ToggleGroupProps["size"],
+      orientation: args.orientation as "horizontal" | "vertical",
+    };
+    const items = ITEMS.map((v) => (
+      <ToggleGroupItem key={v} value={v}>
+        {v}
+      </ToggleGroupItem>
+    ));
+    // single 은 string, multiple 은 string[] — 컨트롤엔 콤마구분 문자열로 보관해 양방향 동기화.
+    return type === "multiple" ? (
+      <ToggleGroup
+        key="multiple"
+        type="multiple"
+        value={vals}
+        onValueChange={(v) => setArg("value", v.join(","))}
+        {...shared}
+      >
+        {items}
+      </ToggleGroup>
+    ) : (
+      <ToggleGroup
+        key="single"
+        type="single"
+        value={vals[0] ?? ""}
+        onValueChange={(v) => setArg("value", v)}
+        {...shared}
+      >
+        {items}
+      </ToggleGroup>
+    );
+  },
   gallery: <ToggleGroupGallery />,
 };
 
