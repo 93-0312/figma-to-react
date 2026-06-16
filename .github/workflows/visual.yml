@@ -30,10 +30,11 @@ concurrency:
 
 jobs:
   visual:
-    # figma-sync/* PR 은 figma-sync 워크플로가 dispatch(-f pr=N)로 직접 검사하므로,
-    # 같은 PR 의 pull_request 트리거 실행은 건너뛴다(중복 + action_required 노이즈 방지).
-    # 사람이 연 일반 PR(pull_request)은 그대로 실행한다.
-    if: ${{ github.event_name != 'pull_request' || !startsWith(github.head_ref, 'figma-sync/') }}
+    # 봇(github-actions)이 GITHUB_TOKEN 으로 연 자동 sync PR 은 pull_request 이벤트를 발생시키지
+    # 않고 figma-sync 워크플로가 dispatch(-f pr=N)로 검사한다. 그 외 사람이 연 모든 PR(브랜치명
+    # 무관 — figma-sync/* 수동 PR 포함)은 pull_request 로 visual 게이트 + 증거 코멘트를 실행한다.
+    # (만약 봇 PR 이 pull_request 를 발생시키더라도 작성자 검사로 dispatch 와 중복 실행되지 않게 건너뛴다.)
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.user.login != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
