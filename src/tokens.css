@@ -1,0 +1,48 @@
+/**
+ * 디자인 토큰 (단일 소스) — "BO UI Kit" (Figma) 파운데이션에서 추출.
+ * 색상은 Tailwind 불투명도 유틸리티 지원을 위해 RGB 채널(공백 구분)로 저장한다.
+ *
+ * 이 파일은 앱(src/index.css 가 @import)과 npm 라이브러리(dist/styles.css 빌드)가
+ * **함께** 사용한다. 토큰을 바꿀 땐 여기만 고치면 양쪽에 반영된다.
+ */
+:root {
+  --background: 248 250 252; /* #f8fafc */
+  --foreground: 29 41 61; /* #1d293d */
+  --card: 255 255 255; /* #ffffff */
+  --card-foreground: 2 6 24; /* #020618 */
+  --primary: 43 127 255; /* #2B7FFF */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --secondary: 226 232 240; /* #e2e8f0 */
+  --secondary-foreground: 49 65 88; /* #314158 */
+  --destructive: 239 68 68; /* #ef4444 — Destructive 버튼 채움 + 폼 에러(Input border, Field error text) */
+  --destructive-foreground: 185 28 28; /* #b91c1c */
+  --success-foreground: 4 120 87; /* #047857 */
+  --muted-foreground: 15 23 43; /* #0f172b @ 50% → muted-foreground */
+  --border: 15 23 43; /* #0f172b @ 8% (border 토큰에서 알파 적용) */
+  --ring: 43 127 255; /* #2B7FFF — primary 와 동일 */
+  --disabled: 69 85 108; /* #45556c — Figma `disabled` 토큰. OTP active 슬롯 테두리/링 등 */
+
+  --radius: 10px;
+}
+
+/**
+ * 다크 테마 — Figma "Dark Mode Preview" 기준 근사값(검증 전 TODO).
+ * 정확한 다크 토큰이 필요하면 해당 프레임에서 추가 추출 가능.
+ */
+.dark {
+  --background: 2 6 24;
+  --foreground: 248 250 252;
+  --card: 15 23 43;
+  --card-foreground: 248 250 252;
+  --primary: 43 127 255;
+  --primary-foreground: 255 255 255;
+  --secondary: 30 41 59;
+  --secondary-foreground: 248 250 252;
+  --destructive: 239 68 68;
+  --destructive-foreground: 248 113 113;
+  --success-foreground: 52 211 153; /* #34d399 (dark 근사) */
+  --muted-foreground: 148 163 184;
+  --border: 248 250 252;
+  --ring: 43 127 255;
+  --disabled: 69 85 108;
+}

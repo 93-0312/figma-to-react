@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Preflight(전역 리셋)를 끄는 대신, Tailwind 유틸리티가 올바로 보이는 데 필요한
+ * 최소한의 base 만 둔다. 특히 `border` 유틸은 border-style 이 solid 여야 보이고,
+ * box-sizing: border-box 가 전제다. 소비자 페이지 영향은 이 정도로 최소화.
+ */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
+  }
+}
