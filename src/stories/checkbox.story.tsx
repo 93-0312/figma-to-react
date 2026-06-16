@@ -11,13 +11,13 @@ export const checkboxStory: Story = {
     { type: "boolean", name: "disabled", label: "disabled", default: false },
     { type: "boolean", name: "mobile", label: "mobile (18px)", default: false },
   ],
-  render: (args) => (
+  render: (args, setArg) => (
     <Checkbox
       checked={Boolean(args.checked)}
       indeterminate={Boolean(args.indeterminate)}
       disabled={Boolean(args.disabled)}
       mobile={Boolean(args.mobile)}
-      onCheckedChange={() => {}}
+      onCheckedChange={(v) => setArg("checked", v)}
       aria-label="checkbox preview"
     />
   ),
