@@ -28,6 +28,7 @@ export default function App() {
 }
 ```
 
+- **ESM·CommonJS 모두 지원**합니다. `import` 뿐 아니라 `const { Button } = require("@eromnet/bo-ui-kit")` 도 동작합니다(dual 빌드: `index.js`/`index.cjs`).
 - **Tailwind 없이도 동작**합니다. `styles.css` 한 줄이면 토큰과 컴포넌트가 쓰는 유틸리티가 모두 포함됩니다.
 - **다크 모드**: 상위 요소에 `class="dark"` 를 주면 다크 토큰으로 전환됩니다.
 - **테마 커스터마이징**: `styles.css` 의 CSS 변수(`--primary` 등)를 여러분의 CSS 에서 덮어쓰면 색을 바꿀 수 있습니다.
