@@ -16,7 +16,8 @@ export const selectStory: Story = {
   name: "Select",
   docs: "https://www.figma.com/design/LFA5EyNbUdPvi8Rbuf2tJC/BO-UI-Kit?node-id=7751-1561",
   controls: [
-    { type: "select", name: "value", label: "value", options: OPTIONS.map((o) => o.value), default: "banana" },
+    // disabled 옵션(durian)은 컴포넌트에서 선택 불가 → value 컨트롤에서도 제외해 싱크 유지
+    { type: "select", name: "value", label: "value", options: OPTIONS.filter((o) => !o.disabled).map((o) => o.value), default: "banana" },
     { type: "select", name: "inputSize", label: "size", options: SIZES, default: "md" },
     { type: "text", name: "placeholder", label: "placeholder", default: "Select a fruit…" },
     { type: "boolean", name: "invalid", label: "invalid (error)", default: false },
