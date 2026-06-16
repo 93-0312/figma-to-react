@@ -1,7 +1,7 @@
-import { Input } from "../components/ui";
+import { Input, Select } from "../components/ui";
 import type { Args, Control } from "./types";
 
-/** select/토글에 쓰는 포커스 링 — Input 컴포넌트(Figma Focus)와 동일한 회색 3px 글로우 */
+/** 토글 스위치에 쓰는 포커스 링 — Input 컴포넌트(Figma Focus)와 동일한 회색 3px 글로우 */
 const focusRing =
   "outline-none focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07]";
 
@@ -23,20 +23,11 @@ export function Controls({ controls, args, onChange }: ControlsProps) {
           <span className="text-xs font-medium text-foreground">{c.label}</span>
 
           {c.type === "select" && (
-            <select
+            <Select
               value={String(args[c.name])}
-              onChange={(e) => onChange(c.name, e.target.value)}
-              className={
-                "h-8 rounded-radius border border-input bg-card px-2 text-sm text-foreground transition-colors focus-visible:border-disabled/30 " +
-                focusRing
-              }
-            >
-              {c.options.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
+              onValueChange={(v) => onChange(c.name, v)}
+              options={c.options.map((o) => ({ value: o, label: o }))}
+            />
           )}
 
           {c.type === "boolean" && (

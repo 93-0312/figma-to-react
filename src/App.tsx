@@ -8,6 +8,9 @@ import { labelStory } from "./stories/label.story";
 import { fieldStory } from "./stories/field.story";
 import { inputOtpStory } from "./stories/input-otp.story";
 import { meterStory } from "./stories/meter.story";
+import { toggleStory } from "./stories/toggle.story";
+import { toggleGroupStory } from "./stories/toggle-group.story";
+import { selectStory } from "./stories/select.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -17,6 +20,9 @@ const STORIES: Story[] = [
   fieldStory,
   inputOtpStory,
   meterStory,
+  toggleStory,
+  toggleGroupStory,
+  selectStory,
 ];
 
 export default function App() {

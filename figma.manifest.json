@@ -159,6 +159,75 @@
         ]
       },
       "notes": "수치 표시 막대(role=meter+aria-value*). 라벨행(label·valueLabel) + 8px 트랙(bg-input)+인디케이터(bg-primary, width=value%). value/min/max prop, 채움% 자동. .MeterBlock(7664:32)은 내부 빌딩블록이라 미추출."
+    },
+    {
+      "name": "Toggle",
+      "file": "src/components/ui/toggle.tsx",
+      "story": "src/stories/toggle.story.tsx",
+      "figmaNodeId": "5685:204",
+      "variants": {
+        "state": [
+          "Default",
+          "Active",
+          "Hover",
+          "Disabled"
+        ],
+        "size": [
+          "Small",
+          "Default",
+          "Large"
+        ],
+        "iconOnly": [
+          false,
+          true
+        ],
+        "isOutline": [
+          false,
+          true
+        ]
+      },
+      "notes": "2-state 버튼. Figma State(상호작용+의미 혼합)을 pressed(prop, =Active/on)·:hover·disabled·기본으로 분해 매핑. on=bg muted/64, hover(off)=card/50, disabled=opacity64. IsOutline→variant outline(border+card+shadow). 텍스트=card-foreground."
+    },
+    {
+      "name": "Toggle Group",
+      "file": "src/components/ui/toggle-group.tsx",
+      "story": "src/stories/toggle-group.story.tsx",
+      "figmaNodeId": "5686:270",
+      "variants": {
+        "outline": [
+          false,
+          true
+        ],
+        "orientation": [
+          "Horizontal",
+          "Vertical"
+        ],
+        "size": [
+          "Small",
+          "Default",
+          "Large"
+        ]
+      },
+      "notes": "Toggle 들에 공유 상태 제공(세그먼티드). type single/multiple. 아이템 테두리/모서리 이어붙임(그룹 rounded+overflow-hidden, 인접 -ml/-mt px). toggleVariants 재사용."
+    },
+    {
+      "name": "Select",
+      "file": "src/components/ui/select.tsx",
+      "story": "src/stories/select.story.tsx",
+      "figmaNodeId": "7751:1561",
+      "variants": {
+        "selectItem": {
+          "selected": [
+            false,
+            true
+          ],
+          "hover": [
+            false,
+            true
+          ]
+        }
+      },
+      "notes": "드롭다운 선택. 패널=popover bg+border+rounded-xl+shadow-popover+gap-px(node 7751:1561). 항목 .SelectItem(7751:1704): h28 rounded-lg text-xs medium accent-foreground, 선택=체크+bg primary/4%, hover=bg accent(#f8fafc). 트리거는 Figma에 없어 Input 관례(회색 3px 포커스)로 디자인. 미구현: ComboBox(검색형)/MultiSelect/fadeOnBot/per-item 아이콘 데모. 신규 토큰: popover/accent/accent-foreground + shadow-popover."
     }
   ]
 }

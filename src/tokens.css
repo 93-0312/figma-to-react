@@ -14,6 +14,10 @@
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
+  --accent: 248 250 252; /* #f8fafc — Select/메뉴 항목 hover 배경 */
+  --accent-foreground: 43 127 255; /* #2b7fff — Select 항목 텍스트(primary 와 동일) */
+  --popover: 255 255 255; /* #ffffff — Select 드롭다운 패널 배경 */
+  --popover-foreground: 2 6 24; /* #020618 */
   --destructive: 239 68 68; /* #ef4444 — Destructive 버튼 채움 + 폼 에러(Input border, Field error text) */
   --destructive-foreground: 185 28 28; /* #b91c1c */
   --success-foreground: 4 120 87; /* #047857 */
@@ -38,6 +42,10 @@
   --primary-foreground: 255 255 255;
   --secondary: 30 41 59;
   --secondary-foreground: 248 250 252;
+  --accent: 30 41 59;
+  --accent-foreground: 43 127 255;
+  --popover: 15 23 43;
+  --popover-foreground: 248 250 252;
   --destructive: 239 68 68;
   --destructive-foreground: 248 113 113;
   --success-foreground: 52 211 153; /* #34d399 (dark 근사) */

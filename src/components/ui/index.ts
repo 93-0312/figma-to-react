@@ -12,3 +12,9 @@ export { InputOTP, InputOTPSlot, InputOTPSeparator, slotVariants } from "./input
 export type { InputOTPProps, InputOTPSlotProps } from "./input-otp";
 export { Meter } from "./meter";
 export type { MeterProps } from "./meter";
+export { Toggle, toggleVariants } from "./toggle";
+export type { ToggleProps } from "./toggle";
+export { ToggleGroup, ToggleGroupItem } from "./toggle-group";
+export type { ToggleGroupProps, ToggleGroupItemProps } from "./toggle-group";
+export { Select, selectTriggerVariants } from "./select";
+export type { SelectProps, SelectOption } from "./select";
