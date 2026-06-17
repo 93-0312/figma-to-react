@@ -18,6 +18,10 @@ on:
     # (즉시 테스트는 수동 dispatch)
     - cron: "7,22,37,52 0-14,19-23 * * *"
   workflow_dispatch: {} # 수동 실행 버튼
+  # Figma 웹훅(FILE_UPDATE) → Cloudflare Worker 중계자(relay/) → 이 이벤트로 도착.
+  # 푸시 방식이라도 동일한 노드 핑거프린트 게이트를 거쳐 autosave 노이즈를 거른다.
+  repository_dispatch:
+    types: [figma-changed]
 
 permissions:
   issues: write

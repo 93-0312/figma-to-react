@@ -1,0 +1,20 @@
+# Cloudflare Worker 설정 — Figma 웹훅 중계자.
+#
+# 배포:
+#   cd relay
+#   npm i -g wrangler        # 또는 npx 사용
+#   wrangler login
+#   wrangler deploy          # → https://figma-webhook-relay.<계정>.workers.dev
+#
+# 시크릿(코드/깃에 넣지 말 것 — 아래 명령으로 Cloudflare 에 저장):
+#   wrangler secret put GITHUB_TOKEN     # repo 스코프 PAT
+#   wrangler secret put FIGMA_PASSCODE   # 등록 스크립트와 동일한 랜덤 문자열
+name = "figma-webhook-relay"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 비밀이 아닌 공개 설정값(레포에 커밋돼도 무방).
+[vars]
+GITHUB_REPO = "93-0312/figma-to-react"
+FIGMA_FILE_KEY = "LFA5EyNbUdPvi8Rbuf2tJC"
+DISPATCH_TYPE = "figma-changed"
