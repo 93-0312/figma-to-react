@@ -288,6 +288,40 @@
         ]
       },
       "notes": "로딩 인디케이터. Figma 회전 프레임(7일 만료 이미지)을 인라인 SVG 링+animate-spin 으로 대체(색 currentColor 상속). size 16/24/32. role=status."
+    },
+    {
+      "name": "Textarea",
+      "file": "src/components/ui/textarea.tsx",
+      "story": "src/stories/textarea.story.tsx",
+      "figmaNodeId": "7751:1067",
+      "variants": {
+        "focus": [false, true],
+        "size": ["Small", "Default", "Large"],
+        "fill": [false, true],
+        "disabled": [false, true]
+      },
+      "notes": "여러 줄 입력. Input 의 토큰/포커스 관례 재사용(회색 3px 링, border-input→focus disabled/30, invalid→destructive). bg=background, rounded-radius, shadow-xs, resize-y. size sm/md/lg(최소높이). 코너 그립은 네이티브 resize 로 대체."
+    },
+    {
+      "name": "Avatar",
+      "file": "src/components/ui/avatar.tsx",
+      "story": "src/stories/avatar.story.tsx",
+      "figmaNodeId": "1696:153",
+      "variants": {
+        "circular": [false, true],
+        "size": ["24", "28", "32", "36", "40", "48"]
+      },
+      "notes": "이미지+폴백(이니셜). shape circle/square, size xs~2xl(24~48). 폴백 bg=secondary(Figma muted #e2e8f0)/text=muted-foreground. ring(2px background 테두리)=그룹 분리용. 이미지 로드실패 시 폴백."
+    },
+    {
+      "name": "Avatar Group",
+      "file": "src/components/ui/avatar-group.tsx",
+      "story": "src/stories/avatar-group.story.tsx",
+      "figmaNodeId": "1696:220",
+      "variants": {
+        "size": ["24", "28", "32", "36", "40", "48"]
+      },
+      "notes": "Avatar 겹쳐 쌓기. 음수마진(-ml-3)+각 아바타 ring(background 2px)로 분리. size 자식에 주입, max 초과분은 +N 요약. Avatar 재사용."
     }
   ]
 }

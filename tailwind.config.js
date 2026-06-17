@@ -69,6 +69,7 @@ export default {
         "radius-lg": "8px",
         radius: "10px",
         "radius-xl": "12px",
+        "radius-full": "9999px",
       },
       boxShadow: {
         // tailwind-shadow/xs
