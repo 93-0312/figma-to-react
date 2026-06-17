@@ -10,8 +10,8 @@ import {
   Input,
   Checkbox,
   Label,
-} from "@eromnet/bo-ui-kit";
-import "@eromnet/bo-ui-kit/styles.css";
+} from "bo-ui-kit";
+import "bo-ui-kit/styles.css";
 
 export default function App() {
   return (
@@ -24,7 +24,7 @@ export default function App() {
         fontFamily: "Pretendard, system-ui, sans-serif",
       }}
     >
-      <h1 style={{ fontSize: 18, fontWeight: 600 }}>@eromnet/bo-ui-kit · consumer</h1>
+      <h1 style={{ fontSize: 18, fontWeight: 600 }}>bo-ui-kit · consumer</h1>
 
       <div data-test="buttons" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <Button>Default</Button>

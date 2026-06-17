@@ -1,0 +1,11 @@
+Copyright (c) 2026 eromnet
+
+All rights reserved. (Proprietary / UNLICENSED)
+
+이 소프트웨어와 관련 파일(이하 "소프트웨어")은 eromnet 의 독점 자산입니다.
+별도의 서면 허가 없이 사용, 복제, 수정, 병합, 게시, 배포, 재라이선스, 판매할 수 없습니다.
+
+This software is proprietary to eromnet. No license to use, copy, modify, or
+distribute is granted without prior written permission of the copyright holder.
+
+(공개 오픈소스로 전환하려면 package.json 의 "license" 와 이 파일을 MIT 등으로 교체하세요.)

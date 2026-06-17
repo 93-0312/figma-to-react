@@ -15,8 +15,8 @@ import { existsSync, lstatSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
-const pkgDir = fileURLToPath(new URL("node_modules/@eromnet/bo-ui-kit/", import.meta.url));
-const cssFile = fileURLToPath(new URL("node_modules/@eromnet/bo-ui-kit/dist/styles.css", import.meta.url));
+const pkgDir = fileURLToPath(new URL("node_modules/bo-ui-kit/", import.meta.url));
+const cssFile = fileURLToPath(new URL("node_modules/bo-ui-kit/dist/styles.css", import.meta.url));
 const NEED = ["Button", "Checkbox", "Input", "Label", "Field", "InputOTP", "Meter"];
 
 let failed = false;
@@ -38,19 +38,19 @@ if (!existsSync(pkgDir)) {
 }
 
 try {
-  const esm = await import("@eromnet/bo-ui-kit");
+  const esm = await import("bo-ui-kit");
   const miss = NEED.filter((k) => !esm[k]);
   miss.length ? bad(`ESM export 누락: ${miss}`) : ok(`ESM import (${Object.keys(esm).length} exports)`);
 } catch (e) { bad(`ESM import: ${e.message}`); }
 
 try {
-  const cjs = require("@eromnet/bo-ui-kit");
+  const cjs = require("bo-ui-kit");
   const miss = NEED.filter((k) => !cjs[k]);
   miss.length ? bad(`CJS export 누락: ${miss}`) : ok(`CJS require (${Object.keys(cjs).length} exports)`);
 } catch (e) { bad(`CJS require: ${e.message}`); }
 
 let cssOk = false;
-try { cssOk = existsSync(require.resolve("@eromnet/bo-ui-kit/styles.css")); } catch { /* exports 미지원 폴백 */ }
+try { cssOk = existsSync(require.resolve("bo-ui-kit/styles.css")); } catch { /* exports 미지원 폴백 */ }
 if (!cssOk) cssOk = existsSync(cssFile);
 cssOk ? ok("styles.css 해석 + 존재") : bad("styles.css 없음");
 
