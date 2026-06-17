@@ -5,7 +5,8 @@ import { cn } from "../../lib/utils";
 /**
  * Button — Figma "BO UI Kit" Button 컴포넌트(node 1692:74)를 옮긴 React 컴포넌트.
  *
- * 7가지 타입 × 5가지 사이즈 매트릭스를 그대로 재현하며, 모든 색상/간격/타이포는
+ * 7가지 타입(Default/Outline/Secondary/Destructive/DestructiveTinted/Link/Ghost) × 5가지 사이즈
+ * 매트릭스를 그대로 재현하며, 모든 색상/간격/타이포는
  * Tailwind config(= Figma 디자인 토큰)에 매핑돼 하드코딩을 최소화했다.
  * 좌/우 아이콘 슬롯(icon, rightIcon)을 지원한다.
  *
@@ -25,8 +26,8 @@ const buttonVariants = cva(
           "border-transparent bg-secondary text-foreground hover:bg-secondary/80",
         destructive:
           "border-border bg-destructive text-primary-foreground shadow-btn hover:bg-destructive/90",
-        "destructive-outline":
-          "border-border bg-background text-destructive-foreground shadow-xs hover:bg-destructive/10",
+        "destructive-tinted":
+          "border-transparent bg-destructive/[0.08] text-destructive-foreground hover:bg-destructive/[0.12]",
         ghost:
           "border-transparent bg-transparent text-foreground hover:bg-secondary",
         link: "border-transparent bg-transparent text-foreground underline-offset-4 hover:underline",

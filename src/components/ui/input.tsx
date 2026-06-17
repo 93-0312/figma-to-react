@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
  * 구조: 테두리 컨테이너 + [leftIcon][prefix][native input][suffix][rightIcon].
  * 상태(Figma Type 변형):
  *  - Default : border input-border
- *  - Error   : border destructive(#ef4444 빨강)   → `invalid` prop
+ *  - Error   : border destructive(#fb2c36 빨강)   → `invalid` prop
  *  - Disabled: 컨테이너 opacity 64%               → input `disabled`
  *  - Focus   : 테두리가 disabled(#45556c@30%)로 진해지고 3px 회색 글로우 링
  *              (Figma Focus 노드 7745:700 Stroke: 3px disabled@30% × opacity23% ≈ @7%, offset 없음).
