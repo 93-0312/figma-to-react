@@ -30,6 +30,10 @@ import { alertStory } from "./stories/alert.story";
 import { toastStory } from "./stories/toast.story";
 import { tooltipStory } from "./stories/tooltip.story";
 import { scrollAreaStory } from "./stories/scroll-area.story";
+import { dialogStory } from "./stories/dialog.story";
+import { alertDialogStory } from "./stories/alert-dialog.story";
+import { sheetStory } from "./stories/sheet.story";
+import { drawerStory } from "./stories/drawer.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -61,6 +65,10 @@ const STORIES: Story[] = [
   toastStory,
   tooltipStory,
   scrollAreaStory,
+  dialogStory,
+  alertDialogStory,
+  sheetStory,
+  drawerStory,
 ];
 
 export default function App() {
