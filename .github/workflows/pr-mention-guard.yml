@@ -1,0 +1,35 @@
+name: PR mention guard
+
+# PR 본문의 "백틱 없는 @멘션"을 자동으로 백틱 처리해 GitHub 알림 메일을 무력화한다.
+# (과거 사고: PR 본문의 `@eromnet` → GitHub 사용자 eromnet = it@eromnet.com 팀 별칭에게 메일)
+#
+# 한계(정직): 멘션 알림은 PR/편집이 "생성되는 순간" 발송되므로 이 사후 스텝은 첫 메일을
+# 완전히는 못 막는다. 첫 발송의 근본 차단은 패키지 unscoped 전환 + CLAUDE.md 규칙이 담당하고,
+# 이 워크플로는 잔여 멘션이 PR 에 남아 재렌더·머지 히스토리를 오염시키는 걸 막는 백스톱이다.
+#
+# (figma-sync 가 봇으로 만든 PR 은 pull_request 를 안 띄우므로 figma-sync.yml 안에서 직접 정리한다.)
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+concurrency:
+  group: mention-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: PR 본문 @멘션 무력화
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/sanitize-pr-body.mjs "${{ github.event.pull_request.number }}"
