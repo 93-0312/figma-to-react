@@ -26,6 +26,10 @@ import { tabsStory } from "./stories/tabs.story";
 import { accordionStory } from "./stories/accordion.story";
 import { collapsibleStory } from "./stories/collapsible.story";
 import { breadcrumbStory } from "./stories/breadcrumb.story";
+import { alertStory } from "./stories/alert.story";
+import { toastStory } from "./stories/toast.story";
+import { tooltipStory } from "./stories/tooltip.story";
+import { scrollAreaStory } from "./stories/scroll-area.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -53,6 +57,10 @@ const STORIES: Story[] = [
   accordionStory,
   collapsibleStory,
   breadcrumbStory,
+  alertStory,
+  toastStory,
+  tooltipStory,
+  scrollAreaStory,
 ];
 
 export default function App() {
