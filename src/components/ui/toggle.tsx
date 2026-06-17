@@ -16,17 +16,17 @@ import { cn } from "../../lib/utils";
  *  - off              : 투명 (outline 변형은 card+border)
  *  - off + hover      : card/50 (아주 옅은 오버레이)
  *  - on (pressed)     : secondary/64 회색 채움 (Figma `muted`#e2e8f0 = 프로젝트 secondary 토큰)
- *  - disabled         : opacity 64%
+ *  - disabled         : opacity 50%
  *
  * 변형: `variant` Default(테두리 없음) / Outline(border+card+shadow), `size` sm/md/lg(28/32/36),
- *       `iconOnly`(정사각 패딩). 텍스트/아이콘 색은 card-foreground.
+ *       `iconOnly`(정사각 패딩). 텍스트/아이콘 색은 foreground(#1d293d).
  *
  * @see https://coss.com/ui/docs/components/toggle
  */
 const toggleVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-1 rounded-radius-lg text-sm text-card-foreground transition-colors outline-none " +
+  "inline-flex shrink-0 items-center justify-center gap-1 rounded-radius-lg text-sm text-foreground transition-colors outline-none " +
     "focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07] " +
-    "disabled:pointer-events-none disabled:opacity-[0.64] " +
+    "disabled:pointer-events-none disabled:opacity-50 " +
     "data-[state=off]:hover:bg-card/50 data-[state=on]:bg-secondary/[0.64] " +
     "[&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -37,9 +37,9 @@ const toggleVariants = cva(
         outline: "border border-border bg-card shadow-xs",
       },
       size: {
-        sm: "h-7 px-2",
+        sm: "h-7 px-1.5",
         md: "h-8 px-2",
-        lg: "h-9 px-2",
+        lg: "h-9 px-2.5",
       },
       iconOnly: {
         true: "px-0",
