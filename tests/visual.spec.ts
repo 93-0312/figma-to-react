@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
  * 각 컴포넌트 스토리의 플레이그라운드(미리보기 + 컨트롤 + 갤러리)를 스냅샷 비교.
  * baseline 갱신: `npm run test:visual:update`
  */
-const STORIES = ["Button", "Checkbox", "Input", "Label", "Field", "Input OTP", "Meter", "Toggle", "Toggle Group", "Select", "Switch", "Separator", "Skeleton", "Spinner"] as const;
+const STORIES = ["Button", "Checkbox", "Input", "Label", "Field", "Input OTP", "Meter", "Toggle", "Toggle Group", "Select", "Switch", "Separator", "Skeleton", "Spinner", "Textarea", "Avatar", "Avatar Group"] as const;
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");

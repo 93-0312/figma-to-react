@@ -15,6 +15,9 @@ import { switchStory } from "./stories/switch.story";
 import { separatorStory } from "./stories/separator.story";
 import { skeletonStory } from "./stories/skeleton.story";
 import { spinnerStory } from "./stories/spinner.story";
+import { textareaStory } from "./stories/textarea.story";
+import { avatarStory } from "./stories/avatar.story";
+import { avatarGroupStory } from "./stories/avatar-group.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -31,6 +34,9 @@ const STORIES: Story[] = [
   separatorStory,
   skeletonStory,
   spinnerStory,
+  textareaStory,
+  avatarStory,
+  avatarGroupStory,
 ];
 
 export default function App() {
