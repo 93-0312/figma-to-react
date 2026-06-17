@@ -232,6 +232,62 @@
         }
       },
       "notes": "드롭다운 선택. 패널=popover bg+border+rounded-xl+shadow-popover+gap-px(node 7751:1561). 항목 .SelectItem(7751:1704): h28 rounded-lg text-xs medium accent-foreground, 선택=체크+bg primary/4%, hover=bg accent(#f8fafc). 트리거는 Figma에 없어 Input 관례(회색 3px 포커스)로 디자인. 미구현: ComboBox(검색형)/MultiSelect/fadeOnBot/per-item 아이콘 데모. 신규 토큰: popover/accent/accent-foreground + shadow-popover."
+    },
+    {
+      "name": "Switch",
+      "file": "src/components/ui/switch.tsx",
+      "story": "src/stories/switch.story.tsx",
+      "figmaNodeId": "7715:1962",
+      "variants": {
+        "size": [
+          "Default",
+          "Large"
+        ],
+        "checked": [
+          false,
+          true
+        ],
+        "disabled": [
+          false,
+          true
+        ]
+      },
+      "notes": "on/off 토글. 트랙 off=input(8%)/on=primary+안쪽그림자, thumb=card+shadow-xs. size md(18×30)/lg(24×44). 제어/비제어(checked/onCheckedChange), role=switch."
+    },
+    {
+      "name": "Separator",
+      "file": "src/components/ui/separator.tsx",
+      "story": "src/stories/separator.story.tsx",
+      "figmaNodeId": "3605:3065",
+      "variants": {
+        "orientation": [
+          "Horizontal",
+          "Vertical"
+        ]
+      },
+      "notes": "1px 구분선(border 토큰 8%). horizontal=h-px w-full / vertical=w-px h-full. decorative=false 시 role=separator. Figma Spacing 변형은 여백(className margin)으로 처리."
+    },
+    {
+      "name": "Skeleton",
+      "file": "src/components/ui/skeleton.tsx",
+      "story": "src/stories/skeleton.story.tsx",
+      "figmaNodeId": "7669:1885",
+      "variants": {},
+      "notes": "로딩 플레이스홀더 프리미티브(animate-pulse + bg-secondary). Figma 노드는 아바타+텍스트+버튼 사용 예시라 단위 블록으로 추출(크기/모양은 className). bg=Figma muted #e2e8f0=프로젝트 secondary 토큰."
+    },
+    {
+      "name": "Spinner",
+      "file": "src/components/ui/spinner.tsx",
+      "story": "src/stories/spinner.story.tsx",
+      "figmaNodeId": "7707:393",
+      "variants": {
+        "size": [
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      "notes": "로딩 인디케이터. Figma 회전 프레임(7일 만료 이미지)을 인라인 SVG 링+animate-spin 으로 대체(색 currentColor 상속). size 16/24/32. role=status."
     }
   ]
 }
