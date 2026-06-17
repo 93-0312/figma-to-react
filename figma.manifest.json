@@ -2,8 +2,8 @@
   "$schema": "./figma.manifest.schema.json",
   "fileKey": "LFA5EyNbUdPvi8Rbuf2tJC",
   "fileName": "BO UI Kit",
-  "lastSyncedVersion": "2365538000547455055",
-  "lastSyncedAt": "2026-06-16T05:04:55Z",
+  "lastSyncedVersion": "2365618359402403077",
+  "lastSyncedAt": "2026-06-16T09:11:50Z",
   "tokens": {
     "css": "src/index.css",
     "tailwind": "tailwind.config.js",
@@ -172,6 +172,10 @@
           "Hover",
           "Disabled"
         ],
+        "isHovered": [
+          false,
+          true
+        ],
         "size": [
           "Small",
           "Default",
@@ -186,7 +190,7 @@
           true
         ]
       },
-      "notes": "2-state 버튼. Figma State(상호작용+의미 혼합)을 pressed(prop, =Active/on)·:hover·disabled·기본으로 분해 매핑. on=bg muted/64, hover(off)=card/50, disabled=opacity64. IsOutline→variant outline(border+card+shadow). 텍스트=card-foreground."
+      "notes": "2-state 버튼. (2026-06-16) hover 가 State 한 축에서 별도 축 IsHovered(T/F)로 분리됨 → 우리의 직교 :hover 매핑과 1:1(코드 동작 불변, 스타일 값도 그대로). 매핑: pressed(=Active/on)·:hover(=IsHovered)·disabled·기본. on=secondary/64(Figma muted #e2e8f0), on+hover 동일(호버로 안 바뀜), hover(off)=card/50, disabled=opacity64(pointer-events-none이라 hover 무관). IsOutline→variant outline(border+card+shadow). 텍스트=card-foreground. (State 에 잔존하는 Hover 값 = Default+IsHovered=True 표현.)"
     },
     {
       "name": "Toggle Group",

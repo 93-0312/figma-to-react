@@ -5,18 +5,21 @@ import { cn } from "../../lib/utils";
 /**
  * Toggle — Figma "BO UI Kit" Toggle 컴포넌트(node 5685:204)를 옮긴 2-state 버튼.
  *
- * Figma 의 `State`(Default/Active/Hover/Disabled) 는 상호작용 의사상태(hover/disabled)와
- * on/off 의미상태(Active)가 섞여 있어 그대로 prop 으로 평탄화하지 않고 아래처럼 매핑한다:
- *  - `pressed`(boolean) → Figma `State=Active`(눌림/켜짐). aria-pressed + data-state=on.
- *  - `:hover`           → Figma `State=Hover`  (CSS, off 일 때만)
- *  - `disabled`         → Figma `State=Disabled`(CSS)
- *  - 기본               → Figma `State=Default`
+ * Figma 변형(2026-06-16 갱신): hover 가 예전엔 `State` 한 축에 묶여 있었으나 디자이너가
+ * **별도 축 `IsHovered`(True/False)** 로 분리 → `State`(Default/Active/Disabled) × `IsHovered`.
+ * 이는 우리가 처음부터 hover 를 직교 CSS `:hover` 로 다룬 매핑과 1:1 로 맞는다(코드 동작 불변).
+ * 상호작용/의미를 평탄화하지 않고 매핑:
+ *  - `pressed`(boolean) → `State=Active`(눌림/켜짐). aria-pressed + data-state=on.
+ *  - `:hover`           → `IsHovered=True` (CSS — off 일 때만 배경 변화)
+ *  - `disabled`         → `State=Disabled`(CSS)
+ *  - 기본               → `State=Default`
  *
  * 상태 진리표(배경):
- *  - off              : 투명 (outline 변형은 card+border)
- *  - off + hover      : card/50 (아주 옅은 오버레이)
- *  - on (pressed)     : secondary/64 회색 채움 (Figma `muted`#e2e8f0 = 프로젝트 secondary 토큰)
- *  - disabled         : opacity 64%
+ *  - off                : 투명 (outline 변형은 card+border)
+ *  - off + hover        : card/50 (아주 옅은 오버레이)
+ *  - on (pressed)       : secondary/64 회색 채움 (Figma `muted`#e2e8f0 = 프로젝트 secondary 토큰)
+ *  - on + hover         : secondary/64 그대로 (Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
+ *  - disabled (+hover)  : opacity 64% (disabled 는 pointer-events-none 이라 hover 미발동)
  *
  * 변형: `variant` Default(테두리 없음) / Outline(border+card+shadow), `size` sm/md/lg(28/32/36),
  *       `iconOnly`(정사각 패딩). 텍스트/아이콘 색은 card-foreground.
