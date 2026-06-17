@@ -334,6 +334,42 @@
         "disabled": [false, true]
       },
       "notes": "상태 라벨. Fill=단색+흰텍스트 / Tinted=색@8%+색-foreground. 색 매핑: blue→info(=primary), red→destructive, orange→warning, green→success, neutral→foreground. ★ 상태색 토큰을 Figma 최신값으로 통일(destructive #ef4444→#fb2c36, success-fg #047857→#00a63e + success/warning/info/foreground 신규) → Button/Input/Field 빨강·초록도 변경됨. Figma static/secondary(dark) 변형 미구현. Chip 은 노드ID stale 로 보류."
+    },
+    {
+      "name": "Number Field",
+      "file": "src/components/ui/number-field.tsx",
+      "story": "src/stories/number-field.story.tsx",
+      "figmaNodeId": "7781:5501",
+      "variants": {
+        "size": ["Small", "Default", "Large"],
+        "isDisabled": [false, true]
+      },
+      "notes": "증감 버튼 숫자 입력. Input 컨테이너 토큰/포커스 재사용(border-input, 회색 3px 링). 좌(−)/우(+) 스텝퍼(ghost)+가운데 정렬 입력. size 28/32/36, min/max/step·clamp, 제어/비제어. 아이콘 인라인 SVG."
+    },
+    {
+      "name": "Radio Group",
+      "file": "src/components/ui/radio-group.tsx",
+      "story": "src/stories/radio-group.story.tsx",
+      "figmaNodeId": "7669:1454",
+      "variants": {
+        "mobile": [false, true],
+        "selected": [false, true],
+        "disabled": [false, true],
+        "cardStyle": [false, true]
+      },
+      "notes": "단일 선택. 항목=라디오 원+제목(text-base)+설명(text-xs muted). 원: 미선택 bg-background+border-input+shadow / 선택 bg-foreground+흰 점(6px). cardStyle=테두리 카드. 숨긴 네이티브 radio 로 접근성. RadioGroup(context)+RadioGroupItem."
+    },
+    {
+      "name": "Segmented Control",
+      "file": "src/components/ui/segmented-control.tsx",
+      "story": "src/stories/segmented-control.story.tsx",
+      "figmaNodeId": "9705:88227",
+      "variants": {
+        "segments": ["2", "3", "4", "5"],
+        "selected": ["1..N"],
+        "style": ["Rounded", "Regular", "Sharp"]
+      },
+      "notes": "단일 선택 세그먼트. 컨테이너 bg-background+p-0.5, 선택만 bg-card+shadow(흰 알약), 나머지 muted-foreground. style rounded(full)/regular(radius)/sharp(none). options/value/onValueChange. 다층 그림자는 shadow-xs 근사. Input Group(7857:9348)은 Input 슬롯(leftIcon/rightIcon/prefix/suffix)으로 커버되어 별도 미추출."
     }
   ]
 }
