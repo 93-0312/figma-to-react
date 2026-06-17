@@ -370,6 +370,47 @@
         "style": ["Rounded", "Regular", "Sharp"]
       },
       "notes": "단일 선택 세그먼트. 컨테이너 bg-background+p-0.5, 선택만 bg-card+shadow(흰 알약), 나머지 muted-foreground. style rounded(full)/regular(radius)/sharp(none). options/value/onValueChange. 다층 그림자는 shadow-xs 근사. Input Group(7857:9348)은 Input 슬롯(leftIcon/rightIcon/prefix/suffix)으로 커버되어 별도 미추출."
+    },
+    {
+      "name": "Tabs",
+      "file": "src/components/ui/tabs.tsx",
+      "story": "src/stories/tabs.story.tsx",
+      "figmaNodeId": "7722:82",
+      "variants": {
+        "orientation": ["Horizontal", "Vertical"],
+        "type": ["Default", "WithLine"]
+      },
+      "notes": "패널 전환. 합성: Tabs>TabsList>TabsTrigger/TabsContent. variant default(알약 — bg-secondary 트랙+선택 흰 카드+shadow)/line(밑줄, border-foreground). Figma muted #e2e8f0=secondary. 제어/비제어."
+    },
+    {
+      "name": "Accordion",
+      "file": "src/components/ui/accordion.tsx",
+      "story": "src/stories/accordion.story.tsx",
+      "figmaNodeId": "1673:58",
+      "variants": {
+        "expanded": [false, true]
+      },
+      "notes": "Accordion+AccordionItem. 제목행(아이콘+제목+chevron 회전)+펼침 내용+하단 구분선. type single/multiple. AccordionItem(value/title/icon/children)."
+    },
+    {
+      "name": "Collapsible",
+      "file": "src/components/ui/collapsible.tsx",
+      "story": "src/stories/collapsible.story.tsx",
+      "figmaNodeId": "5677:165",
+      "variants": {
+        "expanded": [false, true]
+      },
+      "notes": "버튼으로 여닫는 단일 패널. 트리거(제목+chevron-down 회전)+펼침 내용. title prop + open/defaultOpen/onOpenChange 제어/비제어."
+    },
+    {
+      "name": "Breadcrumb",
+      "file": "src/components/ui/breadcrumb.tsx",
+      "story": "src/stories/breadcrumb.story.tsx",
+      "figmaNodeId": "5665:4391",
+      "variants": {
+        "type": ["Chevron", "Slash"]
+      },
+      "notes": "경로 표시. items 배열 API({label,href}). 링크=muted-foreground, 마지막(현재)=foreground+aria-current. separator chevron(›)/slash(/). Compact Pagination(9705:87310)은 거대 데모 프레임이라 드릴다운 필요 — 보류."
     }
   ]
 }
