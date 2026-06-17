@@ -28,7 +28,7 @@ const tokens = readFileSync("src/tokens.css", "utf8");
 const utilities = readFileSync("dist/_utilities.css", "utf8");
 writeFileSync(
   "dist/styles.css",
-  `/* @eromnet/bo-ui-kit — 디자인 토큰 + 컴포넌트 유틸리티 */\n${tokens}\n${utilities}`
+  `/* bo-ui-kit — 디자인 토큰 + 컴포넌트 유틸리티 */\n${tokens}\n${utilities}`
 );
 rmSync("dist/_utilities.css", { force: true });
 

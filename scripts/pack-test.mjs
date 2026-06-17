@@ -17,7 +17,7 @@ console.log("» npm pack (prepack=build:lib 자동)");
 for (const f of readdirSync(DIR)) if (f.endsWith(".tgz")) rmSync(join(DIR, f), { force: true });
 run(`npm pack --pack-destination ${DIR}`);
 
-const tgz = readdirSync(DIR).find((f) => /^eromnet-bo-ui-kit-.*\.tgz$/.test(f));
+const tgz = readdirSync(DIR).find((f) => /^bo-ui-kit-.*\.tgz$/.test(f));
 if (!tgz) { console.error("❌ tarball 생성 실패"); process.exit(1); }
 renameSync(join(DIR, tgz), join(DIR, "bo-ui-kit.tgz"));
 console.log(`» tarball → ${DIR}/bo-ui-kit.tgz`);

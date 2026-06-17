@@ -1,6 +1,6 @@
 name: Consumer smoke
 
-# 라이브러리(@eromnet/bo-ui-kit)가 외부 프로젝트에서 정상 설치·렌더되는지 검증.
+# 라이브러리(bo-ui-kit)가 외부 프로젝트에서 정상 설치·렌더되는지 검증.
 # (1) examples/consumer(워크스페이스 링크) — 브라우저에서 토큰 스타일 단언.
 # (2) examples/pack-consumer(npm pack tarball 만) — 실제 배포물 그대로 설치·해석 단언.
 # → 빌드/exports/CSS/files 경계가 소비자 관점에서 깨지면 PR 에서 잡힌다. (결정적, Claude 미사용)
@@ -38,7 +38,7 @@ jobs:
       - name: 라이브러리 빌드 (예시가 import)
         run: npm run build:lib
       - name: CJS require 검증 (CommonJS 소비자)
-        run: node -e "const ui=require('@eromnet/bo-ui-kit'); const need=['Button','Meter','InputOTP','Field','Input','Checkbox','Label']; const miss=need.filter(k=>!ui[k]); if(miss.length){console.error('CJS export 누락:',miss);process.exit(1)} console.log('✓ CJS require OK —',Object.keys(ui).length,'exports')"
+        run: node -e "const ui=require('bo-ui-kit'); const need=['Button','Meter','InputOTP','Field','Input','Checkbox','Label']; const miss=need.filter(k=>!ui[k]); if(miss.length){console.error('CJS export 누락:',miss);process.exit(1)} console.log('✓ CJS require OK —',Object.keys(ui).length,'exports')"
       - name: pack 소비 검증 (tarball 만, 심볼릭 링크 배제)
         run: |
           node scripts/pack-test.mjs

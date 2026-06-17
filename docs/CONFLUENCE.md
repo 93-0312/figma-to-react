@@ -10,7 +10,7 @@
 - **한 줄 요약**: *디자인 변경 → 노드 단위 감지 → 헤드리스 Claude 추출 → 시각 증거 PR → 사람 머지 → 이슈 자동 종료.*
 - **저장소**: `https://github.com/93-0312/figma-to-react` (public)
 - **Figma 파일**: BO UI Kit, fileKey `LFA5EyNbUdPvi8Rbuf2tJC` (팀 "plan's team", Pro)
-- **npm 패키지**: `@eromnet/bo-ui-kit` (0.1.0, 발행 직전)
+- **npm 패키지**: `bo-ui-kit` (0.1.0, 발행 직전)
 
 ## 2. 기술 스택
 
@@ -91,7 +91,7 @@ Figma (BO UI Kit, fileKey)
 - `package.json`: `exports`(import/require/types/styles.css), `files:["dist"]`, peer react, deps cva/clsx/tailwind-merge, `publishConfig.access:public`.
 - 토큰 단일 소스 `src/tokens.css` → 앱·라이브러리 드리프트 방지.
 - 소비자 검증: `examples/consumer`(워크스페이스 링크, 브라우저 렌더) + `examples/pack-consumer`(tarball만, files 경계·exports·ESM/CJS).
-- 발행: `npm publish --access public` (단 `@eromnet` npm org + 로그인 필요). 비공개는 GitHub Packages/유료 private.
+- 발행: unscoped 공개 패키지(`bo-ui-kit`). `npm login` 후 `npm publish`(공개가 기본). 라이선스 UNLICENSED(독점) — 오픈소스로 풀려면 MIT 등으로 변경. 비공개로 바꾸려면 GitHub Packages/유료 private.
 
 ## 8. 시크릿 / 계정
 
@@ -137,7 +137,7 @@ gh workflow run "Token health"               # 토큰 점검 수동
 
 - **2026-06-16**
   - 컴포넌트 추가: Input OTP, Meter, Toggle, Toggle Group, Select (총 10종).
-  - **npm 라이브러리화**: ESM+CJS dual 빌드, 프리빌드 CSS(Tailwind 불필요), 타입, 토큰 단일 소스(`tokens.css`). `@eromnet/bo-ui-kit`.
+  - **npm 라이브러리화**: ESM+CJS dual 빌드, 프리빌드 CSS(Tailwind 불필요), 타입, 토큰 단일 소스(`tokens.css`). `bo-ui-kit`.
   - **소비자 스모크 CI**(`smoke.yml`): `examples/consumer`(브라우저 렌더) + `examples/pack-consumer`(tarball 전용, files 경계·exports·ESM/CJS).
   - **노드 단위 감지**(`check-figma-nodes` + `figma.fingerprints.json`): autosave 헛돈 sync·좀비 이슈 제거.
   - **완전 무인화**: poll이 실제 변경 시 sync를 자동 트리거(`allowed_bots`), 이슈 `Closes #N` 자동 종료, 폴링 새벽(KST 00~04) 정지.

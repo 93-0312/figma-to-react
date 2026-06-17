@@ -1,4 +1,4 @@
-# @eromnet/bo-ui-kit
+# bo-ui-kit
 
 Figma **"BO UI Kit"** 디자인 시스템을 React 컴포넌트로 만들고, **디자인 변경을 자동으로 코드에 동기화**하는 프로젝트.
 
@@ -10,7 +10,7 @@ Figma **"BO UI Kit"** 디자인 시스템을 React 컴포넌트로 만들고, **
 
 | | 무엇 | 핵심 |
 |---|---|---|
-| 1. **컴포넌트 라이브러리** | `@eromnet/bo-ui-kit` — 설치해서 쓰는 React UI | ESM+CJS, Tailwind 없이도 동작(프리빌드 CSS), 타입 포함 |
+| 1. **컴포넌트 라이브러리** | `bo-ui-kit` — 설치해서 쓰는 React UI | ESM+CJS, Tailwind 없이도 동작(프리빌드 CSS), 타입 포함 |
 | 2. **자동 동기화 파이프라인** | Figma 변경 → 감지 → 추출 → PR | 헤드리스 Claude가 변경분만 추출, 사람은 머지만 |
 | 3. **품질 게이트(CI)** | 시각 회귀 + 소비자 스모크 | 컴포넌트/배포물이 깨지면 PR에서 빨강 |
 
@@ -21,12 +21,12 @@ Figma **"BO UI Kit"** 디자인 시스템을 React 컴포넌트로 만들고, **
 ## 빠른 시작 — 라이브러리로 쓰기
 
 ```bash
-npm i @eromnet/bo-ui-kit        # peer: react, react-dom >=18
+npm i bo-ui-kit        # peer: react, react-dom >=18
 ```
 
 ```tsx
-import { Button, Meter, Field, Input } from "@eromnet/bo-ui-kit";
-import "@eromnet/bo-ui-kit/styles.css";   // 토큰+유틸 한 줄 (앱 진입점에서 1회)
+import { Button, Meter, Field, Input } from "bo-ui-kit";
+import "bo-ui-kit/styles.css";   // 토큰+유틸 한 줄 (앱 진입점에서 1회)
 
 export default function App() {
   return (

@@ -10,7 +10,7 @@
     "smoke": "node smoke.mjs"
   },
   "dependencies": {
-    "@eromnet/bo-ui-kit": "file:./bo-ui-kit.tgz",
+    "bo-ui-kit": "file:./bo-ui-kit.tgz",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
