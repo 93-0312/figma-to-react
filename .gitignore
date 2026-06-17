@@ -37,3 +37,6 @@ Thumbs.db
 
 # npm pack ì‚°ì¶œë¬¼
 *.tgz
+
+# npm auth token (Àý´ë Ä¿¹Ô ±ÝÁö)
+.npmrc
