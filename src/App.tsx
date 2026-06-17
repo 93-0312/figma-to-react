@@ -11,6 +11,10 @@ import { meterStory } from "./stories/meter.story";
 import { toggleStory } from "./stories/toggle.story";
 import { toggleGroupStory } from "./stories/toggle-group.story";
 import { selectStory } from "./stories/select.story";
+import { switchStory } from "./stories/switch.story";
+import { separatorStory } from "./stories/separator.story";
+import { skeletonStory } from "./stories/skeleton.story";
+import { spinnerStory } from "./stories/spinner.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -23,6 +27,10 @@ const STORIES: Story[] = [
   toggleStory,
   toggleGroupStory,
   selectStory,
+  switchStory,
+  separatorStory,
+  skeletonStory,
+  spinnerStory,
 ];
 
 export default function App() {
