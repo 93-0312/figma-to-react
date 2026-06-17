@@ -115,6 +115,39 @@ gh workflow run "Token health"               # 토큰 점검 수동
 - 폴링: `figma-poll.yml` cron `7,22,37,52 0-14,19-23 * * *`(UTC) = **KST 00~04시 정지**, 그 외 ~15분.
 - 자동 흐름: 실제 컴포넌트 변경 → 이슈 + sync 자동 → PR(증거+baseline) → **사람은 머지만**.
 
+### 로컬 개발 명령
+
+| 명령 | 설명 |
+|---|---|
+| `npm run dev` | 플레이그라운드(컴포넌트 카탈로그) |
+| `npm run verify` | 타입체크 + 빌드 |
+| `npm run build:lib` | 라이브러리 빌드 → `dist/`(ESM+CJS+타입+styles.css) |
+| `npm run test:visual` | 시각 회귀(로컬은 비교 생략, CI=Linux 기준) |
+| `npm run check:figma` | Figma 변경 감지(exit 10=변경) |
+| `npm run pack:test` | tarball 만들어 `examples/pack-consumer`에 설치(배포물 검증) |
+
+소비자 검증 예시: `examples/consumer`(워크스페이스 링크) · `examples/pack-consumer`(tarball 전용).
+
+### 프로젝트 구조
+
+```
+src/
+  components/ui/   컴포넌트 (배럴: index.ts)
+  stories/         플레이그라운드 스토리
+  tokens.css       디자인 토큰(단일 소스 — 앱·라이브러리 공유)
+  index.css        앱 진입 CSS (tokens 임포트)
+lib/styles.css     라이브러리 CSS 입력(프리빌드용)
+scripts/           감지/빌드/검증 스크립트
+.github/workflows/ figma-poll · figma-sync · visual · smoke · token-health
+examples/          consumer(링크) · pack-consumer(tarball)
+figma.manifest.json / figma.fingerprints.json   추출 대상 + 노드 지문
+CLAUDE.md          컴포넌트 작성 규칙(★ Variant 매핑)
+README.md          라이브러리 사용자용 (설치·사용·컴포넌트)
+docs/CONFLUENCE.md 이 문서 — 내부 파이프라인/운영 레퍼런스
+```
+
+> **문서 분담**: 라이브러리 **사용자**용 안내는 `README.md`(npm 게시), **내부 개발/파이프라인/운영**은 이 Confluence 문서.
+
 ## 10. 알려진 제약 / 함정 (실전 학습)
 
 1. **GITHUB_TOKEN으로 만든 PR/푸시는 워크플로를 트리거 안 함**(재귀 방지). 단 `workflow_dispatch`/`repository_dispatch`는 예외 → poll→sync, sync→visual은 dispatch로 연결.
