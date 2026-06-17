@@ -91,7 +91,7 @@ Figma (BO UI Kit, fileKey)
 - `package.json`: `exports`(import/require/types/styles.css), `files:["dist"]`, peer react, deps cva/clsx/tailwind-merge, `publishConfig.access:public`.
 - 토큰 단일 소스 `src/tokens.css` → 앱·라이브러리 드리프트 방지.
 - 소비자 검증: `examples/consumer`(워크스페이스 링크, 브라우저 렌더) + `examples/pack-consumer`(tarball만, files 경계·exports·ESM/CJS).
-- 발행: unscoped 공개 패키지(`bo-ui-kit`). `npm login` 후 `npm publish`(공개가 기본). 라이선스 UNLICENSED(독점) — 오픈소스로 풀려면 MIT 등으로 변경. 비공개로 바꾸려면 GitHub Packages/유료 private.
+- 발행: unscoped 공개 패키지(`bo-ui-kit`). `npm login` 후 `npm publish`(공개가 기본). 라이선스 **MIT**(오픈소스). 비공개로 바꾸려면 GitHub Packages/유료 private.
 
 ## 8. 시크릿 / 계정
 
