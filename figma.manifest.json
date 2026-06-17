@@ -411,6 +411,46 @@
         "type": ["Chevron", "Slash"]
       },
       "notes": "경로 표시. items 배열 API({label,href}). 링크=muted-foreground, 마지막(현재)=foreground+aria-current. separator chevron(›)/slash(/). Compact Pagination(9705:87310)은 거대 데모 프레임이라 드릴다운 필요 — 보류."
+    },
+    {
+      "name": "Alert",
+      "file": "src/components/ui/alert.tsx",
+      "story": "src/stories/alert.story.tsx",
+      "figmaNodeId": "5655:4958",
+      "variants": {
+        "type": ["Default", "Info", "Success", "Warning", "Error"]
+      },
+      "notes": "정보 콜아웃. type별 테두리 색@32%+배경 색@4%+아이콘 색(통일 상태토큰 info/success/warning/destructive). 제목=foreground medium, 설명=muted. icon 기본 제공(StatusIcon 인라인 SVG)/override, action 슬롯."
+    },
+    {
+      "name": "Toast",
+      "file": "src/components/ui/toast.tsx",
+      "story": "src/stories/toast.story.tsx",
+      "figmaNodeId": "7728:238",
+      "variants": {
+        "type": ["Default", "Loading", "Info", "Success", "Warning", "Error"]
+      },
+      "notes": "플로팅 알림 카드. popover 배경+border+shadow-popover. Loading=Spinner, 상태=색 아이콘(Alert StatusIcon 재사용). 알림 큐/타이머는 앱 담당(표현 단위)."
+    },
+    {
+      "name": "Tooltip",
+      "file": "src/components/ui/tooltip.tsx",
+      "story": "src/stories/tooltip.story.tsx",
+      "figmaNodeId": "5685:185",
+      "variants": {
+        "side": ["top", "right", "bottom", "left"]
+      },
+      "notes": "hover/focus 힌트. 트리거 감싸고 group-hover/focus-within 으로 popover 라벨 표시(경량 CSS). bg-popover+border+shadow, text-xs. side 4방향. content prop."
+    },
+    {
+      "name": "Scroll Area",
+      "file": "src/components/ui/scroll-area.tsx",
+      "story": "src/stories/scroll-area.story.tsx",
+      "figmaNodeId": "7669:1745",
+      "variants": {
+        "hover": [false, true]
+      },
+      "notes": "커스텀 스크롤바 컨테이너. overflow-auto + 얇은 스크롤바(thumb=foreground@20%, ::-webkit-scrollbar). bordered(테두리+패딩) 기본. 높이는 className. Figma 하단 fade 는 선택."
     }
   ]
 }
