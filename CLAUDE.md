@@ -64,6 +64,8 @@
 - 스코프/패키지명을 언급할 땐 **백틱으로 감싼다**(예: `` `@eromnet/bo-ui-kit` ``) — 코드 스팬은
   멘션으로 해석되지 않는다. 커밋 메시지처럼 백틱이 안 통하는 곳은 `@` 를 빼고 "eromnet 스코프" 로 적는다.
 - 일반 규칙: it@eromnet.com 으로 **메일/외부 연락을 보내거나 트리거하지 말 것**(멘션·알림 포함).
+- 강제: 로컬 `commit-msg` 훅(`.githooks/commit-msg`)이 바른 `@eromnet` 멘션이 든 커밋을 거부한다.
+  새 클론에서 활성화: `git config core.hooksPath .githooks`. (CI/헤드리스 커밋엔 적용 안 되므로 위 규칙 준수로 보완.)
 
 ## Project-Specific Conventions
 

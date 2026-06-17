@@ -1,0 +1,22 @@
+#!/bin/sh
+# 커밋 메시지에 '바른 @eromnet 멘션'이 들어가는 것을 차단한다.
+# GitHub 는 커밋 메시지의 @<이름> 을 자동 @멘션 처리 → 동명 계정 'eromnet'
+# (알림 주소 = 개발팀 전체가 참조되는 it@eromnet.com) 으로 알림 메일이 발송된다.
+#
+# 규칙(figma-to-react/CLAUDE.md): npm 스코프를 언급할 땐 '@' 를 빼서 'eromnet' 로
+# 적거나(커밋 메시지) 백틱으로 감싼다(PR 본문 등 마크다운 영역).
+#
+# 매칭: '@eromnet' 이 단어 경계(줄머리 또는 영숫자/이메일문자 가 아닌 문자) 뒤에 올 때.
+#  - 'it@eromnet.com' 같은 이메일 형태는 '@' 앞이 영숫자라 매칭되지 않음(안전).
+msg_file="$1"
+[ -f "$msg_file" ] || exit 0
+
+if grep -nEi '(^|[^A-Za-z0-9._%+-])@eromnet([^A-Za-z0-9-]|$)' "$msg_file" >/dev/null 2>&1; then
+  echo "" >&2
+  echo "✗ commit-msg 차단: 커밋 메시지에 바른 '@eromnet' 멘션이 있습니다." >&2
+  echo "  GitHub 가 @멘션으로 해석해 it@eromnet.com(개발팀 전체)로 알림 메일이 발송됩니다." >&2
+  echo "  → '@' 를 빼고 'eromnet' 로 쓰세요. (이메일 형태 it@eromnet.com 은 허용)" >&2
+  echo "" >&2
+  exit 1
+fi
+exit 0
