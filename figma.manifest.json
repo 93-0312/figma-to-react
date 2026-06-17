@@ -44,7 +44,7 @@
           true
         ]
       },
-      "notes": "icon/rightIcon 슬롯. PillButton(rounded-full) 변형은 미추출."
+      "notes": "icon/rightIcon 슬롯. PillButton(rounded-full)은 `pill` prop 으로 지원(별도 컴포넌트 대신 Button 확장)."
     },
     {
       "name": "Checkbox",
@@ -322,6 +322,18 @@
         "size": ["24", "28", "32", "36", "40", "48"]
       },
       "notes": "Avatar 겹쳐 쌓기. 음수마진(-ml-3)+각 아바타 ring(background 2px)로 분리. size 자식에 주입, max 초과분은 +N 요약. Avatar 재사용."
+    },
+    {
+      "name": "Badge",
+      "file": "src/components/ui/badge.tsx",
+      "story": "src/stories/badge.story.tsx",
+      "figmaNodeId": "9929:48567",
+      "variants": {
+        "color": ["blue", "red", "orange", "green", "neutral"],
+        "type": ["Fill", "Tinted"],
+        "disabled": [false, true]
+      },
+      "notes": "상태 라벨. Fill=단색+흰텍스트 / Tinted=색@8%+색-foreground. 색 매핑: blue→info(=primary), red→destructive, orange→warning, green→success, neutral→foreground. ★ 상태색 토큰을 Figma 최신값으로 통일(destructive #ef4444→#fb2c36, success-fg #047857→#00a63e + success/warning/info/foreground 신규) → Button/Input/Field 빨강·초록도 변경됨. Figma static/secondary(dark) 변형 미구현. Chip 은 노드ID stale 로 보류."
     }
   ]
 }

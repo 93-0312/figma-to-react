@@ -25,12 +25,14 @@ export const buttonStory: Story = {
     { type: "boolean", name: "disabled", label: "disabled", default: false },
     { type: "boolean", name: "icon", label: "left icon", default: false },
     { type: "boolean", name: "rightIcon", label: "right icon", default: false },
+    { type: "boolean", name: "pill", label: "pill (rounded-full)", default: false },
   ],
   render: (args) => (
     <Button
       variant={args.variant as ButtonProps["variant"]}
       size={args.size as ButtonProps["size"]}
       disabled={Boolean(args.disabled)}
+      pill={Boolean(args.pill)}
       icon={args.icon ? <PlusIcon /> : undefined}
       rightIcon={args.rightIcon ? <ChevronIcon /> : undefined}
     >
