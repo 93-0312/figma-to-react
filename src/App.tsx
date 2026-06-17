@@ -22,6 +22,10 @@ import { badgeStory } from "./stories/badge.story";
 import { numberFieldStory } from "./stories/number-field.story";
 import { radioGroupStory } from "./stories/radio-group.story";
 import { segmentedControlStory } from "./stories/segmented-control.story";
+import { tabsStory } from "./stories/tabs.story";
+import { accordionStory } from "./stories/accordion.story";
+import { collapsibleStory } from "./stories/collapsible.story";
+import { breadcrumbStory } from "./stories/breadcrumb.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -45,6 +49,10 @@ const STORIES: Story[] = [
   numberFieldStory,
   radioGroupStory,
   segmentedControlStory,
+  tabsStory,
+  accordionStory,
+  collapsibleStory,
+  breadcrumbStory,
 ];
 
 export default function App() {
