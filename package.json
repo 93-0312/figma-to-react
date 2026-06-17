@@ -1,6 +1,6 @@
 {
   "name": "bo-ui-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "BO UI Kit — Figma 디자인 시스템에서 추출한 React 컴포넌트 라이브러리 (Tailwind 토큰 기반).",
   "license": "MIT",
   "type": "module",
