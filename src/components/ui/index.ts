@@ -56,3 +56,15 @@ export { Tooltip } from "./tooltip";
 export type { TooltipProps } from "./tooltip";
 export { ScrollArea } from "./scroll-area";
 export type { ScrollAreaProps } from "./scroll-area";
+export {
+  Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
+} from "./dialog";
+export type { DialogProps, DialogContentProps } from "./dialog";
+export { AlertDialog } from "./alert-dialog";
+export type { AlertDialogProps } from "./alert-dialog";
+export {
+  Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose,
+} from "./sheet";
+export type { SheetProps, SheetContentProps } from "./sheet";
+export { Drawer, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from "./drawer";
+export type { DrawerProps } from "./drawer";

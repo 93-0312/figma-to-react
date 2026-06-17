@@ -451,6 +451,47 @@
         "hover": [false, true]
       },
       "notes": "커스텀 스크롤바 컨테이너. overflow-auto + 얇은 스크롤바(thumb=foreground@20%, ::-webkit-scrollbar). bordered(테두리+패딩) 기본. 높이는 className. Figma 하단 fade 는 선택."
+    },
+    {
+      "name": "Dialog",
+      "file": "src/components/ui/dialog.tsx",
+      "story": "src/stories/dialog.story.tsx",
+      "figmaNodeId": "7656:1889",
+      "variants": {
+        "role": ["dialog", "alertdialog"]
+      },
+      "notes": "모달 다이얼로그. overlay.tsx의 Portal+backdrop(#101012@32%+blur)+ESC/스크롤락 재사용. 중앙 패널 max-w-448 rounded-radius-2xl bg-popover shadow-popover, X 닫기. Header/Title/Description/Footer(secondary@72% 바). dismissable 기본 true. controlled/uncontrolled(useControllableOpen)."
+    },
+    {
+      "name": "Alert Dialog",
+      "file": "src/components/ui/alert-dialog.tsx",
+      "story": "src/stories/alert-dialog.story.tsx",
+      "figmaNodeId": "5655:5142",
+      "variants": {
+        "destructive": [false, true]
+      },
+      "notes": "확인/취소 프리셋. Dialog 프리미티브+Button 재사용. role=alertdialog, dismissable=false(백드롭/ESC 안닫힘). title/description/cancelText/actionText/onAction/onCancel/destructive props. Cancel=secondary, Action=destructive|default Button."
+    },
+    {
+      "name": "Sheet",
+      "file": "src/components/ui/sheet.tsx",
+      "story": "src/stories/sheet.story.tsx",
+      "figmaNodeId": "7669:1795",
+      "variants": {
+        "side": ["right", "left", "top", "bottom"],
+        "inset": [false, true]
+      },
+      "notes": "엣지 슬라이드 패널. overlay.tsx Portal+backdrop 재사용. side 4방향(flush=해당 모서리 rounded), inset=플로팅(inset-y-4 등+전체 rounded+border). X 닫기. Header/Title/Description/Footer/Close."
+    },
+    {
+      "name": "Drawer",
+      "file": "src/components/ui/drawer.tsx",
+      "story": "src/stories/drawer.story.tsx",
+      "figmaNodeId": "8046:330",
+      "variants": {
+        "side": ["bottom", "top", "left", "right"]
+      },
+      "notes": "Sheet 프리셋. side 기본 bottom, inset 기본 true(여백 있는 플로팅). SheetContent 래핑, Header/Title/Description/Footer/Close 를 Drawer* 로 재노출."
     }
   ]
 }
