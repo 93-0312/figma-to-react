@@ -21,7 +21,7 @@
   /* 상태 색(2026-06 Figma 갱신값으로 통일). Badge/Chip + 기존 에러/성공 표시 공유. */
   --destructive: 251 44 54; /* #fb2c36 — Destructive 채움 + 폼 에러 */
   --destructive-foreground: 231 0 11; /* #e7000b — 에러 텍스트/Tinted */
-  --success: 0 201 81; /* #00c951 — success 채움 */
+  --success: 0 212 146; /* #00d492 — success 채움 (Figma 2026-06-17 갱신) */
   --success-foreground: 0 166 62; /* #00a63e — 성공 텍스트/Tinted */
   --warning: 255 186 0; /* #ffba00 — warning 채움 */
   --warning-foreground: 253 154 0; /* #fd9a00 — warning 텍스트/Tinted */
@@ -54,7 +54,7 @@
   --popover-foreground: 248 250 252;
   --destructive: 251 44 54;
   --destructive-foreground: 248 113 113;
-  --success: 0 201 81;
+  --success: 0 212 146; /* #00d492 — light 와 동일값 사용 */
   --success-foreground: 52 211 153; /* #34d399 (dark 근사) */
   --warning: 255 186 0;
   --warning-foreground: 253 154 0;
