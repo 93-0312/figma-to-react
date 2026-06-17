@@ -18,6 +18,7 @@ import { spinnerStory } from "./stories/spinner.story";
 import { textareaStory } from "./stories/textarea.story";
 import { avatarStory } from "./stories/avatar.story";
 import { avatarGroupStory } from "./stories/avatar-group.story";
+import { badgeStory } from "./stories/badge.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -37,6 +38,7 @@ const STORIES: Story[] = [
   textareaStory,
   avatarStory,
   avatarGroupStory,
+  badgeStory,
 ];
 
 export default function App() {

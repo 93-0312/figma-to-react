@@ -45,7 +45,16 @@ export default {
           foreground: "rgb(var(--destructive-foreground) / <alpha-value>)",
         },
         success: {
+          DEFAULT: "rgb(var(--success) / <alpha-value>)",
           foreground: "rgb(var(--success-foreground) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "rgb(var(--warning) / <alpha-value>)",
+          foreground: "rgb(var(--warning-foreground) / <alpha-value>)",
+        },
+        info: {
+          DEFAULT: "rgb(var(--info) / <alpha-value>)",
+          foreground: "rgb(var(--info-foreground) / <alpha-value>)",
         },
         // border 는 Figma 에서 8% 알파가 적용된 토큰(#0f172b14)
         border: "rgb(var(--border) / 0.08)",

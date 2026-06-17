@@ -53,18 +53,24 @@ export interface ButtonProps
   icon?: React.ReactNode;
   /** 우측 아이콘 */
   rightIcon?: React.ReactNode;
+  /** 알약(rounded-full) 형태 — Figma PillButton 변형 */
+  pill?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, type = "button", icon, rightIcon, children, ...props },
+    { className, variant, size, type = "button", icon, rightIcon, pill, children, ...props },
     ref
   ) => {
     return (
       <button
         ref={ref}
         type={type}
-        className={cn(buttonVariants({ variant, size }), className)}
+        className={cn(
+          buttonVariants({ variant, size }),
+          pill && "!rounded-radius-full",
+          className
+        )}
         data-node-id="1692:74"
         {...props}
       >
