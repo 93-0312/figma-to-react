@@ -123,6 +123,9 @@ jobs:
                        && echo "연결: PR #$NUM ↔ issue #$ISSUE (머지 시 자동 종료)" || true ;;
                 esac
               fi
+
+              # 에이전트가 PR 본문에 백틱 없는 @멘션을 남겼으면 무력화(외부 알림·머지 히스토리 오염 방지)
+              node scripts/sanitize-pr-body.mjs "$NUM" || true
             fi
           done
 
