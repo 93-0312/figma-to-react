@@ -19,6 +19,9 @@ import { textareaStory } from "./stories/textarea.story";
 import { avatarStory } from "./stories/avatar.story";
 import { avatarGroupStory } from "./stories/avatar-group.story";
 import { badgeStory } from "./stories/badge.story";
+import { numberFieldStory } from "./stories/number-field.story";
+import { radioGroupStory } from "./stories/radio-group.story";
+import { segmentedControlStory } from "./stories/segmented-control.story";
 
 const STORIES: Story[] = [
   buttonStory,
@@ -39,6 +42,9 @@ const STORIES: Story[] = [
   avatarStory,
   avatarGroupStory,
   badgeStory,
+  numberFieldStory,
+  radioGroupStory,
+  segmentedControlStory,
 ];
 
 export default function App() {
