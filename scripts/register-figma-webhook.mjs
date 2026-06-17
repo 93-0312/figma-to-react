@@ -30,7 +30,9 @@ try {
   /* .env 없으면 환경변수만 사용 */
 }
 
-const TOKEN = process.env.FIGMA_TOKEN;
+// 웹훅 생성은 보통 팀/조직 관리자 권한이 필요하다. 그 권한을 가진 전용 토큰을
+// FIGMA_TOKEN_PLAN 으로 두면 우선 사용하고, 없으면 일반 FIGMA_TOKEN 으로 폴백.
+const TOKEN = process.env.FIGMA_TOKEN_PLAN || process.env.FIGMA_TOKEN;
 const FILE_KEY = process.env.FIGMA_FILE_KEY || "LFA5EyNbUdPvi8Rbuf2tJC";
 const API = "https://api.figma.com/v2/webhooks";
 
@@ -46,6 +48,13 @@ const getFlag = (name) => {
   const i = argv.indexOf(`--${name}`);
   return i >= 0 ? argv[i + 1] : undefined;
 };
+
+// 웹훅 범위(context). 기본은 파일 단위; --team <id> 주면 팀 단위.
+// (파일/프로젝트 범위 웹훅은 상위 플랜에서만 허용되는 경우가 있어 팀 범위 폴백 제공.)
+const TEAM_ID = getFlag("team") || process.env.FIGMA_TEAM_ID;
+const SCOPE = TEAM_ID
+  ? { context: "team", context_id: TEAM_ID, label: `team ${TEAM_ID}` }
+  : { context: "file", context_id: FILE_KEY, label: `file ${FILE_KEY}` };
 
 const headers = { "X-Figma-Token": TOKEN, "Content-Type": "application/json" };
 
@@ -64,14 +73,14 @@ async function api(method, url, body) {
 async function list() {
   const { ok, status, json } = await api(
     "GET",
-    `${API}?context=file&context_id=${FILE_KEY}`
+    `${API}?context=${SCOPE.context}&context_id=${SCOPE.context_id}`
   );
   if (!ok) {
     console.error(`❌ list 실패 HTTP ${status}:`, json);
     process.exit(1);
   }
   const hooks = json.webhooks || [];
-  console.log(`📋 file ${FILE_KEY} 의 웹훅 ${hooks.length}개:`);
+  console.log(`📋 ${SCOPE.label} 의 웹훅 ${hooks.length}개:`);
   for (const h of hooks) {
     console.log(`  - id=${h.id} status=${h.status} event=${h.event_type}\n    endpoint=${h.endpoint}`);
   }
@@ -93,8 +102,8 @@ async function create() {
   }
   const { ok, status, json } = await api("POST", API, {
     event_type: "FILE_UPDATE",
-    context: "file",
-    context_id: FILE_KEY,
+    context: SCOPE.context,
+    context_id: SCOPE.context_id,
     endpoint,
     passcode,
     description: "BO UI Kit → figma-to-react 자동 sync 트리거",
