@@ -14,7 +14,7 @@
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
-  --accent: 248 250 252; /* #f8fafc — Select/메뉴 항목 hover 배경 */
+  --accent: 241 245 249; /* #f1f5f9 — Select/메뉴 항목 hover 배경 (2026-06-18 갱신) */
   --accent-foreground: 43 127 255; /* #2b7fff — Select 항목 텍스트(primary 와 동일) */
   --popover: 255 255 255; /* #ffffff — Select 드롭다운 패널 배경 */
   --popover-foreground: 2 6 24; /* #020618 */
