@@ -1,6 +1,14 @@
 import * as React from "react";
 import { cn } from "../../lib/utils";
-import { Portal, backdropClass, useOverlayBehavior, useControllableOpen } from "./overlay";
+import {
+  Portal,
+  backdropClass,
+  useOverlayBehavior,
+  useControllableOpen,
+  useFocusTrap,
+  useA11yIds,
+  useRegisterPresence,
+} from "./overlay";
 
 /**
  * Dialog — Figma "BO UI Kit" Dialog(node 7656:1889). 페이지 위에 뜨는 모달.
@@ -14,6 +22,11 @@ interface DialogCtx {
   setOpen: (o: boolean) => void;
   role: "dialog" | "alertdialog";
   dismissable: boolean;
+  titleId: string;
+  descId: string;
+  setHasTitle: (v: boolean) => void;
+  setHasDesc: (v: boolean) => void;
+  labelProps: { "aria-labelledby"?: string; "aria-describedby"?: string };
 }
 const Ctx = React.createContext<DialogCtx | null>(null);
 const useDialog = () => {
@@ -34,7 +47,12 @@ export interface DialogProps {
 
 function Dialog({ open, defaultOpen = false, onOpenChange, role = "dialog", dismissable = true, children }: DialogProps) {
   const [value, setValue] = useControllableOpen(open, defaultOpen, onOpenChange);
-  return <Ctx.Provider value={{ open: value, setOpen: setValue, role, dismissable }}>{children}</Ctx.Provider>;
+  const a11y = useA11yIds();
+  return (
+    <Ctx.Provider value={{ open: value, setOpen: setValue, role, dismissable, ...a11y }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 const DialogTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
@@ -58,8 +76,18 @@ export interface DialogContentProps extends React.HTMLAttributes<HTMLDivElement>
 }
 const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className, showClose = true, children, ...props }, ref) => {
-    const { open, setOpen, role, dismissable } = useDialog();
+    const { open, setOpen, role, dismissable, labelProps } = useDialog();
+    const panelRef = React.useRef<HTMLDivElement | null>(null);
+    const mergeRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        panelRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      },
+      [ref]
+    );
     useOverlayBehavior(open, () => dismissable && setOpen(false));
+    useFocusTrap(open, panelRef);
     if (!open) return null;
     return (
       <Portal>
@@ -68,12 +96,14 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
           onClick={() => dismissable && setOpen(false)}
         >
           <div
-            ref={ref}
+            ref={mergeRef}
             role={role}
             aria-modal
+            tabIndex={-1}
+            {...labelProps}
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "relative flex w-full max-w-[448px] flex-col overflow-hidden rounded-radius-2xl border border-border bg-popover shadow-popover",
+              "relative flex w-full max-w-[448px] flex-col overflow-hidden rounded-radius-2xl border border-border bg-popover shadow-popover outline-none",
               className
             )}
             {...props}
@@ -102,12 +132,22 @@ DialogContent.displayName = "DialogContent";
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col gap-1 p-6", className)} {...props} />
 );
-const DialogTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h2 className={cn("text-xl font-semibold leading-7 tracking-[-0.2px] text-foreground", className)} {...props} />
-);
-const DialogDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-sm leading-5 text-muted-foreground", className)} {...props} />
-);
+const DialogTitle = ({ className, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+  const { titleId, setHasTitle } = useDialog();
+  useRegisterPresence(setHasTitle);
+  return (
+    <h2
+      id={id ?? titleId}
+      className={cn("text-xl font-semibold leading-7 tracking-[-0.2px] text-foreground", className)}
+      {...props}
+    />
+  );
+};
+const DialogDescription = ({ className, id, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
+  const { descId, setHasDesc } = useDialog();
+  useRegisterPresence(setHasDesc);
+  return <p id={id ?? descId} className={cn("text-sm leading-5 text-muted-foreground", className)} {...props} />;
+};
 const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn("flex items-center justify-end gap-2 border-t border-border bg-secondary/[0.72] px-6 py-4", className)}
