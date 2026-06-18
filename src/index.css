@@ -1,5 +1,7 @@
 /* 디자인 토큰(단일 소스) — 라이브러리 빌드와 공유. @import 는 최상단에 와야 함. */
 @import "./tokens.css";
+/* Pretendard self-host(@font-face) — 플레이그라운드 앱 전용. CDN 폰트 타이밍 제거. */
+@import "./fonts.css";
 
 @tailwind base;
 @tailwind components;
