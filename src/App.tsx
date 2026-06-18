@@ -35,8 +35,8 @@ import { alertDialogStory } from "./stories/alert-dialog.story";
 import { sheetStory } from "./stories/sheet.story";
 import { drawerStory } from "./stories/drawer.story";
 
-// 사이드바/플레이그라운드에 노출되는 컴포넌트 목록.
-// 표시 이름(name) 기준 알파벳순으로 정렬한다(새 스토리를 추가해도 자동으로 제자리에 들어감).
+// 컴포넌트(스토리) 목록 — 원본 순서 유지(기본 선택/렌더 순서가 시각 스냅샷 baseline 과
+// 묶여 있어 함부로 바꾸지 않는다). 사이드바 "표시" 순서만 아래 navOrder 로 알파벳 정렬한다.
 const STORIES: Story[] = [
   buttonStory,
   checkboxStory,
@@ -71,7 +71,13 @@ const STORIES: Story[] = [
   alertDialogStory,
   sheetStory,
   drawerStory,
-].sort((a, b) => a.name.localeCompare(b.name));
+];
+
+// 사이드바 표시용 인덱스 순서(표시 이름 알파벳순). STORIES 자체는 원본 순서라
+// active 인덱싱·기본 선택·스냅샷이 그대로 유지되고, 노출만 ABC 로 정렬된다.
+const navOrder = STORIES.map((_, i) => i).sort((a, b) =>
+  STORIES[a].name.localeCompare(STORIES[b].name)
+);
 
 export default function App() {
   const [active, setActive] = React.useState(0);
@@ -107,22 +113,25 @@ export default function App() {
             Components
           </h2>
           <ul className="space-y-1">
-            {STORIES.map((s, i) => (
-              <li key={s.name}>
-                <button
-                  type="button"
-                  onClick={() => setActive(i)}
-                  className={
-                    "w-full rounded-radius px-2 py-1.5 text-left text-sm transition-colors " +
-                    (i === active
-                      ? "bg-secondary font-medium text-foreground"
-                      : "text-muted-foreground hover:bg-secondary/50")
-                  }
-                >
-                  {s.name}
-                </button>
-              </li>
-            ))}
+            {navOrder.map((i) => {
+              const s = STORIES[i];
+              return (
+                <li key={s.name}>
+                  <button
+                    type="button"
+                    onClick={() => setActive(i)}
+                    className={
+                      "w-full rounded-radius px-2 py-1.5 text-left text-sm transition-colors " +
+                      (i === active
+                        ? "bg-secondary font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-secondary/50")
+                    }
+                  >
+                    {s.name}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
