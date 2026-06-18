@@ -1,6 +1,14 @@
 import * as React from "react";
 import { cn } from "../../lib/utils";
-import { Portal, backdropClass, useOverlayBehavior, useControllableOpen } from "./overlay";
+import {
+  Portal,
+  backdropClass,
+  useOverlayBehavior,
+  useControllableOpen,
+  useFocusTrap,
+  useA11yIds,
+  useRegisterPresence,
+} from "./overlay";
 
 /**
  * Sheet — Figma "BO UI Kit" Sheet(node 7669:1795). 화면 가장자리에서 나오는 플라이아웃(dialog 기반).
@@ -12,6 +20,11 @@ import { Portal, backdropClass, useOverlayBehavior, useControllableOpen } from "
 interface SheetCtx {
   open: boolean;
   setOpen: (o: boolean) => void;
+  titleId: string;
+  descId: string;
+  setHasTitle: (v: boolean) => void;
+  setHasDesc: (v: boolean) => void;
+  labelProps: { "aria-labelledby"?: string; "aria-describedby"?: string };
 }
 const Ctx = React.createContext<SheetCtx | null>(null);
 const useSheet = () => {
@@ -28,7 +41,8 @@ export interface SheetProps {
 }
 function Sheet({ open, defaultOpen = false, onOpenChange, children }: SheetProps) {
   const [value, setValue] = useControllableOpen(open, defaultOpen, onOpenChange);
-  return <Ctx.Provider value={{ open: value, setOpen: setValue }}>{children}</Ctx.Provider>;
+  const a11y = useA11yIds();
+  return <Ctx.Provider value={{ open: value, setOpen: setValue, ...a11y }}>{children}</Ctx.Provider>;
 }
 
 const SheetTrigger = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
@@ -69,19 +83,31 @@ export interface SheetContentProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
   ({ className, side = "right", inset = false, showClose = true, children, ...props }, ref) => {
-    const { open, setOpen } = useSheet();
+    const { open, setOpen, labelProps } = useSheet();
+    const panelRef = React.useRef<HTMLDivElement | null>(null);
+    const mergeRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        panelRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      },
+      [ref]
+    );
     useOverlayBehavior(open, () => setOpen(false));
+    useFocusTrap(open, panelRef);
     if (!open) return null;
     return (
       <Portal>
         <div className={backdropClass} onClick={() => setOpen(false)}>
           <div
-            ref={ref}
+            ref={mergeRef}
             role="dialog"
             aria-modal
+            tabIndex={-1}
+            {...labelProps}
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "fixed flex flex-col overflow-auto border-border bg-popover shadow-popover",
+              "fixed flex flex-col overflow-auto border-border bg-popover shadow-popover outline-none",
               inset ? cn(insetPos[side], "rounded-radius-2xl border") : flush[side],
               className
             )}
@@ -111,12 +137,22 @@ SheetContent.displayName = "SheetContent";
 const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col gap-1 p-6", className)} {...props} />
 );
-const SheetTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h2 className={cn("text-xl font-semibold leading-7 tracking-[-0.2px] text-foreground", className)} {...props} />
-);
-const SheetDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-  <p className={cn("text-sm leading-5 text-muted-foreground", className)} {...props} />
-);
+const SheetTitle = ({ className, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+  const { titleId, setHasTitle } = useSheet();
+  useRegisterPresence(setHasTitle);
+  return (
+    <h2
+      id={id ?? titleId}
+      className={cn("text-xl font-semibold leading-7 tracking-[-0.2px] text-foreground", className)}
+      {...props}
+    />
+  );
+};
+const SheetDescription = ({ className, id, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => {
+  const { descId, setHasDesc } = useSheet();
+  useRegisterPresence(setHasDesc);
+  return <p id={id ?? descId} className={cn("text-sm leading-5 text-muted-foreground", className)} {...props} />;
+};
 const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("mt-auto flex items-center justify-end gap-2 border-t border-border px-6 py-4", className)} {...props} />
 );
