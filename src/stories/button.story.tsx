@@ -8,7 +8,7 @@ const VARIANTS: NonNullable<ButtonProps["variant"]>[] = [
   "outline",
   "secondary",
   "destructive",
-  "destructive-outline",
+  "destructive-tinted",
   "ghost",
   "link",
 ];
