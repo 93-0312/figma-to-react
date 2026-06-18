@@ -35,6 +35,8 @@ import { alertDialogStory } from "./stories/alert-dialog.story";
 import { sheetStory } from "./stories/sheet.story";
 import { drawerStory } from "./stories/drawer.story";
 
+// 사이드바/플레이그라운드에 노출되는 컴포넌트 목록.
+// 표시 이름(name) 기준 알파벳순으로 정렬한다(새 스토리를 추가해도 자동으로 제자리에 들어감).
 const STORIES: Story[] = [
   buttonStory,
   checkboxStory,
@@ -69,7 +71,7 @@ const STORIES: Story[] = [
   alertDialogStory,
   sheetStory,
   drawerStory,
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 export default function App() {
   const [active, setActive] = React.useState(0);
