@@ -1,0 +1,30 @@
+/**
+ * Pretendard self-host — 플레이그라운드 앱 전용(라이브러리 빌드와 무관).
+ *
+ * CDN(jsdelivr) 대신 로컬 woff2 를 쓴다. 같은 v1.3.9 정적 파일이라 글자(글리프)는
+ * 동일하지만, 동일 출처에서 즉시·결정적으로 로드돼 시각 회귀 스냅샷의 폰트 렌더
+ * 타이밍 흔들림(사이드바 reorder 등으로 ~1% AA diff)을 없앤다.
+ * 사용 weight 만 둔다: 400(본문) / 500(font-medium) / 600(font-semibold).
+ * 파일: public/fonts/ (Vite 가 루트 /fonts/ 로 서빙).
+ */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-SemiBold.woff2") format("woff2");
+}
