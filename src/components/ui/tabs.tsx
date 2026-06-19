@@ -4,8 +4,8 @@ import { cn } from "../../lib/utils";
 /**
  * Tabs — Figma "BO UI Kit" Tabs(node 7722:82). 관련 패널 전환.
  *
- * Type: Default(알약 — bg-secondary 트랙 + 선택 탭 흰 카드+shadow) / WithLine(밑줄).
- * 합성: Tabs(상태) > TabsList > TabsTrigger / TabsContent. (Figma `muted`#e2e8f0 = secondary.)
+ * Type: Default(알약 — bg-accent 트랙 + 선택 탭 흰 카드+shadow) / WithLine(밑줄).
+ * 합성: Tabs(상태) > TabsList > TabsTrigger / TabsContent. (Figma VariableID:5632:2342 #f1f5f9 = accent.)
  * 제어/비제어(value/defaultValue/onValueChange).
  */
 type TabsVariant = "default" | "line";
@@ -63,7 +63,7 @@ const TabsList = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
         className={cn(
           "inline-flex items-center",
           variant === "default"
-            ? "gap-0.5 rounded-radius-lg bg-secondary p-0.5"
+            ? "gap-0.5 rounded-radius-lg bg-accent p-0.5"
             : "gap-1 border-b border-border",
           className
         )}

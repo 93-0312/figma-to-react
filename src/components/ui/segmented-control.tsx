@@ -5,12 +5,12 @@ import { cn } from "../../lib/utils";
 /**
  * SegmentedControl — Figma "BO UI Kit" Segmented Control(node 9705:88227). 단일 선택 세그먼트.
  *
- * 컨테이너(bg-background, p-0.5) 안에 균등 너비 세그먼트. 선택 세그먼트만 bg-card + shadow(흰 알약),
+ * 컨테이너(bg-accent, p-0.5) 안에 균등 너비 세그먼트. 선택 세그먼트만 bg-card + shadow(흰 알약),
  * 나머지는 muted-foreground 텍스트. Style: Rounded(rounded-full) / Regular(rounded-radius) / Sharp(rounded-none).
  * 제어/비제어(value/onValueChange). (Figma 의 다층 그림자는 shadow-xs 로 근사.)
  */
 const containerVariants = cva(
-  "inline-flex w-full items-center gap-0 bg-background p-0.5",
+  "inline-flex w-full items-center gap-0 bg-accent p-0.5",
   {
     variants: {
       segStyle: { rounded: "rounded-radius-full", regular: "rounded-radius", sharp: "rounded-none" },
