@@ -30,18 +30,33 @@
 - 새 토큰이 필요하면 `src/index.css`(:root + .dark) 와 `tailwind.config.js` **양쪽**에 추가한다.
 - 테마 커스터마이징은 `tailwind.config.js`.
 
-## Figma MCP Integration Rules
+## Figma 추출 규칙 (REST — 수동·자동 동일 경로)
 
-매 Figma 기반 변경마다 아래 흐름을 따른다.
+IMPORTANT: **추출은 Figma REST API 를 정식 경로로 한다.** 자동 sync(GitHub Action)는 헤드리스라
+MCP 가 없어 REST 를 쓰고(`figma-sync.yml` `--allowedTools` 에 MCP 없음), **수동 작업도 REST 로 맞춘다.**
+REST 와 Figma MCP 는 **같은 Figma 파일을 읽어 값이 동일**하므로(예: 그림자 추출 시 둘 다 border 8%·
+Dialog 그림자 없음으로 동일하게 나옴), 도구를 통일해도 결과 정합성이 보장된다. 인증: `FIGMA_TOKEN`(.env / CI Secret).
+복잡한 컴포넌트라도 REST 응답에 전체 노드 트리(중첩/auto-layout/variant/effect)가 다 들어있다 —
+"MCP 만 주는 디자인 값" 은 없다.
 
 ### Required Flow (생략 금지)
 
-1. `get_metadata` 로 노드/변형(variant) 구조를 파악하고 구현할 정확한 노드 id 를 확보한다.
-2. `get_design_context` 로 구조·참조 코드를 가져온다. 응답이 너무 크면 metadata 로 좁힌 뒤 필요한 노드만 다시 가져온다.
-3. `get_variable_defs` 로 그 노드에 바인딩된 토큰값(색상/간격/radius/타이포)을 추출한다.
-4. `get_screenshot` 으로 구현할 변형의 시각 레퍼런스를 확보한다.
-5. 위를 모두 확보한 뒤 구현한다. Figma MCP 의 React+Tailwind 출력은 **디자인/동작의 표현**이지 최종 코드 스타일이 아니다 — 이 프로젝트 컨벤션(토큰/cva/cn)으로 번역한다.
+1. `figma.manifest.json` 에서 fileKey 와 노드 id 를 확보한다.
+2. `GET /v1/files/:key/nodes?ids=<nodeId>` 로 **해당 노드만** 가져온다(무거운 전체 파일 GET 금지).
+   fills / strokes / effects / cornerRadius / layout(padding·spacing) / `boundVariables` 를 코드와 대조한다.
+3. **토큰 바인딩은 "값 기준"으로 매핑한다.** REST 는 `boundVariables` 에 변수 **ID + 실제 값**만 주고
+   변수 *이름* 은 직접 주지 않는다(이름은 Enterprise 변수 API 필요). 그러므로 노드의 fill/stroke 값을
+   코드 토큰(`--accent` 등) 값과 대조해 매핑한다. ★ **Figma 에 없는 새 토큰을 발명하지 말 것** — 색이
+   바뀌면 기존 토큰 값을 바꾸거나 재바인딩한다.
+4. ★ **`GET /v1/images?ids=<nodeId>` 로 렌더 이미지를 받아 코드 렌더와 눈으로 1:1 대조**한다(특히
+   복잡한 구조·variant — raw JSON 만으론 놓치기 쉽다). 이 시각 대조가 REST raw 의 안전장치다.
+5. 이 프로젝트 컨벤션(토큰/cva/cn)으로 구현한다. (Figma codegen 출력은 디자인/동작의 표현일 뿐 최종 스타일 아님.)
 6. 완료 전 Figma 와 1:1 시각·동작 검증.
+
+> 보조 도구: 원격 Figma MCP(`plugin_figma` — `get_variable_defs`/`get_design_context`, fileKey+nodeId)도
+> 사용 가능하며 **같은 값**을 준다(변수 *이름* 까지 줘서 사람 작업엔 더 편함). 단 CI 는 OAuth 인증·무거운
+> 페이로드·Dev 시트 의존 때문에 붙이지 않는다 → **일관성을 위해 수동도 REST 가 기본**, 복잡한 구조 이해가
+> 필요할 때만 MCP 를 보조로 쓴다. 로컬 데스크톱 MCP(`figma-local`)는 Dev Mode 권한으로 막혀 있어 안 쓴다.
 
 ### Validation
 
