@@ -15,7 +15,7 @@ import {
  *
  * 합성: Sheet > SheetTrigger? + SheetContent(side) > SheetHeader/Title/Description + 본문 + SheetFooter.
  * side left/right/top/bottom. inset=true 면 여백 있는 플로팅(rounded-2xl), false 면 가장자리에 붙음.
- * 패널 bg-popover+border+shadow-popover. 백드롭 black@32%+blur. ESC/바깥클릭/X 닫기, 스크롤 잠금.
+ * 패널 bg-popover+border+shadow-overlay. 백드롭 black@32%+blur. ESC/바깥클릭/X 닫기, 스크롤 잠금.
  */
 interface SheetCtx {
   open: boolean;
@@ -107,7 +107,7 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
             {...labelProps}
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "fixed flex flex-col overflow-auto border-border bg-popover shadow-popover outline-none",
+              "fixed flex flex-col overflow-auto border-border bg-popover shadow-overlay outline-none",
               inset ? cn(insetPos[side], "rounded-radius-2xl border") : flush[side],
               className
             )}
