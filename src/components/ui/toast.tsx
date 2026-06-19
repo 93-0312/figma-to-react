@@ -7,7 +7,7 @@ import { Spinner } from "./spinner";
 /**
  * Toast — Figma "BO UI Kit" Toast(node 7728:238). 떠 있는 알림 카드.
  *
- * Alert 과 구조는 같으나 popover 배경 + border + shadow-popover(플로팅). Type: Default/Loading/Info/
+ * Alert 과 구조는 같으나 popover 배경 + border + shadow-overlay(플로팅). Type: Default/Loading/Info/
  * Success/Warning/Error. Loading=Spinner 아이콘, 상태=색 아이콘. 제목=foreground, 설명=muted.
  * (배치/타이머 등 알림 큐 로직은 앱이 담당 — 이 컴포넌트는 표현 단위.)
  */
@@ -47,7 +47,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         role="status"
         data-node-id="7728:238"
         className={cn(
-          "flex w-full flex-wrap items-center gap-3 rounded-radius-xl border border-border bg-popover px-3.5 py-3 text-sm shadow-popover",
+          "flex w-full flex-wrap items-center gap-3 rounded-radius-xl border border-border bg-popover px-3.5 py-3 text-sm shadow-overlay",
           className
         )}
         {...props}

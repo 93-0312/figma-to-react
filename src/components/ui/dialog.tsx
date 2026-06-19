@@ -14,7 +14,7 @@ import {
  * Dialog — Figma "BO UI Kit" Dialog(node 7656:1889). 페이지 위에 뜨는 모달.
  *
  * 합성: Dialog > DialogTrigger? + DialogContent > DialogHeader(DialogTitle/Description) + 본문 + DialogFooter.
- * 패널 bg-popover+border+rounded-2xl+shadow-popover. 백드롭 black@32%+blur. ESC/바깥클릭/X 로 닫기, 스크롤 잠금.
+ * 패널 bg-popover+border(#0f172b@8%)+rounded-2xl. 그림자 없음(Figma Dialog effects 비어있음; AlertDialog 만 popover 그림자). 백드롭 black@32%+blur. ESC/바깥클릭/X 로 닫기, 스크롤 잠금.
  * Footer 는 bg-secondary@72%+border-t(Figma BareFooter=False). 제어/비제어(open/onOpenChange).
  */
 interface DialogCtx {
@@ -103,7 +103,9 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
             {...labelProps}
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "relative flex w-full max-w-[448px] flex-col overflow-hidden rounded-radius-2xl border border-border bg-popover shadow-popover outline-none",
+              "relative flex w-full max-w-[448px] flex-col overflow-hidden rounded-radius-2xl border border-border bg-popover outline-none",
+              // Figma: 기본 Dialog 패널은 그림자 없음(border 만). AlertDialog 만 popover 그림자.
+              role === "alertdialog" && "shadow-overlay",
               className
             )}
             {...props}

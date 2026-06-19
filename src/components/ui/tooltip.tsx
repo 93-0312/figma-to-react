@@ -27,7 +27,7 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
       <span
         role="tooltip"
         className={cn(
-          "pointer-events-none absolute z-50 w-max max-w-xs whitespace-nowrap rounded-radius-lg border border-border bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-popover transition-opacity duration-150",
+          "pointer-events-none absolute z-50 w-max max-w-xs whitespace-nowrap rounded-radius-lg border border-border bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-overlay transition-opacity duration-150",
           "group-hover:opacity-100 group-focus-within:opacity-100",
           sidePos[side]
         )}

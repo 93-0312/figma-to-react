@@ -86,8 +86,10 @@ export default {
         xs: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
         // 채워진 버튼 전용: 하단 그림자 + 상단 내부 하이라이트
         btn: "0 1px 1px rgba(38, 38, 38, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16)",
-        // Select/팝오버 패널 (Figma shadow-lg)
-        popover:
+        // 플로팅 패널(Select/Sheet/Toast/Tooltip/AlertDialog) — Figma shadow-lg, 검정 5%.
+        // ★ 키 이름을 `popover` 로 두면 colors.popover 와 충돌해 Tailwind 가 shadow-popover 를
+        //   "그림자색=popover(흰색)" 으로 해석·덮어써 그림자가 흰색이 된다 → `overlay` 로 분리.
+        overlay:
           "0px 10px 15px -3px rgba(0, 0, 0, 0.05), 0px 4px 6px -4px rgba(0, 0, 0, 0.05)",
       },
     },

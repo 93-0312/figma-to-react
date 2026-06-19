@@ -9,7 +9,7 @@ import { cn } from "../../lib/utils";
  * 구성:
  *  - 트리거: Input 과 동일한 토큰/포커스(회색 3px 링)로 디자인. (Figma Select 노드는 열린 패널만
  *    포함하므로 트리거는 디자인 시스템 Input 관례를 따른다 — 문서화된 결정.)
- *  - 패널(SelectContent): popover 배경, border, rounded-radius-xl, shadow-popover, p-1, gap-px.
+ *  - 패널(SelectContent): popover 배경, border, rounded-radius-xl, shadow-overlay, p-1, gap-px.
  *  - 항목(SelectItem): h-28, rounded-radius-lg, text-xs medium, accent-foreground 텍스트.
  *      · 선택됨 → 좌측 체크 표시 + 배경 primary/4%
  *      · hover  → 배경 accent(#f8fafc)
@@ -205,7 +205,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             role="listbox"
             tabIndex={-1}
             className={cn(
-              "absolute left-0 top-full z-50 mt-1 flex max-h-64 w-full flex-col gap-px overflow-auto rounded-radius-xl border border-border bg-popover p-1 shadow-popover",
+              "absolute left-0 top-full z-50 mt-1 flex max-h-64 w-full flex-col gap-px overflow-auto rounded-radius-xl border border-border bg-popover p-1 shadow-overlay",
               contentClassName
             )}
             onKeyDown={(e) => {
