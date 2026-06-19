@@ -8,6 +8,9 @@ import react from "@vitejs/plugin-react";
  */
 export default defineConfig({
   plugins: [react()],
+  // 라이브러리 배포물엔 앱 전용 에셋을 넣지 않는다. public/(self-host Pretendard woff2 등)을
+  // dist 로 복사하면 배포 tarball 이 불필요하게 비대해진다(폰트는 소비자가 제공, system 폴백).
+  publicDir: false,
   build: {
     lib: {
       entry: "src/components/ui/index.ts",
