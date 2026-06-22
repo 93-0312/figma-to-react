@@ -6,11 +6,11 @@ import { cn } from "../../lib/utils";
  * Avatar — Figma "BO UI Kit" Avatar(node 1696:153). 이미지 + 폴백(이니셜).
  *
  * Figma 변형: Circular(True/False) → `shape` circle/square, Size 24/28/32/36/40/48 → `size`.
- * 폴백 배경=Figma `muted`(#e2e8f0)=프로젝트 `secondary`, 텍스트=muted-foreground, medium.
+ * 폴백 배경=Figma VariableID:5632:2342(#f1f5f9)=프로젝트 `accent`, 텍스트=muted-foreground, medium.
  * `ring`(2px background 색 테두리)은 AvatarGroup 겹침 분리용. 이미지 로드 실패 시 폴백 표시.
  */
 const avatarVariants = cva(
-  "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden bg-secondary font-medium text-muted-foreground",
+  "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden bg-accent font-medium text-muted-foreground",
   {
     variants: {
       size: {

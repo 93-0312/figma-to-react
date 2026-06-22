@@ -17,8 +17,8 @@ import { cn } from "../../lib/utils";
  * 상태 진리표(배경):
  *  - off                : 투명 (outline 변형은 card+border)
  *  - off + hover        : card/50 (아주 옅은 오버레이)
- *  - on (pressed)       : secondary/64 회색 채움 (Figma `muted`#e2e8f0 = 프로젝트 secondary 토큰)
- *  - on + hover         : secondary/64 그대로 (Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
+ *  - on (pressed)       : accent 채움 (Figma VariableID:5632:2344 #f1f5f9 = 프로젝트 accent 토큰)
+ *  - on + hover         : accent 그대로 (Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
  *  - disabled (+hover)  : opacity 50% (disabled 는 pointer-events-none 이라 hover 미발동)
  *
  * 변형: `variant` Default(테두리 없음) / Outline(border+card+shadow), `size` sm/md/lg(28/32/36),
@@ -30,7 +30,7 @@ const toggleVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-1 rounded-radius-lg text-sm text-foreground transition-colors outline-none " +
     "focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07] " +
     "disabled:pointer-events-none disabled:opacity-50 " +
-    "data-[state=off]:hover:bg-card/50 data-[state=on]:bg-secondary/[0.64] " +
+    "data-[state=off]:hover:bg-card/50 data-[state=on]:bg-accent " +
     "[&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
