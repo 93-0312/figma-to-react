@@ -2,6 +2,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogBody,
   DialogTitle,
   DialogDescription,
   DialogFooter,
@@ -25,6 +26,12 @@ export const dialogStory: Story = {
             <DialogTitle>{String(args.title)}</DialogTitle>
             <DialogDescription>{String(args.description)}</DialogDescription>
           </DialogHeader>
+          <DialogBody>
+            <p className="text-sm text-muted-foreground">
+              저장하지 않은 변경 사항이 있습니다. 지금 저장하면 현재 내용이 반영되고, 취소하면 마지막
+              저장 시점으로 되돌아갑니다.
+            </p>
+          </DialogBody>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setArg("open", false)}>취소</Button>
             <Button onClick={() => setArg("open", false)}>저장</Button>

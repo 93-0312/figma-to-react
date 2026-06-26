@@ -13,9 +13,14 @@ import {
 /**
  * Dialog — Figma "BO UI Kit" Dialog(node 7656:1889). 페이지 위에 뜨는 모달.
  *
- * 합성: Dialog > DialogTrigger? + DialogContent > DialogHeader(DialogTitle/Description) + 본문 + DialogFooter.
+ * 합성: Dialog > DialogTrigger? + DialogContent > DialogHeader(DialogTitle/Description) + DialogBody + DialogFooter.
  * 패널 bg-popover+border(#0f172b@8%)+rounded-2xl. 그림자 없음(Figma Dialog effects 비어있음; AlertDialog 만 popover 그림자). 백드롭 black@32%+blur. ESC/바깥클릭/X 로 닫기, 스크롤 잠금.
  * Footer 는 bg-secondary@72%+border-t(Figma BareFooter=False). 제어/비제어(open/onOpenChange).
+ *
+ * 패딩: Figma 의 Container(pad 24·gap 16)가 헤더+본문을 함께 감싼다 → 헤더·본문 모두 좌우 24px.
+ * 코드는 이를 파트별로 분배: Header=p-6, Body=px-6 pb-6(상단은 Header 의 pb-6 이 간격 제공). Footer=px-6 py-4.
+ * ★ 본문 콘텐츠는 반드시 DialogBody 로 감쌀 것 — DialogContent 직속 children 은 패딩 0 으로 가장자리에 붙는다.
+ * (헤더 없이 Body 만 쓰면 상단 패딩이 없으므로 className="pt-6" 을 더한다.)
  */
 interface DialogCtx {
   open: boolean;
@@ -134,6 +139,10 @@ DialogContent.displayName = "DialogContent";
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("flex flex-col gap-1 p-6", className)} {...props} />
 );
+/** 본문 영역. Figma Container 패딩(좌우·하단 24px)을 재현. 상단 간격은 앞선 DialogHeader 의 pb-6 이 제공. */
+const DialogBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("px-6 pb-6", className)} {...props} />
+);
 const DialogTitle = ({ className, id, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
   const { titleId, setHasTitle } = useDialog();
   useRegisterPresence(setHasTitle);
@@ -157,4 +166,4 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
   />
 );
 
-export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose };
+export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter, DialogClose };
