@@ -57,7 +57,7 @@ export type { TooltipProps } from "./tooltip";
 export { ScrollArea } from "./scroll-area";
 export type { ScrollAreaProps } from "./scroll-area";
 export {
-  Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
+  Dialog, DialogTrigger, DialogContent, DialogHeader, DialogBody, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from "./dialog";
 export type { DialogProps, DialogContentProps } from "./dialog";
 export { AlertDialog } from "./alert-dialog";

@@ -460,7 +460,7 @@
       "variants": {
         "role": ["dialog", "alertdialog"]
       },
-      "notes": "모달 다이얼로그. overlay.tsx의 Portal+backdrop(#101012@32%+blur)+ESC/스크롤락 재사용. 중앙 패널 max-w-448 rounded-radius-2xl bg-popover shadow-popover, X 닫기. Header/Title/Description/Footer(secondary@72% 바). dismissable 기본 true. controlled/uncontrolled(useControllableOpen)."
+      "notes": "모달 다이얼로그. overlay.tsx의 Portal+backdrop(#101012@32%+blur)+ESC/스크롤락 재사용. 중앙 패널 max-w-448 rounded-radius-2xl bg-popover shadow-popover, X 닫기. Header/Body/Title/Description/Footer(secondary@72% 바). Figma Container(pad24·gap16)가 헤더+본문을 함께 감싸므로 본문도 좌우24px → DialogBody(px-6 pb-6)로 재현(DialogContent 직속 children은 패딩0 주의). dismissable 기본 true. controlled/uncontrolled(useControllableOpen)."
     },
     {
       "name": "Alert Dialog",
