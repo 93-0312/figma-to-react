@@ -2,8 +2,8 @@
   "$schema": "./figma.manifest.schema.json",
   "fileKey": "LFA5EyNbUdPvi8Rbuf2tJC",
   "fileName": "BO UI Kit",
-  "lastSyncedVersion": "2366329571059528224",
-  "lastSyncedAt": "2026-06-18T07:35:17Z",
+  "lastSyncedVersion": "2370788515930715722",
+  "lastSyncedAt": "2026-06-30T08:00:30Z",
   "tokens": {
     "css": "src/index.css",
     "tailwind": "tailwind.config.js",
@@ -295,10 +295,23 @@
       "story": "src/stories/textarea.story.tsx",
       "figmaNodeId": "7751:1067",
       "variants": {
-        "focus": [false, true],
-        "size": ["Small", "Default", "Large"],
-        "fill": [false, true],
-        "disabled": [false, true]
+        "focus": [
+          false,
+          true
+        ],
+        "size": [
+          "Small",
+          "Default",
+          "Large"
+        ],
+        "fill": [
+          false,
+          true
+        ],
+        "disabled": [
+          false,
+          true
+        ]
       },
       "notes": "여러 줄 입력. Input 의 토큰/포커스 관례 재사용(회색 3px 링, border-input→focus disabled/30, invalid→destructive). bg=background, rounded-radius, shadow-xs, resize-y. size sm/md/lg(최소높이). 코너 그립은 네이티브 resize 로 대체."
     },
@@ -308,8 +321,18 @@
       "story": "src/stories/avatar.story.tsx",
       "figmaNodeId": "1696:153",
       "variants": {
-        "circular": [false, true],
-        "size": ["24", "28", "32", "36", "40", "48"]
+        "circular": [
+          false,
+          true
+        ],
+        "size": [
+          "24",
+          "28",
+          "32",
+          "36",
+          "40",
+          "48"
+        ]
       },
       "notes": "이미지+폴백(이니셜). shape circle/square, size xs~2xl(24~48). 폴백 bg=secondary(Figma muted #e2e8f0)/text=muted-foreground. ring(2px background 테두리)=그룹 분리용. 이미지 로드실패 시 폴백."
     },
@@ -319,7 +342,14 @@
       "story": "src/stories/avatar-group.story.tsx",
       "figmaNodeId": "1696:220",
       "variants": {
-        "size": ["24", "28", "32", "36", "40", "48"]
+        "size": [
+          "24",
+          "28",
+          "32",
+          "36",
+          "40",
+          "48"
+        ]
       },
       "notes": "Avatar 겹쳐 쌓기. 음수마진(-ml-3)+각 아바타 ring(background 2px)로 분리. size 자식에 주입, max 초과분은 +N 요약. Avatar 재사용."
     },
@@ -329,9 +359,21 @@
       "story": "src/stories/badge.story.tsx",
       "figmaNodeId": "9929:48567",
       "variants": {
-        "color": ["blue", "red", "orange", "green", "neutral"],
-        "type": ["Fill", "Tinted"],
-        "disabled": [false, true]
+        "color": [
+          "blue",
+          "red",
+          "orange",
+          "green",
+          "neutral"
+        ],
+        "type": [
+          "Fill",
+          "Tinted"
+        ],
+        "disabled": [
+          false,
+          true
+        ]
       },
       "notes": "상태 라벨. Fill=단색+흰텍스트 / Tinted=색@8%+색-foreground. 색 매핑: blue→info(=primary), red→destructive, orange→warning, green→success, neutral→foreground. ★ 상태색 토큰을 Figma 최신값으로 통일(destructive #ef4444→#fb2c36, success-fg #047857→#00a63e + success/warning/info/foreground 신규) → Button/Input/Field 빨강·초록도 변경됨. Figma static/secondary(dark) 변형 미구현. Chip 은 노드ID stale 로 보류."
     },
@@ -341,8 +383,15 @@
       "story": "src/stories/number-field.story.tsx",
       "figmaNodeId": "7781:5501",
       "variants": {
-        "size": ["Small", "Default", "Large"],
-        "isDisabled": [false, true]
+        "size": [
+          "Small",
+          "Default",
+          "Large"
+        ],
+        "isDisabled": [
+          false,
+          true
+        ]
       },
       "notes": "증감 버튼 숫자 입력. Input 컨테이너 토큰/포커스 재사용(border-input, 회색 3px 링). 좌(−)/우(+) 스텝퍼(ghost)+가운데 정렬 입력. size 28/32/36, min/max/step·clamp, 제어/비제어. 아이콘 인라인 SVG."
     },
@@ -352,10 +401,22 @@
       "story": "src/stories/radio-group.story.tsx",
       "figmaNodeId": "7669:1454",
       "variants": {
-        "mobile": [false, true],
-        "selected": [false, true],
-        "disabled": [false, true],
-        "cardStyle": [false, true]
+        "mobile": [
+          false,
+          true
+        ],
+        "selected": [
+          false,
+          true
+        ],
+        "disabled": [
+          false,
+          true
+        ],
+        "cardStyle": [
+          false,
+          true
+        ]
       },
       "notes": "단일 선택. 항목=라디오 원+제목(text-base)+설명(text-xs muted). 원: 미선택 bg-background+border-input+shadow / 선택 bg-foreground+흰 점(6px). cardStyle=테두리 카드. 숨긴 네이티브 radio 로 접근성. RadioGroup(context)+RadioGroupItem."
     },
@@ -365,9 +426,20 @@
       "story": "src/stories/segmented-control.story.tsx",
       "figmaNodeId": "9705:88227",
       "variants": {
-        "segments": ["2", "3", "4", "5"],
-        "selected": ["1..N"],
-        "style": ["Rounded", "Regular", "Sharp"]
+        "segments": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "selected": [
+          "1..N"
+        ],
+        "style": [
+          "Rounded",
+          "Regular",
+          "Sharp"
+        ]
       },
       "notes": "단일 선택 세그먼트. 컨테이너 bg-background+p-0.5, 선택만 bg-card+shadow(흰 알약), 나머지 muted-foreground. style rounded(full)/regular(radius)/sharp(none). options/value/onValueChange. 다층 그림자는 shadow-xs 근사. Input Group(7857:9348)은 Input 슬롯(leftIcon/rightIcon/prefix/suffix)으로 커버되어 별도 미추출."
     },
@@ -377,8 +449,14 @@
       "story": "src/stories/tabs.story.tsx",
       "figmaNodeId": "7722:82",
       "variants": {
-        "orientation": ["Horizontal", "Vertical"],
-        "type": ["Default", "WithLine"]
+        "orientation": [
+          "Horizontal",
+          "Vertical"
+        ],
+        "type": [
+          "Default",
+          "WithLine"
+        ]
       },
       "notes": "패널 전환. 합성: Tabs>TabsList>TabsTrigger/TabsContent. variant default(알약 — bg-secondary 트랙+선택 흰 카드+shadow)/line(밑줄, border-foreground). Figma muted #e2e8f0=secondary. 제어/비제어."
     },
@@ -388,7 +466,10 @@
       "story": "src/stories/accordion.story.tsx",
       "figmaNodeId": "1673:58",
       "variants": {
-        "expanded": [false, true]
+        "expanded": [
+          false,
+          true
+        ]
       },
       "notes": "Accordion+AccordionItem. 제목행(아이콘+제목+chevron 회전)+펼침 내용+하단 구분선. type single/multiple. AccordionItem(value/title/icon/children)."
     },
@@ -398,7 +479,10 @@
       "story": "src/stories/collapsible.story.tsx",
       "figmaNodeId": "5677:165",
       "variants": {
-        "expanded": [false, true]
+        "expanded": [
+          false,
+          true
+        ]
       },
       "notes": "버튼으로 여닫는 단일 패널. 트리거(제목+chevron-down 회전)+펼침 내용. title prop + open/defaultOpen/onOpenChange 제어/비제어."
     },
@@ -408,7 +492,10 @@
       "story": "src/stories/breadcrumb.story.tsx",
       "figmaNodeId": "5665:4391",
       "variants": {
-        "type": ["Chevron", "Slash"]
+        "type": [
+          "Chevron",
+          "Slash"
+        ]
       },
       "notes": "경로 표시. items 배열 API({label,href}). 링크=muted-foreground, 마지막(현재)=foreground+aria-current. separator chevron(›)/slash(/). Compact Pagination(9705:87310)은 거대 데모 프레임이라 드릴다운 필요 — 보류."
     },
@@ -418,7 +505,13 @@
       "story": "src/stories/alert.story.tsx",
       "figmaNodeId": "5655:4958",
       "variants": {
-        "type": ["Default", "Info", "Success", "Warning", "Error"]
+        "type": [
+          "Default",
+          "Info",
+          "Success",
+          "Warning",
+          "Error"
+        ]
       },
       "notes": "정보 콜아웃. type별 테두리 색@32%+배경 색@4%+아이콘 색(통일 상태토큰 info/success/warning/destructive). 제목=foreground medium, 설명=muted. icon 기본 제공(StatusIcon 인라인 SVG)/override, action 슬롯."
     },
@@ -428,7 +521,14 @@
       "story": "src/stories/toast.story.tsx",
       "figmaNodeId": "7728:238",
       "variants": {
-        "type": ["Default", "Loading", "Info", "Success", "Warning", "Error"]
+        "type": [
+          "Default",
+          "Loading",
+          "Info",
+          "Success",
+          "Warning",
+          "Error"
+        ]
       },
       "notes": "플로팅 알림 카드. popover 배경+border+shadow-popover. Loading=Spinner, 상태=색 아이콘(Alert StatusIcon 재사용). 알림 큐/타이머는 앱 담당(표현 단위)."
     },
@@ -438,7 +538,12 @@
       "story": "src/stories/tooltip.story.tsx",
       "figmaNodeId": "5685:185",
       "variants": {
-        "side": ["top", "right", "bottom", "left"]
+        "side": [
+          "top",
+          "right",
+          "bottom",
+          "left"
+        ]
       },
       "notes": "hover/focus 힌트. 트리거 감싸고 group-hover/focus-within 으로 popover 라벨 표시(경량 CSS). bg-popover+border+shadow, text-xs. side 4방향. content prop."
     },
@@ -448,7 +553,10 @@
       "story": "src/stories/scroll-area.story.tsx",
       "figmaNodeId": "7669:1745",
       "variants": {
-        "hover": [false, true]
+        "hover": [
+          false,
+          true
+        ]
       },
       "notes": "커스텀 스크롤바 컨테이너. overflow-auto + 얇은 스크롤바(thumb=foreground@20%, ::-webkit-scrollbar). bordered(테두리+패딩) 기본. 높이는 className. Figma 하단 fade 는 선택."
     },
@@ -458,7 +566,10 @@
       "story": "src/stories/dialog.story.tsx",
       "figmaNodeId": "7656:1889",
       "variants": {
-        "role": ["dialog", "alertdialog"]
+        "role": [
+          "dialog",
+          "alertdialog"
+        ]
       },
       "notes": "모달 다이얼로그. overlay.tsx의 Portal+backdrop(#101012@32%+blur)+ESC/스크롤락 재사용. 중앙 패널 max-w-448 rounded-radius-2xl bg-popover shadow-popover, X 닫기. Header/Body/Title/Description/Footer(secondary@72% 바). Figma Container(pad24·gap16)가 헤더+본문을 함께 감싸므로 본문도 좌우24px → DialogBody(px-6 pb-6)로 재현(DialogContent 직속 children은 패딩0 주의). dismissable 기본 true. controlled/uncontrolled(useControllableOpen)."
     },
@@ -468,7 +579,10 @@
       "story": "src/stories/alert-dialog.story.tsx",
       "figmaNodeId": "5655:5142",
       "variants": {
-        "destructive": [false, true]
+        "destructive": [
+          false,
+          true
+        ]
       },
       "notes": "확인/취소 프리셋. Dialog 프리미티브+Button 재사용. role=alertdialog, dismissable=false(백드롭/ESC 안닫힘). title/description/cancelText/actionText/onAction/onCancel/destructive props. Cancel=secondary, Action=destructive|default Button."
     },
@@ -478,8 +592,16 @@
       "story": "src/stories/sheet.story.tsx",
       "figmaNodeId": "7669:1795",
       "variants": {
-        "side": ["right", "left", "top", "bottom"],
-        "inset": [false, true]
+        "side": [
+          "right",
+          "left",
+          "top",
+          "bottom"
+        ],
+        "inset": [
+          false,
+          true
+        ]
       },
       "notes": "엣지 슬라이드 패널. overlay.tsx Portal+backdrop 재사용. side 4방향(flush=해당 모서리 rounded), inset=플로팅(inset-y-4 등+전체 rounded+border). X 닫기. Header/Title/Description/Footer/Close."
     },
@@ -489,7 +611,12 @@
       "story": "src/stories/drawer.story.tsx",
       "figmaNodeId": "8046:330",
       "variants": {
-        "side": ["bottom", "top", "left", "right"]
+        "side": [
+          "bottom",
+          "top",
+          "left",
+          "right"
+        ]
       },
       "notes": "Sheet 프리셋. side 기본 bottom, inset 기본 true(여백 있는 플로팅). SheetContent 래핑, Header/Title/Description/Footer/Close 를 Drawer* 로 재노출."
     }
