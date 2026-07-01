@@ -1,0 +1,36 @@
+---
+description: figma-to-react / bo-ui-kit 프로젝트 규칙 (Claude Code 와 공유)
+alwaysApply: true
+---
+
+# 프로젝트 규칙 — 단일 소스는 CLAUDE.md
+
+이 프로젝트의 **모든 코딩 규칙과 컨벤션은 저장소 루트의 `CLAUDE.md` 한 곳**에서 관리한다.
+Claude Code 와 Cursor 가 같은 규칙을 공유하기 위해, Cursor 는 이 파일을 통해 CLAUDE.md 를 읽는다.
+
+@CLAUDE.md
+
+## ⭐ 반드시 지킬 것 (요약 — 상세는 위 CLAUDE.md)
+
+- **토큰 하드코딩 금지.** 색상·간격·radius·타이포·shadow 는 항상 토큰 사용
+  (`bg-primary`, `rounded-radius`, `text-foreground` 등). 새 토큰은 `src/index.css` +
+  `tailwind.config.js` 양쪽에 추가.
+- **새 컴포넌트는 `src/components/ui/`** 에 kebab-case 파일 + PascalCase + `forwardRef`.
+  기존 컴포넌트가 있으면 새로 만들지 말고 재사용/확장.
+- **배럴 파일 `src/components/ui/index.ts` 에 export 를 반드시 추가**한다.
+  여기 없으면 npm(`bo-ui-kit`) 빌드/배포에서 빠진다.
+- **Figma variant 속성은 1:1 prop 으로 매핑**하고 성급히 flatten 하지 않는다.
+  N개 속성이면 2^N 조합을 확인하고, 상태 진리표를 JSDoc 으로 남긴다.
+- **Figma 추출은 REST API 를 정식 경로로** 한다(수동·자동 동일). `boundVariables` 값을
+  코드 토큰 값과 대조해 매핑하고, **없는 토큰을 발명하지 않는다.**
+- **PR/커밋/이슈에 백틱 없는 `@<이름>` 금지.** 특히 `@eromnet` 은 백틱으로 감싼다
+  (`` `@eromnet/bo-ui-kit` ``). 산문에 그대로 쓰면 팀 전체에 알림 메일 발송(실제 사고 PR #85).
+
+## ⭐ 실수를 배웠을 때 (가장 중요 — 크로스 에디터 공유)
+
+버그를 고친 뒤 "다음부터 이러지 마라" 식의 **일반화된 규칙은 반드시 `CLAUDE.md` 에 적는다.**
+- Cursor 개인 메모리나 이 `.mdc` 본문에만 적으면 Claude Code 를 쓰는 협업자는 그 교훈을 못 본다.
+- `CLAUDE.md` 한 곳에만 추가하면 Claude Code · Cursor 양쪽이 자동으로 공유한다.
+- 예: "Figma 원(radius-full)을 네모로 코드화했다" → CLAUDE.md 스타일 규칙에
+  "원형 요소는 `rounded-full`/토큰 radius 로, Figma cornerRadius 값을 반드시 대조" 같은
+  일반 규칙으로 남긴다.

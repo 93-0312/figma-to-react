@@ -4,6 +4,12 @@
 이 파일은 `figma-create-design-system-rules` 스킬의 공식 템플릿 구조를 따른다.
 모든 Figma 기반 작업에 적용된다.
 
+> ★ **이 파일이 모든 코딩 규칙의 단일 소스(single source of truth)다.** 협업자는 서로 다른
+> AI 에디터(Claude Code, Cursor 등)를 쓰므로, **버그를 고친 뒤 일반화한 재발 방지 규칙은
+> 반드시 여기 `CLAUDE.md` 에 적는다.** 에디터별 개인 메모리(Claude 자동 메모리, Cursor
+> Memories)에만 적으면 다른 에디터를 쓰는 협업자가 공유받지 못한다. Cursor 는
+> `.cursor/rules/project.mdc` 를 통해, 기타 에이전트는 `AGENTS.md` 를 통해 이 파일을 읽는다.
+
 ## 프로젝트 스택
 
 - Vite + React 18 + TypeScript + Tailwind v3 + class-variance-authority(cva) + tailwind-merge
