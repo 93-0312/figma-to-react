@@ -106,6 +106,18 @@ Figma 컴포넌트의 variant 속성을 코드 prop 으로 옮길 때 반드시 
 - 새 컴포넌트를 만들면 `src/stories/<name>.story.tsx` 에 `Story`(컨트롤 + render + 전체 변형 갤러리)를 정의하고 `src/App.tsx` 의 `STORIES` 에 등록한다.
 - 갤러리에는 **모든 조합(엣지 포함)을 렌더**해 시각 회귀를 확인할 수 있게 한다.
 
+### npm 타입 배포 (d.ts) — 재발 방지
+
+- IMPORTANT: `type:"module"` 패키지의 d.ts 는 ESM 취급이다. `exports` 의 `require` 쪽에는
+  반드시 **별도의 `.d.cts` 타입**을 조건부(`"require": { "types": ... }`)로 연결한다 —
+  ESM d.ts 하나만 두면 node16 CJS TS 소비자에서 "Masquerading as ESM" 이 난다.
+- IMPORTANT: 배포되는 d.ts 안의 상대 import 는 **명시적 확장자**(`./button.js` / `.cjs`)여야
+  한다. tsc 는 소스의 확장자 없는 import 를 그대로 emit 하므로 `scripts/build-lib.mjs` 의
+  후처리 단계가 재작성한다 — 빌드 파이프라인을 바꿀 때 이 단계를 없애지 말 것.
+- 타입/exports 를 건드리면 `npx @arethetypeswrong/cli --pack . --exclude-entrypoints ./styles.css`
+  로 node10/node16(ESM·CJS)/bundler 전부 🟢 인지 확인한다(smoke CI 에도 포함됨).
+- `exports` 에는 `"./package.json": "./package.json"` 서브패스를 유지한다(번들러·툴체인이 요구).
+
 ### 접근성
 
 - 인터랙티브 요소는 네이티브 요소를 기반으로 하고(예: 숨긴 `<input>`), 포커스 링(`focus-visible:ring`) 과 `aria-*` 를 갖춘다.
