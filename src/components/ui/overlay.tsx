@@ -31,9 +31,13 @@ export function useOverlayBehavior(open: boolean, onClose: () => void) {
   }, [open, onClose]);
 }
 
-/** 백드롭(검정 #101012 @32% + 배경 블러). Figma Overlay 토큰. */
+/**
+ * 백드롭(검정 #101012 @32% + 배경 블러) — Figma Overlay 토큰(--backdrop).
+ * (토큰명을 `overlay` 로 두면 boxShadow.overlay 와 충돌해 shadow-overlay 가 색으로
+ *  해석되므로 `backdrop` 으로 분리 — tailwind.config.js 의 popover 충돌 주석과 동일 이슈.)
+ */
 export const backdropClass =
-  "fixed inset-0 z-50 bg-[rgb(16_16_18_/_0.32)] backdrop-blur-sm";
+  "fixed inset-0 z-50 bg-backdrop/[0.32] backdrop-blur-sm";
 
 /** open/defaultOpen/onOpenChange 를 controlled/uncontrolled 로 다루는 훅. */
 export function useControllableOpen(

@@ -79,7 +79,8 @@ try {
   // ── 단언: styles.css 가 토큰을 실제로 적용했는지 ──
   assertEq("Default 버튼 = primary", d.defaultButtonBg, "rgb(43, 127, 255)");
   assertEq("Destructive 버튼 = destructive", d.destructiveButtonBg, "rgb(251, 44, 54)");
-  assertEq("Meter 인디케이터 = primary", d.meterIndicatorBg, "rgb(43, 127, 255)");
+  // Meter 인디케이터는 Figma 재바인딩(primary→destructive, 2026-07-01 sync PR #127)에 맞춤
+  assertEq("Meter 인디케이터 = destructive", d.meterIndicatorBg, "rgb(251, 44, 54)");
   assertTrue("Meter 채움 너비 > 0 (value 반영)", d.meterIndicatorWidthPx > 10, `${d.meterIndicatorWidthPx}px`);
   assertEq("InputOTP isLarge 슬롯 6개(36px)", d.otpLargeSlots, 6);
   assertTrue("Meter/Input/Label 렌더", d.hasMeter && d.hasInput && d.hasLabel);
