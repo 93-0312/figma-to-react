@@ -13,6 +13,9 @@
  * 사용:
  *   FIGMA_TOKEN=... node scripts/check-figma-nodes.mjs           # 감지 (exit 0/10/2)
  *   FIGMA_TOKEN=... node scripts/check-figma-nodes.mjs --record  # 현재 지문을 sidecar 에 기록
+ *   FIGMA_TOKEN=... node scripts/check-figma-nodes.mjs --record --version <id>
+ *     # 특정 파일 버전 시점의 지문을 기록 — sync 가 추출한 버전으로 고정할 때 사용.
+ *     # (라이브로 기록하면 추출~기록 사이의 편집이 "동기화됨"으로 오기록되는 레이스가 있다)
  *
  * 종료 코드: 0 = 컴포넌트 변경 없음 / 10 = 변경됨 / 2 = 오류
  */
@@ -43,11 +46,17 @@ const fileKey = manifest.fileKey;
 const comps = manifest.components || [];
 if (!fileKey || comps.length === 0) fail("fileKey/components 가 비어 있습니다.");
 
+// --version <id>: 조회를 특정 파일 버전으로 고정(미지정 시 라이브 상태).
+const vi = process.argv.indexOf("--version");
+const pinnedVersion = vi !== -1 ? process.argv[vi + 1] : undefined;
+if (vi !== -1 && (!pinnedVersion || pinnedVersion.startsWith("--")))
+  fail("--version 뒤에 버전 id 가 필요합니다.");
+
 const ids = comps.map((c) => c.figmaNodeId);
 const res = await fetch(
   `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${encodeURIComponent(
     ids.join(",")
-  )}`,
+  )}${pinnedVersion ? `&version=${encodeURIComponent(pinnedVersion)}` : ""}`,
   { headers: { "X-Figma-Token": token } }
 ).catch((e) => fail(`네트워크 오류: ${e.message}`));
 
