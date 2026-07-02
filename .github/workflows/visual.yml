@@ -25,7 +25,9 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: visual-${{ github.ref }}
+  # dispatch 는 ref 가 항상 main 이라 ref 만으로 그룹핑하면 sync PR 2개 이상을 순차
+  # dispatch 할 때 뒤 실행이 앞 실행을 취소해 버린다 → PR 번호로 그룹을 분리.
+  group: visual-${{ github.event.inputs.pr || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -106,12 +108,17 @@ jobs:
             *) echo "비-sync PR($BR) → 자동 갱신 생략"; exit 0;;
           esac
           npx playwright test --update-snapshots || true
-          # 노드 지문도 현재 Figma 상태로 갱신(poll 의 2차 게이트 기준점) → 머지 후 동일 변경 재감지 방지
-          node scripts/check-figma-nodes.mjs --record || true
-          if git diff --quiet -- tests figma.fingerprints.json; then echo "baseline/지문 변화 없음 → 커밋 생략"; exit 0; fi
+          # 노드 지문 갱신(poll 의 2차 게이트 기준점) — ⚠️ 라이브 상태가 아니라 sync 가 추출한
+          # 시점의 버전(manifest lastSyncedVersion)으로 고정해 기록한다. 라이브로 기록하면
+          # 추출~여기 사이의 디자이너 편집이 "동기화됨"으로 오기록돼 영구 유실된다.
+          # (버전 조회 실패 시 지문 미갱신 → 다음 폴링이 재감지: 안전 방향 폴백)
+          VER=$(node -p "JSON.parse(require('fs').readFileSync('figma.manifest.json','utf8')).lastSyncedVersion" 2>/dev/null || echo "")
+          node scripts/check-figma-nodes.mjs --record ${VER:+--version "$VER"} || true
+          # untracked 새 baseline(신규 컴포넌트 스냅샷)은 diff 에 안 잡히므로 add 후 --cached 로 검사
+          git add tests figma.fingerprints.json
+          if git diff --cached --quiet; then echo "baseline/지문 변화 없음 → 커밋 생략"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add tests figma.fingerprints.json
           git commit -m "test(visual): sync 렌더에 맞춰 Linux baseline + 노드 지문 자동 갱신"
           git push origin "HEAD:${BR}"
           echo "baseline + 지문 자동 갱신 커밋 → ${BR}"

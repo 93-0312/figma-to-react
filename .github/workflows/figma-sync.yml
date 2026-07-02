@@ -1,7 +1,10 @@
 name: Figma sync (headless Claude)
 
 # 레벨 2 — 헤드리스 Claude 자동 추출 → 자동 PR.
-# 트리거: 수동(workflow_dispatch) + repository_dispatch(향후 webhook/외부 트리거용).
+# 트리거: 수동(workflow_dispatch) + poll 이 노드 지문 게이트 통과 시 `gh workflow run` 으로 호출.
+# ⚠️ repository_dispatch(figma-changed)는 구독하지 않는다 — 웹훅은 poll 만 받아 2단 게이트
+#    (version + 노드 지문)를 거친 뒤 여기를 트리거한다. 양쪽이 함께 구독하면 저장 1회에
+#    sync 가 이중 실행(같은 브랜치명 충돌)되고, autosave 에도 게이트 없이 헤드리스가 기동된다.
 #
 # 필요한 Secret:
 #   - CLAUDE_CODE_OAUTH_TOKEN  : `claude setup-token` 으로 발급(Max/Pro 구독). 헤드리스 Claude 인증.
@@ -11,8 +14,6 @@ name: Figma sync (headless Claude)
 
 on:
   workflow_dispatch: {}
-  repository_dispatch:
-    types: [figma-changed]
 
 permissions:
   contents: write
