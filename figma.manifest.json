@@ -2,8 +2,8 @@
   "$schema": "./figma.manifest.schema.json",
   "fileKey": "LFA5EyNbUdPvi8Rbuf2tJC",
   "fileName": "BO UI Kit",
-  "lastSyncedVersion": "2370788515930715722",
-  "lastSyncedAt": "2026-06-30T08:00:30Z",
+  "lastSyncedVersion": "2371146359190618756",
+  "lastSyncedAt": "2026-07-01T07:00:38Z",
   "tokens": {
     "css": "src/index.css",
     "tailwind": "tailwind.config.js",
