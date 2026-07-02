@@ -37,6 +37,10 @@ jobs:
       - run: npm ci
       - name: 라이브러리 빌드 (예시가 import)
         run: npm run build:lib
+      - name: 타입 배포 검증 (attw — node16/ESM/CJS 전 모드)
+        # d.ts 확장자·dual types 회귀 방지. styles.css 는 CSS 서브패스라 attw 가
+        # 해석할 수 없어 제외(타입 검증 대상 아님).
+        run: npx --yes @arethetypeswrong/cli@0.18.4 --pack . --exclude-entrypoints ./styles.css
       - name: CJS require 검증 (CommonJS 소비자)
         run: node -e "const ui=require('bo-ui-kit'); const need=['Button','Meter','InputOTP','Field','Input','Checkbox','Label']; const miss=need.filter(k=>!ui[k]); if(miss.length){console.error('CJS export 누락:',miss);process.exit(1)} console.log('✓ CJS require OK —',Object.keys(ui).length,'exports')"
       - name: pack 소비 검증 (tarball 만, 심볼릭 링크 배제)
