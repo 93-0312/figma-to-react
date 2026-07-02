@@ -61,6 +61,10 @@ export default {
         input: "rgb(var(--border) / 0.08)",
         ring: "rgb(var(--ring) / <alpha-value>)",
         disabled: "rgb(var(--disabled) / <alpha-value>)",
+        // Dialog/Sheet/Drawer 백드롭 — Figma Overlay 토큰(#101012, 32% 알파는 사용처에서).
+        // ★ 이름을 `overlay` 로 두면 아래 boxShadow.overlay 와 충돌(shadow-overlay 가
+        //   그림자색으로 해석됨) → `backdrop` 으로 분리.
+        backdrop: "rgb(var(--backdrop) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],

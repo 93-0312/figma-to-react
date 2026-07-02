@@ -11,7 +11,9 @@ import { cn } from "../../lib/utils";
  */
 const switchVariants = cva(
   "relative inline-flex shrink-0 cursor-pointer items-center rounded-radius-full p-0.5 outline-none transition-colors " +
-    "shadow-[inset_0_2px_4px_0_rgb(0_0_0_/_0.05)] " +
+    // 트랙 안쪽 그림자 — Tailwind 내장 shadow-inner(inset 0 2px 4px 0 rgb(0 0 0 / 0.05))와
+    // Figma 값이 정확히 일치해 내장 토큰 사용(임의 하드코딩 금지 규칙).
+    "shadow-inner " +
     "focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07] " +
     "disabled:cursor-not-allowed disabled:opacity-[0.64] " +
     "data-[state=on]:bg-success data-[state=off]:bg-input",
