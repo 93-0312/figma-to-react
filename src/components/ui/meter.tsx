@@ -19,7 +19,7 @@ export interface MeterProps extends React.HTMLAttributes<HTMLDivElement> {
   min?: number;
   /** 범위 최대 (기본 100) */
   max?: number;
-  /** 좌측 라벨 텍스트 */
+  /** 좌측 라벨 텍스트. 미지정 시 라벨 행 좌측과 aria-label 을 생략 */
   label?: string;
   /** 우측 보조 라벨(예: "50%"). 미지정 시 채움 비율을 % 로 자동 표기 */
   valueLabel?: string;
@@ -36,7 +36,7 @@ const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
       value = 50,
       min = 0,
       max = 100,
-      label = "Label",
+      label,
       valueLabel,
       showLabels = true,
       showSecondaryLabel = true,

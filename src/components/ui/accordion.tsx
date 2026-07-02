@@ -6,6 +6,9 @@ import { cn } from "../../lib/utils";
  *
  * 항목 = 제목행(선택 아이콘+제목+chevron) + 펼침 시 설명/내용 + 구분선. chevron 은 펼침 시 회전.
  * type single(하나만) / multiple. 제어/비제어(value). 내용 영역은 펼침 시 렌더.
+ *
+ * 접근성: 트리거 버튼 ↔ 패널을 useId 기반 id/aria-controls/aria-labelledby 로 연결하고
+ * 패널은 role="region" (APG Accordion 패턴).
  */
 interface AccordionContextValue {
   isOpen: (v: string) => boolean;
@@ -67,6 +70,9 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
     const ctx = React.useContext(AccordionContext);
     if (!ctx) throw new Error("AccordionItem must be used within Accordion");
     const open = ctx.isOpen(value);
+    const baseId = React.useId();
+    const triggerId = `${baseId}-trigger`;
+    const panelId = `${baseId}-panel`;
     return (
       <div
         ref={ref}
@@ -75,7 +81,9 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
       >
         <button
           type="button"
+          id={triggerId}
           aria-expanded={open}
+          aria-controls={panelId}
           onClick={() => ctx.toggle(value)}
           className="flex w-full items-center gap-1 py-4 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07]"
         >
@@ -95,7 +103,9 @@ const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps>(
           </svg>
         </button>
         {open && (
-          <div className="pb-4 text-sm text-muted-foreground">{children}</div>
+          <div id={panelId} role="region" aria-labelledby={triggerId} className="pb-4 text-sm text-muted-foreground">
+            {children}
+          </div>
         )}
       </div>
     );
