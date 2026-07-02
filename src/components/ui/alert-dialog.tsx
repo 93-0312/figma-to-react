@@ -15,6 +15,7 @@ import { useControllableOpen } from "./overlay";
  *
  * Dialog 프리미티브 재사용 + role=alertdialog + 바깥클릭/X 비활성(명시적 선택 필요).
  * 취소/실행 버튼. `destructive` 시 실행 버튼이 빨간(destructive) Button. 제어/비제어(open).
+ * `className` 은 패널(DialogContent)에 병합되고 ref 도 패널로 전달된다.
  */
 export interface AlertDialogProps {
   open?: boolean;
@@ -27,45 +28,54 @@ export interface AlertDialogProps {
   onAction?: () => void;
   onCancel?: () => void;
   destructive?: boolean;
+  /** 패널(DialogContent)에 병합되는 클래스 */
+  className?: string;
   children?: React.ReactNode;
 }
 
-function AlertDialog({
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  title,
-  description,
-  cancelText = "취소",
-  actionText = "확인",
-  onAction,
-  onCancel,
-  destructive,
-  children,
-}: AlertDialogProps) {
-  const [o, setO] = useControllableOpen(open, defaultOpen, onOpenChange);
-  return (
-    <Dialog open={o} onOpenChange={setO} role="alertdialog" dismissable={false}>
-      <DialogContent showClose={false}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description != null && <DialogDescription>{description}</DialogDescription>}
-          {children}
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="secondary" onClick={() => { onCancel?.(); setO(false); }}>
-            {cancelText}
-          </Button>
-          <Button
-            variant={destructive ? "destructive" : "default"}
-            onClick={() => { onAction?.(); setO(false); }}
-          >
-            {actionText}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
+const AlertDialog = React.forwardRef<HTMLDivElement, AlertDialogProps>(
+  (
+    {
+      open,
+      defaultOpen = false,
+      onOpenChange,
+      title,
+      description,
+      cancelText = "취소",
+      actionText = "확인",
+      onAction,
+      onCancel,
+      destructive,
+      className,
+      children,
+    },
+    ref
+  ) => {
+    const [o, setO] = useControllableOpen(open, defaultOpen, onOpenChange);
+    return (
+      <Dialog open={o} onOpenChange={setO} role="alertdialog" dismissable={false}>
+        <DialogContent ref={ref} showClose={false} className={className}>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            {description != null && <DialogDescription>{description}</DialogDescription>}
+            {children}
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => { onCancel?.(); setO(false); }}>
+              {cancelText}
+            </Button>
+            <Button
+              variant={destructive ? "destructive" : "default"}
+              onClick={() => { onAction?.(); setO(false); }}
+            >
+              {actionText}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+);
+AlertDialog.displayName = "AlertDialog";
 
 export { AlertDialog };

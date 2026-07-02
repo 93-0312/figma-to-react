@@ -14,7 +14,11 @@ import { cn } from "../../lib/utils";
  *      · 선택됨 → 좌측 체크 표시 + 배경 primary/4%
  *      · hover  → 배경 accent(#f8fafc)
  *
- * 동작: 클릭 토글, 바깥 클릭/Escape 로 닫힘, ↑/↓ 로 항목 이동(roving focus). 제어·비제어 지원.
+ * 동작: 클릭 토글, 바깥 클릭/Escape/Tab 으로 닫힘(Escape/Tab 은 트리거로 포커스 복귀),
+ * ↑/↓ 로 항목 이동(roving focus). 제어·비제어 지원.
+ *
+ * 접근성/폼: 트리거 aria-controls ↔ 패널 id(useId) 연결. `name` 지정 시 hidden input 으로
+ * 현재 값이 폼 제출에 실린다.
  *
  * @see https://coss.com/ui/docs/components/select
  */
@@ -118,6 +122,7 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     const [open, setOpen] = React.useState(false);
     const rootRef = React.useRef<HTMLDivElement>(null);
     const listRef = React.useRef<HTMLDivElement>(null);
+    const listboxId = React.useId();
 
     const selected = options.find((o) => o.value === current);
 
@@ -169,10 +174,10 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           ref={ref}
           type="button"
           id={id}
-          name={name}
           disabled={disabled}
           aria-haspopup="listbox"
           aria-expanded={open}
+          aria-controls={listboxId}
           data-node-id="7751:1561"
           className={cn(selectTriggerVariants({ inputSize, invalid }), className)}
           onClick={() => setOpen((o) => !o)}
@@ -199,17 +204,25 @@ const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
           />
         </button>
 
+        {name != null && (
+          <input type="hidden" name={name} value={current ?? ""} />
+        )}
+
         {open && (
           <div
             ref={listRef}
             role="listbox"
+            id={listboxId}
             tabIndex={-1}
             className={cn(
               "absolute left-0 top-full z-50 mt-1 flex max-h-64 w-full flex-col gap-px overflow-auto rounded-radius-xl border border-border bg-popover p-1 shadow-overlay",
               contentClassName
             )}
             onKeyDown={(e) => {
-              if (e.key === "Escape") {
+              if (e.key === "Escape" || e.key === "Tab") {
+                // Tab 도 패널을 닫고 트리거로 복귀 — 언마운트될 항목에서 기본 Tab 이동이
+                // 일어나면 포커스가 body 로 유실되므로 기본 동작을 막는다.
+                e.preventDefault();
                 setOpen(false);
                 rootRef.current
                   ?.querySelector<HTMLButtonElement>("button")
