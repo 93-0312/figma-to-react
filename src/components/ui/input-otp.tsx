@@ -76,9 +76,11 @@ const slotVariants = cva(
   {
     variants: {
       isLarge: { true: "size-9", false: "size-8" },
-      // active = 다음 입력 위치(캐럿). Figma 는 disabled(#45556c) 색의 테두리 + 부드러운 링.
+      // active = 다음 입력 위치(캐럿). 슬롯이 Input 의 "Type=Focus" 인스턴스를 그대로 쓰므로
+      // Input 과 동일한 primary/ring 파랑 테두리 + 3px/15% 글로우 링이다.
+      // (2026-07 Figma 갱신: 이전엔 disabled 회색 링이었으나 primary/ring 파랑으로 재바인딩됨.)
       active: {
-        true: "z-10 border-disabled/30 ring-[3px] ring-disabled/20",
+        true: "z-10 border-ring ring-[3px] ring-ring/[0.15]",
         false: "border-input",
       },
     },
