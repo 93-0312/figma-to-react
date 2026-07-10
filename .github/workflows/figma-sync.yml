@@ -130,6 +130,41 @@ jobs:
             fi
           done
 
+      # ── no-op 자가 치유: 에이전트가 "코드 반영할 변경 없음"으로 끝난 경우 ──
+      # poll 의 노드 지문은 서브트리 전체 해시라 레이어 이름변경/이동 같은 구조 편집에도
+      # "변경"으로 뜨지만, 에이전트는 실제 디자인 값을 대조해 no-op 판정할 수 있다.
+      # 이때 아무것도 안 하면: 워터마크·지문이 안 전진 → 이슈가 안 닫힘 → poll dedup 이
+      # 이후 모든 sync 를 차단하는 교착이 된다(실제 사례: 이슈 #132, 2026-07-09).
+      # → 지문·워터마크를 관측 버전으로 전진시키고 이슈를 닫아 사이클을 복구한다.
+      # (에이전트 no-op 오판 시 변경이 흡수되는 트레이드오프가 있으나, 이슈 코멘트로
+      #  재실행 경로를 안내한다 — 교착으로 전부 막히는 것보다 안전한 방향.)
+      - name: No-op 자가 치유 (구조 편집 교착 방지)
+        if: success()
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 열린 sync PR 이 있으면 정상 흐름(PR 머지가 이슈를 닫음) → 생략
+          OPEN=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName \
+            --jq '[.[] | select(.headRefName | startswith("figma-sync/"))] | length' 2>/dev/null || echo 1)
+          [ "$OPEN" = "0" ] || { echo "열린 sync PR 있음 → 자가 치유 생략"; exit 0; }
+          # 버전 게이트가 최신이면 애초에 할 일이 없던 실행 → 생략
+          set +e; OUT=$(node scripts/check-figma-version.mjs 2>&1); CODE=$?; set -e
+          [ "$CODE" = "10" ] || { echo "버전 최신(또는 오류 $CODE) → 자가 치유 생략"; exit 0; }
+          VER=$(printf '%s' "$OUT" | grep -oE '"currentVersion": *"[0-9]+"' | grep -oE '[0-9]+' | head -1)
+          echo "에이전트 no-op + 버전 게이트 '변경' → 지문·워터마크 전진 (version=$VER)"
+          node scripts/check-figma-nodes.mjs --record ${VER:+--version "$VER"}
+          node scripts/check-figma-version.mjs --record "$VER"
+          git add figma.fingerprints.json figma.manifest.json
+          git diff --cached --quiet && { echo "변화 없음"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(figma): no-op sync — 구조 편집 흡수 (지문·워터마크 전진, 코드 변경 없음)"
+          git pull --rebase --autostash origin main >/dev/null 2>&1 || true
+          git push origin HEAD:main || { echo "::warning::자가 치유 push 실패(다음 사이클 재시도)"; exit 0; }
+          ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title Figma 변경 감지' --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+          [ -z "$ISSUE" ] || gh issue close "$ISSUE" --comment "sync 에이전트가 실제 디자인 값을 대조한 결과 **코드에 반영할 변경 없음**(레이어 이름변경/이동 등 구조 편집)으로 판정했습니다. 지문·워터마크만 전진하고 닫습니다. 만약 실제 디자인 변경이 누락된 것이라면 이 이슈를 다시 열고 Actions 에서 \"Figma sync (headless Claude)\" 를 수동 실행하세요." || true
+
       # 헤드리스 실행이 실패한 경우 알림(가장 흔한 원인: CLAUDE_CODE_OAUTH_TOKEN 만료/크레딧 소진).
       # Figma 토큰은 token-health 가 능동 점검하므로, 여기선 Claude 쪽을 reactive 로 커버한다.
       - name: 헤드리스 실패 알림
