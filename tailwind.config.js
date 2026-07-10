@@ -56,9 +56,10 @@ export default {
           DEFAULT: "rgb(var(--info) / <alpha-value>)",
           foreground: "rgb(var(--info-foreground) / <alpha-value>)",
         },
-        // border 는 Figma 에서 8% 알파가 적용된 토큰(#0f172b14)
-        border: "rgb(var(--border) / 0.08)",
-        input: "rgb(var(--border) / 0.08)",
+        // border/input: 2026-07 Figma 갱신 — 기존엔 8% 알파 공유 토큰(#0f172b14)이었으나
+        // 서로 다른 불투명 색(#e1e6ec / #dedfe2)으로 갈라짐(src/tokens.css 참고).
+        border: "rgb(var(--border) / <alpha-value>)",
+        input: "rgb(var(--input) / <alpha-value>)",
         ring: "rgb(var(--ring) / <alpha-value>)",
         disabled: "rgb(var(--disabled) / <alpha-value>)",
         // Dialog/Sheet/Drawer 백드롭 — Figma Overlay 토큰(#101012, 32% 알파는 사용처에서).

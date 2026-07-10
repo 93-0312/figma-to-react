@@ -14,7 +14,7 @@ import {
  * Dialog — Figma "BO UI Kit" Dialog(node 7656:1889). 페이지 위에 뜨는 모달.
  *
  * 합성: Dialog > DialogTrigger? + DialogContent > DialogHeader(DialogTitle/Description) + DialogBody + DialogFooter.
- * 패널 bg-popover+border(#0f172b@8%)+rounded-2xl. 그림자 없음(Figma Dialog effects 비어있음; AlertDialog 만 popover 그림자). 백드롭 black@32%+blur. ESC/바깥클릭/X 로 닫기, 스크롤 잠금.
+ * 패널 bg-popover+border(#e1e6ec, 2026-07 Figma 갱신 — 기존 #0f172b@8%에서 불투명 색으로 분리)+rounded-2xl. 그림자 없음(Figma Dialog effects 비어있음; AlertDialog 만 popover 그림자). 백드롭 black@32%+blur. ESC/바깥클릭/X 로 닫기, 스크롤 잠금.
  * Footer 는 bg-secondary@72%+border-t(Figma BareFooter=False). 제어/비제어(open/onOpenChange).
  *
  * 패딩: Figma 의 Container(pad 24·gap 16)가 헤더+본문을 함께 감싼다 → 헤더·본문 모두 좌우 24px.
