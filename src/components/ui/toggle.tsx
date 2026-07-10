@@ -14,15 +14,16 @@ import { cn } from "../../lib/utils";
  *  - `disabled`         → `State=Disabled`(CSS)
  *  - 기본               → `State=Default`
  *
- * 상태 진리표(배경):
- *  - off                : 투명 (outline 변형은 card+border)
- *  - off + hover        : card/50 (아주 옅은 오버레이)
- *  - on (pressed)       : accent 채움 (Figma VariableID:5632:2344 #f1f5f9 = 프로젝트 accent 토큰)
- *  - on + hover         : accent 그대로 (Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
+ * 상태 진리표(배경/텍스트):
+ *  - off                : 배경 투명, 텍스트/아이콘 foreground(#1d293d) (outline 변형은 card+border)
+ *  - off + hover        : 배경 card/50 (아주 옅은 오버레이), 텍스트 foreground
+ *  - on (pressed)       : 배경 accent 채움(Figma VariableID:5632:2344 #f1f5f9 = 프로젝트 accent 토큰),
+ *                         텍스트/아이콘 accent-foreground(#2b7fff = primary, VariableID:5632:2345)
+ *  - on + hover         : on 과 동일(Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
  *  - disabled (+hover)  : opacity 50% (disabled 는 pointer-events-none 이라 hover 미발동)
  *
  * 변형: `variant` Default(테두리 없음) / Outline(border+card+shadow), `size` sm/md/lg(28/32/36),
- *       `iconOnly`(정사각 패딩). 텍스트/아이콘 색은 foreground(#1d293d).
+ *       `iconOnly`(정사각 패딩).
  *
  * @see https://coss.com/ui/docs/components/toggle
  */
@@ -30,7 +31,7 @@ const toggleVariants = cva(
   "inline-flex shrink-0 items-center justify-center gap-1 rounded-radius-lg text-sm text-foreground transition-colors outline-none " +
     "focus-visible:ring-[3px] focus-visible:ring-offset-0 focus-visible:ring-disabled/[0.07] " +
     "disabled:pointer-events-none disabled:opacity-50 " +
-    "data-[state=off]:hover:bg-card/50 data-[state=on]:bg-accent " +
+    "data-[state=off]:hover:bg-card/50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground " +
     "[&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {

@@ -10,10 +10,12 @@ import { cn } from "../../lib/utils";
  *  - Default : border input-border
  *  - Error   : border destructive(#fb2c36 빨강)   → `invalid` prop
  *  - Disabled: 컨테이너 opacity 64%               → input `disabled`
- *  - Focus   : 테두리가 disabled(#45556c@30%)로 진해지고 3px 회색 글로우 링
- *              (Figma Focus 노드 7745:700 Stroke: 3px disabled@30% × opacity23% ≈ @7%, offset 없음).
- *              ErrorFocused(8060:3643)는 테두리 destructive + 3px destructive@15% 링.
- *              ※ Figma 의 회색 링이며 shadcn 기본 파란 ring 이 아님.
+ *  - Focus   : 테두리가 primary/ring 색(#2b7fff)으로 바뀌고 3px 파란 글로우 링
+ *              (Figma Focus 노드 7745:700 — 본 테두리 stroke 와 별도 "Stroke" 오버레이 프레임이
+ *              모두 VariableID:5632:2338(ring/primary) 참조, 오버레이는 3px OUTSIDE stroke ×
+ *              노드 opacity 15%). ErrorFocused(8060:3643)는 테두리 destructive + 3px destructive@15% 링
+ *              — 동일한 3px/15% 패턴에 색만 다르다.
+ *              (2026-07 Figma 갱신: 이전엔 disabled 회색 링이었으나 primary/ring 파랑으로 재바인딩됨.)
  * 사이즈(Figma Size): Small h28 / Default h32 / Large h36.
  *
  * ※ 미구현(특수 변형 — 필요 시 추가): 인라인 Button, Badge, Kbd 단축키, MultiSelect,
@@ -34,7 +36,7 @@ const inputVariants = cva(
       },
       invalid: {
         true: "border-destructive focus-within:ring-destructive/[0.15]",
-        false: "border-input focus-within:border-disabled/30 focus-within:ring-disabled/[0.07]",
+        false: "border-input focus-within:border-ring focus-within:ring-ring/[0.15]",
       },
     },
     defaultVariants: { inputSize: "md", invalid: false },

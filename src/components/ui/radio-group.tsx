@@ -5,7 +5,9 @@ import { cn } from "../../lib/utils";
  * RadioGroup / RadioGroupItem — Figma "BO UI Kit" Radio Group(node 7669:1454).
  *
  * 단일 선택(라디오). 항목 = 라디오 원 + 제목(text-base) + 설명(text-xs muted).
- * 라디오 원: 미선택=bg-background+border-input+shadow / 선택=bg-foreground + 흰 점(6px).
+ * 라디오 원: 미선택=bg-background+border-input+shadow / 선택=bg-primary + 흰 점(6px)
+ * (Figma Selected=True Container: VariableID:5632:2338, ring/primary #2b7fff — 2026-07 갱신,
+ * 이전엔 foreground/검정으로 문서화돼 있었으나 실제 바인딩은 primary 파랑).
  * `cardStyle` 시 항목을 테두리 카드로 감쌈. 숨긴 네이티브 `<input type=radio>` 로 접근성 확보.
  */
 interface RadioGroupContextValue {
@@ -100,7 +102,7 @@ const RadioGroupItem = React.forwardRef<HTMLLabelElement, RadioGroupItemProps>(
           className={cn(
             "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-radius-full border shadow-xs transition-colors",
             "peer-focus-visible:ring-[3px] peer-focus-visible:ring-offset-0 peer-focus-visible:ring-disabled/[0.07]",
-            checked ? "border-foreground bg-foreground" : "border-input bg-background"
+            checked ? "border-primary bg-primary" : "border-input bg-background"
           )}
         >
           {checked && <span className="size-1.5 rounded-radius-full bg-card" />}
