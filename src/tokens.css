@@ -14,15 +14,15 @@
   --primary-foreground: 255 255 255; /* #ffffff */
   --secondary: 226 232 240; /* #e2e8f0 */
   --secondary-foreground: 49 65 88; /* #314158 */
-  --accent: 241 245 249; /* #f1f5f9 — Select/메뉴 항목 hover 배경 (2026-06-18 갱신) */
+  --accent: 230 234 240; /* #e6eaf0 — Select/메뉴 항목 hover 배경 (2026-07-13 갱신, VariableID:5632:2342) */
   --accent-foreground: 43 127 255; /* #2b7fff — Select 항목 텍스트(primary 와 동일) */
   --popover: 255 255 255; /* #ffffff — Select 드롭다운 패널 배경 */
   --popover-foreground: 2 6 24; /* #020618 */
   /* 상태 색(2026-06 Figma 갱신값으로 통일). Badge/Chip + 기존 에러/성공 표시 공유. */
   --destructive: 251 44 54; /* #fb2c36 — Destructive 채움 + 폼 에러 */
   --destructive-foreground: 231 0 11; /* #e7000b — 에러 텍스트/Tinted */
-  --success: 0 212 146; /* #00d492 — success 채움 (Figma 2026-06-17 갱신) */
-  --success-foreground: 0 166 62; /* #00a63e — 성공 텍스트/Tinted */
+  --success: 0 187 167; /* #00bba7 — success 채움 (Figma 2026-07-13 갱신, VariableID:5632:2350) */
+  --success-foreground: 0 187 167; /* #00bba7 — 성공 텍스트/Tinted (2026-07-13: success 와 동일값으로 통일, VariableID:5632:2351) */
   --warning: 255 186 0; /* #ffba00 — warning 채움 */
   --warning-foreground: 253 154 0; /* #fd9a00 — warning 텍스트/Tinted */
   --info: 43 127 255; /* #2b7fff — info(= primary 값) */
@@ -31,8 +31,8 @@
   /* border/input(2026-07 Figma 갱신): 기존엔 두 변수(5632:2354/5632:2355)가 우연히 같은 값
      (#0f172b@8%)이라 --border 하나로 공유했으나, 이번 갱신으로 서로 다른 불투명 색으로 갈라짐
      → input 토큰을 신규 분리. */
-  --border: 225 230 236; /* #e1e6ec — 일반 테두리(Button outline/Dialog/Toast/Tabs 등), VariableID:5632:2354 */
-  --input: 222 223 226; /* #dedfe2 — 폼 컨트롤 테두리(Input/Textarea/Checkbox/Switch 등), VariableID:5632:2355 */
+  --border: 230 234 240; /* #e6eaf0 — 일반 테두리(Button outline/Dialog/Toast/Tabs 등), VariableID:5632:2354 (2026-07-13 갱신) */
+  --input: 205 212 220; /* #cdd4dc — 폼 컨트롤 테두리(Input/Textarea/Checkbox/Switch 등), VariableID:5632:2355 (2026-07-13 갱신) */
   --ring: 43 127 255; /* #2B7FFF — primary 와 동일 */
   --disabled: 69 85 108; /* #45556c — Figma `disabled` 토큰. OTP active 슬롯 테두리/링 등 */
   --backdrop: 16 16 18; /* #101012 — Figma Overlay 토큰. Dialog/Sheet/Drawer 백드롭(32% 알파는 사용처에서) */
@@ -59,7 +59,7 @@
   --popover-foreground: 248 250 252;
   --destructive: 251 44 54;
   --destructive-foreground: 248 113 113;
-  --success: 0 212 146; /* #00d492 — light 와 동일값 사용 */
+  --success: 0 187 167; /* #00bba7 — light 와 동일값 사용 (2026-07-13 갱신) */
   --success-foreground: 52 211 153; /* #34d399 (dark 근사) */
   --warning: 255 186 0;
   --warning-foreground: 253 154 0;

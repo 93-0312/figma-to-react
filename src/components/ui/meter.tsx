@@ -7,7 +7,9 @@ import { cn } from "../../lib/utils";
  * 범위(min~max) 안에서 현재 값을 막대로 보여준다(디스크 사용량·점수 등). 진행 상태가
  * 아니라 "정적 측정값"이므로 role="meter" + aria-value* 로 접근성을 갖춘다.
  *
- * 구조: [라벨행: label · valueLabel] + [트랙(input) + 인디케이터(destructive)].
+ * 구조: [라벨행: label · valueLabel] + [트랙(accent) + 인디케이터(destructive)].
+ * (2026-07-13 Figma 갱신: MeterTrack 배경이 input 변수(5632:2355)에서 accent 변수(5632:2342)로
+ * 재바인딩됨 — 값 기준 매핑으로 bg-input → bg-accent 전환.)
  * 변형(Figma): showLabels / showSecondaryLabel(우측 X% 라벨). 채움 비율 = (value-min)/(max-min).
  *
  * @see https://coss.com/ui/docs/components/meter
@@ -70,7 +72,7 @@ const Meter = React.forwardRef<HTMLDivElement, MeterProps>(
             ) : null}
           </div>
         ) : null}
-        <div className="relative h-2 w-full overflow-hidden bg-input" data-node-id="7664:42">
+        <div className="relative h-2 w-full overflow-hidden bg-accent" data-node-id="7664:42">
           <div
             className="absolute inset-y-0 left-0 bg-destructive transition-[width]"
             style={{ width: `${pct}%` }}
