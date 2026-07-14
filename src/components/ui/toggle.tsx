@@ -19,7 +19,7 @@ import { cn } from "../../lib/utils";
  *  - off + hover        : 배경 card/50 (아주 옅은 오버레이), 텍스트 foreground
  *  - on (pressed)       : 배경 accent 채움(Figma 자체 바인딩은 VariableID:5632:2344 이나 값이
  *                         프로젝트 accent 토큰과 가까워 accent 재사용 — 2026-07-13 갱신 후 #eff6ff,
- *                         accent 는 #e6eaf0 로 근사),
+ *                         accent 는 #eff2f7 로 근사, 2026-07-14 갱신),
  *                         텍스트/아이콘 accent-foreground(#2b7fff = primary, VariableID:5632:2345)
  *  - on + hover         : on 과 동일(Figma Active+IsHovered=True 도 동일 — 호버로 안 바뀜)
  *  - disabled (+hover)  : opacity 50% (disabled 는 pointer-events-none 이라 hover 미발동)
