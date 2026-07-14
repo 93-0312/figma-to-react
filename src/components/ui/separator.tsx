@@ -4,7 +4,7 @@ import { cn } from "../../lib/utils";
 /**
  * Separator — Figma "BO UI Kit" Separator(node 3605:3065). 영역 구분선.
  *
- * 1px 라인(`border` 토큰, #e1e6ec — 2026-07 Figma 갱신, 기존 #0f172b@8%에서 불투명 색으로 분리). orientation: horizontal(h-px w-full) / vertical(w-px h-full).
+ * 1px 라인(`border` 토큰, #e6eaf0 — 2026-07-13 Figma 갱신). orientation: horizontal(h-px w-full) / vertical(w-px h-full).
  * 접근성: 의미상 구분이면 `decorative={false}` → role=separator + aria-orientation, 장식이면 기본(role=none).
  * (Figma 의 Spacing 변형은 여백 — 소비자가 className(margin)으로 처리.)
  */

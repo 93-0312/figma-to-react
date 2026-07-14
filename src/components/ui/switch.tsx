@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
  * Switch — Figma "BO UI Kit" Switch(node 7715:1962). 설정 on/off 토글.
  *
  * Figma 변형: Size(Default 18×30 / Large 24×44) · Checked · Disabled.
- * 트랙: off=input(테두리 8%) / on=success(#00d492) + 안쪽 그림자. thumb: card(흰색) + shadow-xs.
+ * 트랙: off=input(테두리 8%) / on=success(#00bba7) + 안쪽 그림자. thumb: card(흰색) + shadow-xs.
  * 제어/비제어(`checked`/`defaultChecked`/`onCheckedChange`). 접근성: role=switch + aria-checked.
  */
 const switchVariants = cva(
