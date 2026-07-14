@@ -5,7 +5,7 @@ import { cn } from "../../lib/utils";
  * Tabs — Figma "BO UI Kit" Tabs(node 7722:82). 관련 패널 전환.
  *
  * Type: Default(알약 — bg-accent 트랙 + 선택 탭 흰 카드+shadow) / WithLine(밑줄).
- * 합성: Tabs(상태) > TabsList > TabsTrigger / TabsContent. (Figma VariableID:5632:2342 #e6eaf0 = accent, 2026-07-13 갱신.)
+ * 합성: Tabs(상태) > TabsList > TabsTrigger / TabsContent. (Figma VariableID:5632:2342 #eff2f7 = accent, 2026-07-14 갱신.)
  * 제어/비제어(value/defaultValue/onValueChange).
  *
  * 접근성: roving tabindex(선택 탭만 Tab 순서에 포함) + ←/→/Home/End 로 탭 이동·활성화(automatic
