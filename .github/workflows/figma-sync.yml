@@ -103,6 +103,17 @@ jobs:
             [ "${AHEAD:-0}" -gt 0 ] || continue
             NUM=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
             if [ -z "$NUM" ]; then
+              # 좀비 PR 방지(실제 사례 #142): 이 브랜치의 "현재 팁 그대로" 닫힌/머지된 PR 이
+              # 있으면 부활시키지 않는다. (예: 머지 후 늦게 도착한 visual 의 baseline push 가
+              # 삭제된 브랜치를 재생성 → 다음 sync 의 이 안전판이 stale 내용으로 PR 을 되살려
+              # 최신 main 을 역행시키는 사고.) 단, 닫힌 뒤 "새 커밋"이 얹힌 브랜치(같은 날짜
+              # 브랜치 재사용 등)는 팁 SHA 가 달라지므로 정상적으로 PR 을 생성한다.
+              TIP=$(git rev-parse "origin/$BR" 2>/dev/null || echo "")
+              PREV_SHA=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BR" --state closed --json headRefOid --jq '.[0].headRefOid // empty' 2>/dev/null || echo "")
+              if [ -n "$TIP" ] && [ "$TIP" = "$PREV_SHA" ]; then
+                echo "브랜치 $BR 팁($TIP)이 닫힌/머지된 PR 과 동일 → 부활 생략"
+                continue
+              fi
               echo "PR 없음 → 생성: $BR (ahead $AHEAD)"
               gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$BR" \
                 --title "feat(sync): Figma 동기화 (headless Claude)" \
