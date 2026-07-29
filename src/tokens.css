@@ -7,7 +7,7 @@
  */
 :root {
   --background: 248 250 252; /* #f8fafc */
-  --foreground: 29 41 61; /* #1d293d */
+  --foreground: 33 34 38; /* #212226 — 기본 텍스트/아이콘 (2026-07-14 갱신, 이전 #1d293d, VariableID:5632:2333) */
   --card: 255 255 255; /* #ffffff */
   --card-foreground: 2 6 24; /* #020618 */
   --primary: 43 127 255; /* #2B7FFF */
