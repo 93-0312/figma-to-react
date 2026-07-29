@@ -113,9 +113,22 @@ jobs:
           # 추출~여기 사이의 디자이너 편집이 "동기화됨"으로 오기록돼 영구 유실된다.
           # (버전 조회 실패 시 지문 미갱신 → 다음 폴링이 재감지: 안전 방향 폴백)
           VER=$(node -p "JSON.parse(require('fs').readFileSync('figma.manifest.json','utf8')).lastSyncedVersion" 2>/dev/null || echo "")
+          # 에이전트가 manifest 워터마크 전진을 누락하는 경우가 있다(실제 사례 PR #153 —
+          # 그대로 두면 지문이 구버전 상태로 기록되고 poll 이 영구 재감지→dedup 교착).
+          # 브랜치의 값이 main 과 동일하면 누락으로 판단해 라이브 버전으로 결정적 보정.
+          MAIN_VER=$(git show origin/main:figma.manifest.json 2>/dev/null | grep -oE '"lastSyncedVersion": *"[0-9]+"' | grep -oE '[0-9]+' | head -1 || echo "")
+          if [ -n "$VER" ] && [ "$VER" = "$MAIN_VER" ]; then
+            set +e; OUT=$(node scripts/check-figma-version.mjs 2>&1); set -e
+            LIVE=$(printf '%s' "$OUT" | grep -oE '"currentVersion": *"[0-9]+"' | grep -oE '[0-9]+' | head -1)
+            if [ -n "$LIVE" ] && [ "$LIVE" != "$VER" ]; then
+              echo "::warning::에이전트가 워터마크 전진 누락 → $LIVE 로 보정"
+              node scripts/check-figma-version.mjs --record "$LIVE"
+              VER="$LIVE"
+            fi
+          fi
           node scripts/check-figma-nodes.mjs --record ${VER:+--version "$VER"} || true
           # untracked 새 baseline(신규 컴포넌트 스냅샷)은 diff 에 안 잡히므로 add 후 --cached 로 검사
-          git add tests figma.fingerprints.json
+          git add tests figma.fingerprints.json figma.manifest.json
           if git diff --cached --quiet; then echo "baseline/지문 변화 없음 → 커밋 생략"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -144,9 +157,15 @@ jobs:
             echo "::warning::재검증 red → 자동 머지 생략 (PR #${{ github.event.inputs.pr }} 열어둠, 사람 판단 필요)"
             exit 0
           fi
-          gh pr merge "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --squash --delete-branch \
-            && echo "✅ 자동 머지 완료: PR #${{ github.event.inputs.pr }} (연결 이슈도 자동 종료)" \
-            || echo "::warning::자동 머지 실패(충돌/권한?) — PR 열어둠"
+          if gh pr merge "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --squash --delete-branch; then
+            echo "✅ 자동 머지 완료: PR #${{ github.event.inputs.pr }}"
+            # Closes 키워드가 처리되지 않는 경우가 있어(실제 사례 #151) 명시적으로도 닫는다
+            ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title Figma 변경 감지' --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
+            [ -z "$ISSUE" ] || gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
+              --comment "PR #${{ github.event.inputs.pr }} 머지로 반영 완료 (자동 종료)" || true
+          else
+            echo "::warning::자동 머지 실패(충돌/권한?) — PR 열어둠"
+          fi
 
       - name: diff 리포트 업로드 (실패 시)
         if: ${{ failure() }}
