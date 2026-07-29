@@ -4,8 +4,9 @@ import { cn } from "../../lib/utils";
 /**
  * Tooltip — Figma "BO UI Kit" Tooltip(node 5685:185). hover/focus 시 뜨는 힌트.
  *
- * 트리거를 감싸고, hover/focus 시 popover 배경 + border + shadow 라벨을 표시(+화살표).
- * side top/right/bottom/left. CSS group-hover/focus-within 기반(경량). 내용 text-xs foreground.
+ * 트리거를 감싸고, hover/focus 시 다크 칩 라벨을 표시(테두리/그림자 없음, radius-sm).
+ * (2026-07-27 갱신: 기존 popover 흰 배경+테두리+shadow-overlay → bg-tooltip 다크 배경 단색으로 재설계.)
+ * side top/right/bottom/left. CSS group-hover/focus-within 기반(경량). 내용 text-xs tooltip-foreground.
  *
  * 접근성: 툴팁에 useId 기반 id 를 달고 트리거(단일 엘리먼트면 cloneElement, 아니면 래퍼)에
  * aria-describedby 로 연결. Escape 로 포인터/포커스 이동 없이 닫을 수 있다(WCAG 1.4.13) —
@@ -53,7 +54,7 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
           id={tooltipId}
           role="tooltip"
           className={cn(
-            "pointer-events-none absolute z-50 w-max max-w-xs rounded-radius-lg border border-border bg-popover px-2 py-1 text-xs text-popover-foreground opacity-0 shadow-overlay transition-opacity duration-150",
+            "pointer-events-none absolute z-50 w-max max-w-xs rounded-radius-sm bg-tooltip px-3 py-2 text-xs text-tooltip-foreground opacity-0 transition-opacity duration-150",
             !dismissed && "group-hover:opacity-100 group-focus-within:opacity-100",
             sidePos[side]
           )}

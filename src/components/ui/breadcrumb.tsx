@@ -4,7 +4,8 @@ import { cn } from "../../lib/utils";
 /**
  * Breadcrumb — Figma "BO UI Kit" Breadcrumb(node 5665:4391). 현재 위치 경로 표시.
  *
- * 항목들을 구분자(chevron/slash)로 연결. 링크(href 있음)=muted-foreground, 마지막(현재)=foreground.
+ * 항목들을 구분자(chevron/slash)로 연결. 링크(href 있음)/구분자=tertiary-foreground, 마지막(현재)=foreground.
+ * (2026-07-27 갱신: 기존 muted-foreground@50% 근사 대신 전용 불투명 토큰 tertiary-foreground 로 재바인딩.)
  * Type: Chevron(›) / Slash(/). text-sm. items 배열 API.
  */
 export interface BreadcrumbItemData {
@@ -19,7 +20,7 @@ export interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
 
 function ChevronRight() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden className="size-4 shrink-0 opacity-80">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden className="size-4 shrink-0">
       <path d="m9 18 6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -34,19 +35,19 @@ const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
           return (
             <li key={i} className="flex items-center gap-1">
               {item.href && !isLast ? (
-                <a href={item.href} className="text-muted-foreground transition-colors hover:text-foreground">
+                <a href={item.href} className="text-tertiary-foreground transition-colors hover:text-foreground">
                   {item.label}
                 </a>
               ) : (
-                <span className={isLast ? "text-foreground" : "text-muted-foreground"} aria-current={isLast ? "page" : undefined}>
+                <span className={isLast ? "text-foreground" : "text-tertiary-foreground"} aria-current={isLast ? "page" : undefined}>
                   {item.label}
                 </span>
               )}
               {!isLast &&
                 (separator === "slash" ? (
-                  <span className="text-muted-foreground/60" aria-hidden>/</span>
+                  <span className="text-tertiary-foreground" aria-hidden>/</span>
                 ) : (
-                  <span className="text-muted-foreground" aria-hidden>
+                  <span className="text-tertiary-foreground" aria-hidden>
                     <ChevronRight />
                   </span>
                 ))}

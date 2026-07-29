@@ -497,7 +497,7 @@
           "Slash"
         ]
       },
-      "notes": "경로 표시. items 배열 API({label,href}). 링크=muted-foreground, 마지막(현재)=foreground+aria-current. separator chevron(›)/slash(/). Compact Pagination(9705:87310)은 거대 데모 프레임이라 드릴다운 필요 — 보류."
+      "notes": "경로 표시. items 배열 API({label,href}). 링크/separator=tertiary-foreground(2026-07-27: muted-foreground@50% 근사→전용 불투명 토큰으로 재바인딩, VariableID:10095:7149), 마지막(현재)=foreground+aria-current. separator chevron(›)/slash(/). Compact Pagination(9705:87310)은 거대 데모 프레임이라 드릴다운 필요 — 보류."
     },
     {
       "name": "Alert",
@@ -545,7 +545,7 @@
           "left"
         ]
       },
-      "notes": "hover/focus 힌트. 트리거 감싸고 group-hover/focus-within 으로 popover 라벨 표시(경량 CSS). bg-popover+border+shadow, text-xs. side 4방향. content prop."
+      "notes": "hover/focus 힌트. 트리거 감싸고 group-hover/focus-within 으로 다크 칩 라벨 표시(경량 CSS). bg-tooltip(#262626)+text-tooltip-foreground(흰색), 테두리/그림자 없음, rounded-radius-sm(2026-07-27: 기존 popover 흰 배경+border+shadow-overlay+radius-lg 에서 재설계, VariableID:5632:2340/5632:2339). text-xs. side 4방향. content prop."
     },
     {
       "name": "Scroll Area",
