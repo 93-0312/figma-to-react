@@ -40,6 +40,8 @@ export default {
           // muted-foreground 토큰(#0f172b80)은 50% 알파가 적용된 값
           foreground: "rgb(var(--muted-foreground) / 0.5)",
         },
+        // 3차(가장 옅은) 텍스트/아이콘 — muted-foreground 와 달리 전용 불투명 토큰(src/tokens.css 참고).
+        "tertiary-foreground": "rgb(var(--tertiary-foreground) / <alpha-value>)",
         destructive: {
           DEFAULT: "rgb(var(--destructive) / <alpha-value>)",
           foreground: "rgb(var(--destructive-foreground) / <alpha-value>)",
@@ -66,6 +68,11 @@ export default {
         // ★ 이름을 `overlay` 로 두면 아래 boxShadow.overlay 와 충돌(shadow-overlay 가
         //   그림자색으로 해석됨) → `backdrop` 으로 분리.
         backdrop: "rgb(var(--backdrop) / <alpha-value>)",
+        // Tooltip 전용 배경(항상 다크 칩) — src/tokens.css 참고.
+        tooltip: {
+          DEFAULT: "rgb(var(--tooltip) / <alpha-value>)",
+          foreground: "rgb(var(--tooltip-foreground) / <alpha-value>)",
+        },
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],
