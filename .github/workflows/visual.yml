@@ -123,6 +123,31 @@ jobs:
           git push origin "HEAD:${BR}"
           echo "baseline + 지문 자동 갱신 커밋 → ${BR}"
 
+      # ── sync PR 한정: 재검증 green 이면 자동 머지 (마지막 마일 자동화) ──
+      # 종전엔 "재검증→머지"가 세션 있는 사람/Claude 손에 남아 있어, 세션이 없으면 PR 이
+      # 방치됐다(실제 사례 #150 — 15일 방치 + 연결 이슈가 열린 채라 poll dedup 이 후속
+      # sync 까지 전부 차단). 증거 코멘트 + baseline·지문 정합이 끝난 상태에서 갱신된
+      # baseline 으로 전체 시각 테스트가 green 일 때만 머지한다. red 면 종전처럼 PR 을
+      # 열어두고 사람이 판단한다. (사람 PR 은 위 단계와 동일하게 대상 아님)
+      - name: sync PR 자동 머지 (재검증 green 시)
+        if: ${{ always() && github.event.inputs.pr != '' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BR=$(gh pr view "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --json headRefName -q .headRefName 2>/dev/null || echo "")
+          case "$BR" in
+            figma-sync/*) ;;
+            *) echo "비-sync PR($BR) → 자동 머지 생략"; exit 0;;
+          esac
+          # 갱신된 baseline 기준 재검증 — 렌더 플레이크/미커버 diff 가 있으면 머지하지 않는다
+          if ! npx playwright test; then
+            echo "::warning::재검증 red → 자동 머지 생략 (PR #${{ github.event.inputs.pr }} 열어둠, 사람 판단 필요)"
+            exit 0
+          fi
+          gh pr merge "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --squash --delete-branch \
+            && echo "✅ 자동 머지 완료: PR #${{ github.event.inputs.pr }} (연결 이슈도 자동 종료)" \
+            || echo "::warning::자동 머지 실패(충돌/권한?) — PR 열어둠"
+
       - name: diff 리포트 업로드 (실패 시)
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
