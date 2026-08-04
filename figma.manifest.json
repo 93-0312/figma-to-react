@@ -619,6 +619,160 @@
         ]
       },
       "notes": "Sheet 프리셋. side 기본 bottom, inset 기본 true(여백 있는 플로팅). SheetContent 래핑, Header/Title/Description/Footer/Close 를 Drawer* 로 재노출."
+    },
+    {
+      "name": "Empty",
+      "file": "src/components/ui/empty.tsx",
+      "story": "src/stories/empty.story.tsx",
+      "figmaNodeId": "7656:2017",
+      "notes": "빈 상태 카드 스택. 버튼 영역은 children 슬롯."
+    },
+    {
+      "name": "Kbd",
+      "file": "src/components/ui/kbd.tsx",
+      "story": "src/stories/kbd.story.tsx",
+      "figmaNodeId": "7658:2132",
+      "notes": "Background×IsIcon 2x2. 네이티브 kbd 요소."
+    },
+    {
+      "name": "Loader",
+      "file": "src/components/ui/loader.tsx",
+      "story": "src/stories/loader.story.tsx",
+      "figmaNodeId": "9942:43552",
+      "notes": "Determinate×Size. indeterminate=8분할 스피너."
+    },
+    {
+      "name": "Progress",
+      "file": "src/components/ui/progress.tsx",
+      "story": "src/stories/progress.story.tsx",
+      "figmaNodeId": "7673:96",
+      "notes": "Meter(측정값)와 별개의 진행 표시(role=progressbar, primary)."
+    },
+    {
+      "name": "Aspect Ratio",
+      "file": "src/components/ui/aspect-ratio.tsx",
+      "story": "src/stories/aspect-ratio.story.tsx",
+      "figmaNodeId": "10178:8651",
+      "notes": "Ratio 12종 + Mask(alpha 그라디언트)."
+    },
+    {
+      "name": "Card",
+      "file": "src/components/ui/card.tsx",
+      "story": "src/stories/card.story.tsx",
+      "figmaNodeId": "7757:807",
+      "notes": "Card/CardHeader/CardTitle/CardDescription 합성."
+    },
+    {
+      "name": "Fieldset",
+      "file": "src/components/ui/fieldset.tsx",
+      "story": "src/stories/fieldset.story.tsx",
+      "figmaNodeId": "7759:1108",
+      "notes": "네이티브 fieldset/legend."
+    },
+    {
+      "name": "Checkbox Group",
+      "file": "src/components/ui/checkbox-group.tsx",
+      "story": "src/stories/checkbox-group.story.tsx",
+      "figmaNodeId": "5675:291",
+      "notes": "기존 Checkbox 재사용, depth 들여쓰기."
+    },
+    {
+      "name": "Input Group",
+      "file": "src/components/ui/input-group.tsx",
+      "story": "src/stories/input-group.story.tsx",
+      "figmaNodeId": "7857:9348",
+      "notes": "Additional 8종. 기존 Input 합성."
+    },
+    {
+      "name": "Popover",
+      "file": "src/components/ui/popover.tsx",
+      "story": "src/stories/popover.story.tsx",
+      "figmaNodeId": "7751:2411",
+      "notes": "트리거+패널, overlay 유틸 재사용."
+    },
+    {
+      "name": "Toolbar",
+      "file": "src/components/ui/toolbar.tsx",
+      "story": "src/stories/toolbar.story.tsx",
+      "figmaNodeId": "7751:1057",
+      "notes": "role=toolbar + Separator."
+    },
+    {
+      "name": "Pagination",
+      "file": "src/components/ui/pagination.tsx",
+      "story": "src/stories/pagination.story.tsx",
+      "figmaNodeId": "9705:87844",
+      "notes": "nav+aria-current."
+    },
+    {
+      "name": "Compact Pagination",
+      "file": "src/components/ui/compact-pagination.tsx",
+      "story": "src/stories/compact-pagination.story.tsx",
+      "figmaNodeId": "9705:87310",
+      "notes": "Pagination 과 구조 상이해 별도 파일."
+    },
+    {
+      "name": "Form",
+      "file": "src/components/ui/form.tsx",
+      "story": "src/stories/form.story.tsx",
+      "figmaNodeId": "7759:1314",
+      "notes": "폼 레이아웃 래퍼."
+    },
+    {
+      "name": "Menu",
+      "file": "src/components/ui/menu.tsx",
+      "story": "src/stories/menu.story.tsx",
+      "figmaNodeId": "7767:2802",
+      "notes": "role=menu/menuitem, .MenuItem 세트 기반."
+    },
+    {
+      "name": "ComboBox",
+      "file": "src/components/ui/combobox.tsx",
+      "story": "src/stories/combobox.story.tsx",
+      "figmaNodeId": "7758:403",
+      "notes": "combobox 패턴, Select 계열."
+    },
+    {
+      "name": "Autocomplete",
+      "file": "src/components/ui/autocomplete.tsx",
+      "story": "src/stories/autocomplete.story.tsx",
+      "figmaNodeId": "7757:187",
+      "notes": "입력 필터링 제안 목록."
+    },
+    {
+      "name": "Calendar",
+      "file": "src/components/ui/calendar.tsx",
+      "story": "src/stories/calendar.story.tsx",
+      "figmaNodeId": "7953:3826",
+      "notes": "grid 패턴, 셀 상태 cell variant. 날짜는 Date 내장만."
+    },
+    {
+      "name": "DatePicker",
+      "file": "src/components/ui/date-picker.tsx",
+      "story": "src/stories/date-picker.story.tsx",
+      "figmaNodeId": "7954:7493",
+      "notes": "Input 트리거 + Calendar 팝업 합성."
+    },
+    {
+      "name": "Slider",
+      "file": "src/components/ui/slider.tsx",
+      "story": "src/stories/slider.story.tsx",
+      "figmaNodeId": "7706:12",
+      "notes": ".SliderBar 세트 기반."
+    },
+    {
+      "name": "Tooltip (withCursor)",
+      "file": "src/components/ui/tooltip.tsx",
+      "story": "src/stories/tooltip-cursor.story.tsx",
+      "figmaNodeId": "9695:27058",
+      "notes": "기존 Tooltip 확장(placement/cursor). 파일 공유."
+    },
+    {
+      "name": "Accordions",
+      "file": "src/components/ui/accordion.tsx",
+      "story": "src/stories/accordion.story.tsx",
+      "figmaNodeId": "1673:181",
+      "notes": "추적 전용 — AccordionItem 컨테이너(SLOT). 기존 Accordion 구현이 커버, 별도 추출 없음."
     }
   ]
 }
