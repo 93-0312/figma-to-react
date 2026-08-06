@@ -45,10 +45,25 @@ Dialog 그림자 없음으로 동일하게 나옴), 도구를 통일해도 결�
 복잡한 컴포넌트라도 REST 응답에 전체 노드 트리(중첩/auto-layout/variant/effect)가 다 들어있다 —
 "MCP 만 주는 디자인 값" 은 없다.
 
+### ★ 릴리즈 신호 = 발행(publish), 저장이 아니다
+
+- 파이프라인은 **이름 붙은 Figma 버전**만 릴리즈로 취급한다. 디자이너가 라이브러리를
+  publish 하면 Figma 가 `Components published` 라벨을 자동으로 붙인다(사람이 직접 이름을
+  붙여도 동일). **무명 autosave 는 작업 중 상태이므로 무시**한다.
+- 덕분에 디자이너는 자유롭게 저장하며 실험하고, **publish 를 누른 순간에만** 코드에 반영된다
+  → 소비처 입장의 "예고 없는 시각 변경" 이 사라지고, autosave 노이즈도 원천 차단된다.
+- 판정: `scripts/check-figma-version.mjs` 가 `/versions` 에서 **라벨 있는 최신 버전**을 찾아
+  매니페스트 `lastSyncedVersion`/`lastSyncedAt` 과 비교한다(id 가 다르면서 **더 최신**일 때만
+  변경 — 오래된 발행본으로 되돌아가는 역행 sync 방지). 종전 "저장 기준" 동작은 `--any` 로 남겨둠.
+- IMPORTANT: 추출·지문 조회는 **발행 시점 스냅샷으로 고정**한다 — 모든 노드/이미지 요청에
+  `&version=<발행 version>` 을 붙인다. 붙이지 않으면 발행 이후의 미발행 작업분이 섞인다.
+
 ### Required Flow (생략 금지)
 
-1. `figma.manifest.json` 에서 fileKey 와 노드 id 를 확보한다.
-2. `GET /v1/files/:key/nodes?ids=<nodeId>` 로 **해당 노드만** 가져온다(무거운 전체 파일 GET 금지).
+1. `figma.manifest.json` 에서 fileKey 와 노드 id 를 확보하고, `npm run check:figma` 의
+   `currentVersion`(= 발행 version, 이하 `PUB`)을 확보한다.
+2. `GET /v1/files/:key/nodes?ids=<nodeId>&version=<PUB>` 로 **해당 노드만** 가져온다
+   (무거운 전체 파일 GET 금지, `version` 생략 금지).
    fills / strokes / effects / cornerRadius / layout(padding·spacing) / `boundVariables` 를 코드와 대조한다.
 3. **토큰 바인딩은 "값 기준"으로 매핑한다.** REST 는 `boundVariables` 에 변수 **ID + 실제 값**만 주고
    변수 *이름* 은 직접 주지 않는다(이름은 Enterprise 변수 API 필요). 그러므로 노드의 fill/stroke 값을
@@ -122,9 +137,26 @@ Figma 컴포넌트의 variant 속성을 코드 prop 으로 옮길 때 반드시 
 
 - 인터랙티브 요소는 네이티브 요소를 기반으로 하고(예: 숨긴 `<input>`), 포커스 링(`focus-visible:ring`) 과 `aria-*` 를 갖춘다.
 
-### 다크 모드
+### 다크 모드 — ⚠️ 현재 토큰은 Figma 와 다르다(미추출 상태)
 
-- `.dark` 클래스로 토큰을 전환한다(상단 바 토글). 현재 다크 토큰은 근사값이므로 정밀 작업 시 Figma "Dark Mode Preview" 에서 재추출한다.
+- `.dark` 클래스로 토큰을 전환한다(상단 바 토글).
+- **Figma 에는 다크 디자인이 실재한다.** 각 컴포넌트 페이지 안에 `Dark Mode Preview`
+  **프레임**이 하나씩 있다(페이지가 아니라 프레임 — 예: Button 페이지 `1606:9458` →
+  `7968:4819`, Input `5651:4474` → `7968:8582`, Dialog `5651:4432` → `7968:7276`).
+  확인한 컴포넌트 전부에 존재한다.
+- **그런데 `src/tokens.css` 의 `.dark` 값은 여기서 추출한 게 아니다** — 초기 커밋 때 손으로
+  넣은 근사값이고, 이후 sync 가 갱신한 적이 없다. 실측 차이:
+  | | Figma 다크 프레임 | 현재 `.dark` |
+  |---|---|---|
+  | 배경 | `#141414` (중성 그레이) | `#020618` (남색 계열) |
+  | 카드/헤더 | `#101012` | `#0f172b` |
+  | Secondary 채움 | `#262626` | `#1e293b` |
+- 다크를 실제로 지원하려면 위 프레임들을 **추적 노드로 등록해 라이트와 같은 방식으로 추출**해야
+  한다(값 기준 매핑). 그 전까지 다크는 **미검증**이며, 소비처에 다크 지원을 약속하지 말 것.
+- 참고: 라이트/다크가 Figma 변수의 **모드(mode)** 로 되어 있어도 REST `boundVariables` 는
+  기본 모드 값만 준다. 모드별 값을 읽는 `/v1/files/:key/variables/local` 은
+  `file_variables:read` 스코프(Enterprise 플랜)가 필요해 현재 403 이다. → **프레임 추출이
+  플랜 무관한 유일한 경로다.**
 
 ---
 
