@@ -7,7 +7,8 @@
 ## 1. 개요
 
 - **목적**: Figma(BO UI Kit) → React/Tailwind 컴포넌트 추출 + 디자인 변경 자동 동기화 + npm 라이브러리 배포.
-- **한 줄 요약**: *디자인 변경 → 노드 단위 감지 → 헤드리스 Claude 추출 → 시각 증거 PR → 사람 머지 → 이슈 자동 종료.*
+- **한 줄 요약**: *Figma **발행(publish)** → 노드 단위 감지 → 헤드리스 Claude 추출 → 시각 증거 PR → 재검증 green 시 **자동 머지** → 이슈 자동 종료.*
+  (머지가 자동인 경우/사람 몫인 경우 구분은 [PR 머지 정책](./pr-merge-policy.md) 참고)
 - **저장소**: `https://github.com/93-0312/figma-to-react` (public)
 - **Figma 파일**: BO UI Kit, fileKey `LFA5EyNbUdPvi8Rbuf2tJC` (팀 "plan's team", Pro)
 - **npm 패키지**: `bo-ui-kit` (0.1.0, 발행 직전)
