@@ -7,8 +7,8 @@
 
 ## 한 줄 요약
 
-**자동 머지되는 것은 Figma sync PR 한 종류뿐이고, 나머지는 전부 사람이 머지한다.**
-그마저도 조건 5개를 모두 통과했을 때만이다.
+**시각 변화가 없을 때만 자동 머지한다. 화면이 바뀌면 무조건 사람이 시각 증거를 보고 머지한다.**
+(2026-08-06 부터. 그 전에는 "재검증 green" 을 근거로 시각 변경까지 자동 머지했다 — 아래 참고)
 
 ---
 
@@ -33,30 +33,60 @@ GitHub 머지 이력을 보면 대부분 계정 `93-0312` 로 찍혀 있어 "사
 
 ## 경로별 정리
 
-### ① 자동 머지 — Figma sync PR (유일)
+### ① 자동 머지 — sync PR 중 **시각 변화가 없는 것만**
 
-아래 조건을 **전부** 만족할 때만 CI 가 스스로 머지한다.
+아래를 **전부** 만족할 때만 CI 가 스스로 머지한다.
 
 1. PR 의 브랜치명이 `figma-sync/*` 로 시작
 2. Visual regression 워크플로가 **dispatch 로 실행**됨 (`gh workflow run "Visual regression" -f pr=<번호>`)
-   — 일반 `pull_request` 이벤트로 돈 실행은 자동 머지 대상이 아니다
-3. baseline·노드 지문 정합 커밋이 끝난 뒤
-4. **갱신된 baseline 으로 전체 시각 테스트를 재실행해 green**
-5. `gh pr merge --squash --delete-branch` 가 성공(충돌·권한 문제 없음)
+   — 일반 `pull_request` 이벤트로 돈 실행은 대상이 아니다
+3. **기존 baseline 대비 시각 diff 가 0** (= 스냅샷이 하나도 안 바뀜)
+4. `gh pr merge --squash --delete-branch` 성공
 
-통과하면 머지 + 브랜치 삭제 + 연결된 "Figma 변경 감지" 이슈까지 자동 종료한다.
-**하나라도 어긋나면 PR 은 열린 채로 남고 사람 판단을 기다린다.**
+실제로 여기 해당하는 건 **문서·매니페스트 워터마크·노드 지문만 바뀐 경우**다. 사람이 볼 게 없다.
+통과하면 머지 + 브랜치 삭제 + 연결 이슈 자동 종료.
 
 누가 2번의 dispatch 를 하는가: `figma-sync.yml` 의 `Ensure PR exists + trigger visual evidence`
-스텝이 PR 생성 직후 자동으로 호출한다.
+스텝이 PR 생성 직후 자동 호출한다.
 
-### ② 사람(또는 세션 중인 Claude) 머지 — 그 외 전부
+### ② 사람 검토 후 머지 — **시각 변화가 있는 sync PR**
 
-- `fix/*`, `feat/*`, `docs/*`, `release/*` 등 **사람이 만든 모든 브랜치**
-  → 브랜치명 검사(조건 1)에서 걸러져 자동 머지 대상이 아니다. 의도된 설계다:
-  사람 PR 의 시각 회귀를 자동 수락하면 게이트가 무의미해진다.
-- **sync PR 이라도** 재검증이 red 면 자동 머지하지 않는다 (`::warning::재검증 red` 로그를 남기고 종료)
-- `visual-baselines-*` (수동 baseline 갱신 PR) 도 사람 몫
+화면이 바뀌면 자동 머지하지 않는다. CI 는 대신:
+- `needs-design-review` 라벨을 붙이고
+- "사람 검토 필요" 코멘트를 남기고
+- PR 을 **열어둔 채** 끝낸다
+
+사람은 위에 자동 생성된 **시각 증거 코멘트(Figma 원본 / Before / After / Diff)** 를 보고
+의도한 디자인 변경인지 판단해 머지하거나, 아니면 PR 을 닫고 Figma 를 고쳐 다시 발행한다.
+baseline·지문 갱신 커밋은 이미 브랜치에 들어가 있어 머지하면 그대로 반영된다.
+
+> **왜 "재검증 green" 을 자동 머지 근거로 쓰지 않는가 (중요)**
+> 파이프라인은 시각 변경을 감지하면 `--update-snapshots` 로 **새 렌더를 baseline 으로 덮어쓴다.**
+> 그 다음 다시 테스트하면 *자기 자신과 비교*하는 셈이라 거의 항상 green 이다 — **동어반복**이다.
+> 렌더 플레이크는 잡지만 "이 디자인 변경이 옳은가" 는 전혀 검증하지 못한다.
+> 그 판단의 유일한 실질 근거는 시각 증거 코멘트이고, 그건 사람이 봐야 한다.
+> (2026-08-06 이전에는 이 green 을 근거로 자동 머지했다. Meter 가 파랑→빨강으로 바뀐
+> 것 같은 변경도 그대로 통과했을 구조다.)
+
+### ③ 사람 머지 — 사람이 만든 모든 PR
+
+`fix/*`, `feat/*`, `docs/*`, `release/*` 등은 브랜치명 검사에서 걸러져 자동 머지 대상이 아니다.
+의도된 설계다 — 사람 PR 의 시각 회귀를 자동 수락하면 게이트가 무의미해진다.
+`visual-baselines-*` (수동 baseline 갱신 PR) 도 사람 몫.
+
+---
+
+## 검토 대기가 파이프라인을 막지 않게 하는 장치
+
+②가 정상 상태이므로, **PR 이 며칠 열려 있어도 나머지가 계속 돌아야 한다.** 두 가지로 보장한다.
+
+| 장치 | 내용 |
+|---|---|
+| **발행 버전 단위 dedup** | poll 은 **같은 발행 버전**의 이슈가 열려 있을 때만 건너뛴다. 새 발행이 오면 검토 대기 PR 이 있어도 정상적으로 새 sync 를 돌린다. (종전엔 이슈가 하나라도 열려 있으면 전부 차단 → #150 사고) |
+| **리마인더** | `scripts/remind-stale-sync-prs.mjs` 가 3일 이상 열린 sync PR 에 하루 한 번 코멘트를 남긴다. 잊히는 것이 유일한 실패 모드이기 때문. |
+
+같은 날 두 번째 발행이면 브랜치명(`figma-sync/<날짜>`)이 겹치므로, sync 에이전트는
+`-2`, `-3` 접미사를 붙여 **새 브랜치**를 만든다(검토 대기 PR 에 커밋을 얹지 않는다).
 
 ---
 
@@ -79,22 +109,25 @@ GitHub 머지 이력을 보면 대부분 계정 `93-0312` 로 찍혀 있어 "사
 ## 흐름도
 
 ```
-Figma 발행(publish)
+Figma 발행(publish)          ← 저장이 아니라 "발행"이 릴리즈 신호
    │
    ▼
 figma-poll  ── 2단 게이트(발행 감지 → 노드 지문) ──▶ 변경 없음이면 워터마크만 전진(끝)
    │ 실제 변경
    ▼
 figma-sync (헤드리스 Claude)
-   │  추출 → 브랜치 push → PR 생성
-   │  └─ visual 워크플로를 dispatch (-f pr=N)   ← 자동 머지의 진입점
+   │  발행 스냅샷 기준 추출 → 브랜치 push → PR 생성
+   │  └─ visual 워크플로를 dispatch (-f pr=N)
    ▼
 visual (dispatch)
-   ├─ 시각 비교 + 증거 코멘트
+   ├─ 시각 비교 (기존 baseline 대비)   ← 이 결과가 머지 판정 기준
+   ├─ 증거 코멘트 (Figma 원본 / Before / After / Diff)
    ├─ baseline·지문 자동 갱신 커밋
-   └─ 재검증
-        ├─ green  →  ✅ 자동 머지 + 브랜치 삭제 + 이슈 종료
-        └─ red    →  ⏸ PR 열어둠 (사람 판단)
+   └─ 2단계 머지 판정
+        ├─ 시각 diff 0     →  ✅ 자동 머지 + 브랜치 삭제 + 이슈 종료
+        └─ 시각 diff 있음  →  ⏸ needs-design-review 라벨 + PR 열어둠
+                               → 사람이 증거 보고 머지
+                               → 3일 넘으면 리마인더 코멘트
 
 사람이 만든 PR (fix/*, feat/*, …)
    └─ 게이트는 돌지만 자동 머지 대상 아님 → 항상 사람이 머지
@@ -118,22 +151,25 @@ visual (dispatch)
 ## 운영 체크리스트
 
 **정상 상태**
-- 열린 PR 0 / 열린 이슈 0 이면 파이프라인이 밀린 게 없다는 뜻
+- 열린 PR 0 / 열린 이슈 0
+- 또는 `needs-design-review` 라벨이 붙은 sync PR 이 열려 있음 → **검토 대기 중, 정상**
 
-**sync PR 이 열린 채 남아 있다면** — 아래 중 하나다
-1. 재검증 red → 증거 코멘트와 diff 아티팩트를 보고 판단 (진짜 회귀인지 렌더 플레이크인지)
-2. dispatch 가 안 걸림 → `gh workflow run "Visual regression" -f pr=<번호>` 로 수동 트리거
-3. 머지 충돌 → 브랜치에 main 을 머지한 뒤 다시 dispatch
+**`needs-design-review` PR 이 있다면** — 사람이 판단할 차례다
+1. PR 의 시각 증거 코멘트에서 Figma 원본과 After 를 대조
+2. 의도한 디자인 변경 → `gh pr merge <번호> --squash --delete-branch`
+3. 아니면 → PR 을 닫고 Figma 를 수정한 뒤 다시 **발행(publish)**
 
-**"Figma 변경 감지" 이슈가 오래 열려 있다면**
-연결 PR 이 머지 안 된 상태다. 이슈가 열려 있는 동안 **후속 sync 가 차단**되므로 우선 처리한다.
+**라벨 없이 열린 sync PR 이라면**
+1. dispatch 가 안 걸림 → `gh workflow run "Visual regression" -f pr=<번호>` 로 수동 트리거
+2. 머지 충돌 → 브랜치에 main 을 머지한 뒤 다시 dispatch
 
 **수동 명령 모음**
 ```bash
-gh pr list --state open                                  # 밀린 PR 확인
-gh issue list --state open                               # 밀린 이슈 확인
-gh workflow run "Visual regression" -f pr=<번호>          # sync PR 게이트 재실행(→ green 이면 자동 머지)
-gh pr merge <번호> --squash --delete-branch               # 사람 PR 머지
+gh pr list --state open --label needs-design-review      # 검토 대기 PR 확인
+gh pr list --state open                                  # 전체 열린 PR
+gh issue list --state open                               # 열린 이슈
+gh workflow run "Visual regression" -f pr=<번호>          # sync PR 게이트 재실행
+gh pr merge <번호> --squash --delete-branch               # 머지(사람 PR·검토 완료 sync PR)
 ```
 
 ---

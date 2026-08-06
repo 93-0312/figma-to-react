@@ -54,9 +54,22 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
 
+      # 게이트 결과를 뒤의 2단계 머지 판정이 쓸 수 있게 기록한다.
+      # sync PR(dispatch)은 여기서 job 을 실패시키지 않고 아래 분기로 넘긴다
+      # (red = 실제 디자인 변경 → 사람 검토 대상). 사람 PR 은 종전대로 red 로 남긴다.
       - name: 시각 비교 (gate)
+        id: gate
         if: ${{ github.event.inputs.update_baselines != 'true' }}
-        run: npm run test:visual
+        run: |
+          if npm run test:visual; then
+            echo "visual_changed=false" >> "$GITHUB_OUTPUT"
+            echo "✓ 시각 변화 없음"
+          else
+            echo "visual_changed=true" >> "$GITHUB_OUTPUT"
+            echo "⚠ 시각 변화 감지"
+            # 사람 PR 이면 게이트가 red 여야 하므로 실패로 종료
+            [ -n "${{ github.event.inputs.pr }}" ] || exit 1
+          fi
 
       - name: baseline 갱신 (수동)
         if: ${{ github.event.inputs.update_baselines == 'true' }}
@@ -136,33 +149,49 @@ jobs:
           git push origin "HEAD:${BR}"
           echo "baseline + 지문 자동 갱신 커밋 → ${BR}"
 
-      # ── sync PR 한정: 재검증 green 이면 자동 머지 (마지막 마일 자동화) ──
-      # 종전엔 "재검증→머지"가 세션 있는 사람/Claude 손에 남아 있어, 세션이 없으면 PR 이
-      # 방치됐다(실제 사례 #150 — 15일 방치 + 연결 이슈가 열린 채라 poll dedup 이 후속
-      # sync 까지 전부 차단). 증거 코멘트 + baseline·지문 정합이 끝난 상태에서 갱신된
-      # baseline 으로 전체 시각 테스트가 green 일 때만 머지한다. red 면 종전처럼 PR 을
-      # 열어두고 사람이 판단한다. (사람 PR 은 위 단계와 동일하게 대상 아님)
-      - name: sync PR 자동 머지 (재검증 green 시)
+      # ── sync PR 2단계 머지 정책 ──
+      #  ① 시각 diff 0 → 자동 머지 (사람이 볼 게 없다. 문서·워터마크·지문만 바뀐 경우)
+      #  ② 시각 diff 있음 → 라벨 붙이고 PR 을 열어둔다. 사람이 시각 증거를 보고 판단.
+      #
+      # ★ "갱신된 baseline 으로 재검증 green" 을 자동 머지 근거로 쓰지 않는 이유:
+      #   바로 위 단계에서 **새 렌더로 baseline 을 덮어썼기 때문에** 그 비교는 자기 자신과의
+      #   비교라 거의 항상 통과한다(동어반복). 렌더 플레이크만 잡을 뿐, 디자인 변경이
+      #   의도된 것인지는 전혀 검증하지 못한다. 그 판단의 유일한 실질 근거는 위에서 만든
+      #   **시각 증거 코멘트(Figma 원본 / Before / After / Diff)** 이고, 그건 사람이 봐야 한다.
+      #
+      # 검토 대기가 파이프라인을 막지 않도록 poll 의 dedup 은 발행 버전 단위이고,
+      # 오래 열린 PR 에는 scripts/remind-stale-sync-prs.mjs 가 리마인더를 남긴다.
+      - name: sync PR 머지 판정 (2단계)
         if: ${{ always() && github.event.inputs.pr != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.inputs.pr }}
+          VISUAL_CHANGED: ${{ steps.gate.outputs.visual_changed }}
         run: |
-          BR=$(gh pr view "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --json headRefName -q .headRefName 2>/dev/null || echo "")
+          BR=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefName -q .headRefName 2>/dev/null || echo "")
           case "$BR" in
             figma-sync/*) ;;
-            *) echo "비-sync PR($BR) → 자동 머지 생략"; exit 0;;
+            *) echo "비-sync PR($BR) → 머지 판정 생략"; exit 0;;
           esac
-          # 갱신된 baseline 기준 재검증 — 렌더 플레이크/미커버 diff 가 있으면 머지하지 않는다
-          if ! npx playwright test; then
-            echo "::warning::재검증 red → 자동 머지 생략 (PR #${{ github.event.inputs.pr }} 열어둠, 사람 판단 필요)"
+
+          # ② 시각 변경 있음(또는 게이트 미판정) → 사람 검토. 안전 기본값은 "머지 안 함".
+          if [ "$VISUAL_CHANGED" != "false" ]; then
+            echo "시각 변경 감지(또는 미판정) → 자동 머지하지 않고 PR #$PR 열어둠"
+            gh label create needs-design-review --repo "$GITHUB_REPOSITORY" \
+              --color D93F0B --description "디자인 변경 — 시각 증거 확인 후 사람이 머지" 2>/dev/null || true
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label needs-design-review || true
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$(printf '### 👀 사람 검토 필요\n\n시각 변경이 감지되어 **자동 머지하지 않았습니다.** 위 시각 증거 코멘트(Figma 원본 / Before / After / Diff)를 보고 의도한 디자인 변경인지 확인해 주세요.\n\n- 의도한 변경이면 → 머지 (`gh pr merge %s --squash --delete-branch`)\n- 아니면 → PR 을 닫고 Figma 를 수정한 뒤 다시 발행(publish)\n\n> baseline·노드 지문은 이미 이 브랜치에 갱신 커밋돼 있어 머지하면 그대로 반영됩니다.\n> 이 PR 이 열려 있어도 다른 발행 건의 동기화는 정상 진행됩니다.\n' "$PR")" || true
             exit 0
           fi
-          if gh pr merge "${{ github.event.inputs.pr }}" --repo "$GITHUB_REPOSITORY" --squash --delete-branch; then
-            echo "✅ 자동 머지 완료: PR #${{ github.event.inputs.pr }}"
+
+          # ① 시각 diff 0 → 자동 머지
+          echo "시각 변화 없음 → 자동 머지"
+          if gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --delete-branch; then
+            echo "✅ 자동 머지 완료: PR #$PR (시각 변화 없음)"
             # Closes 키워드가 처리되지 않는 경우가 있어(실제 사례 #151) 명시적으로도 닫는다
             ISSUE=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search 'in:title Figma 변경 감지' --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
             [ -z "$ISSUE" ] || gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" \
-              --comment "PR #${{ github.event.inputs.pr }} 머지로 반영 완료 (자동 종료)" || true
+              --comment "PR #$PR 머지로 반영 완료 (자동 종료)" || true
           else
             echo "::warning::자동 머지 실패(충돌/권한?) — PR 열어둠"
           fi
