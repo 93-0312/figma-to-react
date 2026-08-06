@@ -55,10 +55,15 @@ jobs:
             1. `figma.manifest.json` 을 읽어 fileKey 와 components[] 를 확보한다.
             2. `npm run check:figma` 실행 (FIGMA_TOKEN 은 env 에 있음).
                - exit 0(최신) → "변경 없음" 으로 종료(아무 변경도 만들지 말 것).
-               - exit 10(변경) → 계속.
+               - exit 10(변경) → 계속. 출력 JSON 의 `currentVersion` 이 **발행(publish)된 버전**이다.
+               - ★ IMPORTANT — 이 값을 `PUB` 이라 하고, 이후 **모든 노드/이미지 조회에
+                 `&version=<PUB>` 을 붙여 발행 시점 스냅샷을 읽어라.** 디자이너가 발행 후에도
+                 계속 편집하므로, 붙이지 않으면 아직 발행되지 않은 작업 중 상태가 섞여 들어온다.
+                 (릴리즈 신호는 저장이 아니라 발행이다 — 무명 autosave 는 릴리즈가 아니다.)
             3. **변경분만 타겟 추출**한다 (비용 절감 — 전체 재추출/무거운 페이로드 금지):
                - 먼저 각 컴포넌트의 **가벼운 값만** 읽어 코드 토큰과 비교:
-                 REST `GET /v1/files/:key/nodes?ids=<nodeId>` 로 **해당 노드만** (무거운 전체 파일 GET 금지).
+                 REST `GET /v1/files/:key/nodes?ids=<nodeId>&version=<PUB>` 로 **해당 노드만**
+                 (무거운 전체 파일 GET 금지, `version` 생략 금지 — 위 2번 참고).
                - **차이가 있는 컴포넌트에만** 깊게 분석·수정한다. 차이 없는 건 절대 건드리지 말 것.
                - 토큰이 바뀌었으면 src/index.css(:root/.dark) + tailwind.config.js 양쪽을 갱신.
                - 큰 페이로드(전체 design_context 등)는 **구조 변경처럼 꼭 필요할 때만** 1회 사용.

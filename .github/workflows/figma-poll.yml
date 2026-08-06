@@ -1,13 +1,19 @@
 name: Figma poll
 
-# 변경 감지 → (실제 컴포넌트 변경일 때만) 헤드리스 sync 자동 트리거.
+# 발행 감지 → (실제 컴포넌트 변경일 때만) 헤드리스 sync 자동 트리거.
+#
+# ★ 릴리즈 신호 = Figma **발행(publish)**, 저장이 아니다.
+#   디자이너가 라이브러리를 publish 하면 Figma 가 버전에 "Components published" 라벨을
+#   붙인다(사람이 직접 이름을 붙여도 동일). 무명 autosave 는 작업 중 상태라 무시한다.
+#   → 디자이너는 자유롭게 저장하며 실험하고, publish 를 누른 순간에만 코드에 반영된다.
 #
 # 2단 게이트:
-#   1) 가벼운 /versions 로 파일 version 변화 감지(폴링마다, 싸다).
-#   2) version 이 바뀐 경우에만 /nodes 로 **추적 컴포넌트의 실제 내용**을 해시 비교
-#      (figma.fingerprints.json). autosave 처럼 무관한 편집은 version 만 올라가고 노드는
-#      그대로이므로 → 헤드리스 sync 를 돌리지 않고 워터마크만 올려 조용히 넘어간다.
-#      (헛돈 헤드리스 실행 + 좀비 이슈 방지)
+#   1) 가벼운 /versions 로 **새 발행** 감지(폴링마다, 싸다).
+#   2) 발행이 갱신된 경우에만 /nodes 로 **추적 컴포넌트의 실제 내용**을 해시 비교
+#      (figma.fingerprints.json). 발행됐어도 추적 컴포넌트가 그대로면(문서/레이아웃만 수정)
+#      → 헤드리스 sync 를 돌리지 않고 워터마크만 올려 조용히 넘어간다.
+#      ★ 노드 조회는 **발행 시점 스냅샷**(?version=)으로 고정 — 발행 후 디자이너가 계속
+#        편집해도 그 작업분이 섞이지 않는다.
 #
 # 필요: Secret `FIGMA_TOKEN`. scheduled 워크플로는 기본 브랜치(main)에서만 동작.
 
@@ -42,7 +48,7 @@ jobs:
         with:
           node-version: "22"
 
-      # 1차 게이트(싸다): 파일 version 변화
+      # 1차 게이트(싸다): 새 **발행** 버전 존재 여부 (무명 autosave 는 무시)
       - name: Check Figma version
         id: check
         env:
@@ -56,20 +62,22 @@ jobs:
           VER=$(printf '%s' "$OUT" | grep -oE '"currentVersion": *"[0-9]+"' | grep -oE '[0-9]+' | head -1)
           echo "version=$VER" >> "$GITHUB_OUTPUT"
 
-      # 2차 게이트(헤비, version 바뀐 경우에만): 추적 컴포넌트 노드의 실제 변경 여부
+      # 2차 게이트(헤비, 새 발행이 있을 때만): 추적 컴포넌트 노드의 실제 변경 여부.
+      # ★ 발행 시점 스냅샷으로 고정 조회 — 발행 후의 미발행 작업분을 섞지 않는다.
       - name: Check node-level changes
         id: nodes
         if: steps.check.outputs.exitcode == '10'
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          VER: ${{ steps.check.outputs.version }}
         run: |
           set +e
-          OUT=$(node scripts/check-figma-nodes.mjs 2>&1)
+          OUT=$(node scripts/check-figma-nodes.mjs ${VER:+--version "$VER"} 2>&1)
           CODE=$?
           echo "$OUT"
           echo "exitcode=$CODE" >> "$GITHUB_OUTPUT"
 
-      # version 만 올랐고 컴포넌트는 그대로(autosave/무관 편집) → 워터마크만 전진(헤드리스 미실행)
+      # 발행됐지만 추적 컴포넌트는 그대로(문서/레이아웃만 수정) → 워터마크만 전진(헤드리스 미실행)
       - name: Advance watermark (no component change)
         if: steps.check.outputs.exitcode == '10' && steps.nodes.outputs.exitcode == '0'
         env:
@@ -86,11 +94,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add figma.manifest.json
-          git commit -m "chore(figma): autosave 워터마크 전진 (컴포넌트 변경 없음, 추출 생략)"
+          git commit -m "chore(figma): 발행 워터마크 전진 (추적 컴포넌트 변경 없음, 추출 생략)"
           git pull --rebase --autostash origin main >/dev/null 2>&1 || true
           git push origin HEAD:main && echo "워터마크 전진 커밋" || echo "::warning::워터마크 push 실패(다음 폴링에서 재시도)"
 
-      # 실제 컴포넌트 변경 → 이슈 + 헤드리스 sync 트리거 (변경당 1회, 이슈 dedup)
+      # 발행 + 실제 컴포넌트 변경 → 이슈 + 헤드리스 sync 트리거 (발행당 1회, 이슈 dedup)
       - name: Notify + trigger sync (real component change)
         if: steps.check.outputs.exitcode == '10' && steps.nodes.outputs.exitcode == '10'
         env:
@@ -101,7 +109,7 @@ jobs:
           if [ "$EXISTING" = "0" ]; then
             gh issue create \
               --title "🎨 Figma 변경 감지 — version ${VER}" \
-              --body "$(printf '추적 컴포넌트가 실제로 변경되었습니다 (version: `%s`).\n\n**Figma sync (headless Claude)** 가 자동 실행돼 변경분을 추출하고 PR 을 만듭니다. 그 PR 에 이 이슈가 `Closes #N` 으로 연결됩니다.\n→ **PR 이 머지되면 이 이슈는 자동으로 닫힙니다** (수동 종료 불필요).\n\n— 자동 감지(.github/workflows/figma-poll.yml)' "${VER}")"
+              --body "$(printf '디자이너가 **발행(publish)** 한 버전에서 추적 컴포넌트가 실제로 변경되었습니다 (발행 version: `%s`).\n\n**Figma sync (headless Claude)** 가 자동 실행돼 변경분을 추출하고 PR 을 만듭니다. 그 PR 에 이 이슈가 `Closes #N` 으로 연결됩니다.\n→ **PR 이 머지되면 이 이슈는 자동으로 닫힙니다** (수동 종료 불필요).\n\n> 추출은 발행 시점 스냅샷 기준입니다 — 발행 이후의 미발행 작업분은 다음 발행 때 반영됩니다.\n\n— 자동 감지(.github/workflows/figma-poll.yml)' "${VER}")"
             echo "변경 알림 이슈 생성."
             gh workflow run "Figma sync (headless Claude)" && echo "Figma sync 자동 트리거." || echo "::warning::sync 트리거 실패"
           else
