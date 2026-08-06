@@ -78,6 +78,10 @@ jobs:
                  발명 → 롤백 시 바인딩 변경을 못 잡는 원인이 됨.)
             4. `npm run verify` (tsc + vite build) 를 통과시킨다. 실패하면 고치고 재실행. 통과 전엔 커밋 금지.
             5. 변경이 있으면 `figma-sync/<날짜>` 브랜치 생성 → 커밋 → push →
+               - IMPORTANT: 같은 날 두 번째 발행이면 그 브랜치가 **이미 원격에 있고 열린 PR 이
+                 붙어 있을 수 있다**(검토 대기 중). `git ls-remote --heads origin figma-sync/<날짜>`
+                 로 확인해 이미 있으면 `figma-sync/<날짜>-2`, `-3` 처럼 접미사를 붙여 **새 브랜치**를
+                 만든다. 남의 검토 대기 PR 에 커밋을 얹지 말 것.
                **반드시 `gh pr create --base main --head <브랜치>` 로 PR 을 생성**한다.
                - IMPORTANT: push 만 하고 끝내지 말 것. PR 생성이 이 작업의 필수 마지막 단계다.
                - IMPORTANT: manifest 갱신은 `lastSyncedVersion`/`lastSyncedAt` **그 두 값만** 문자열 치환으로
