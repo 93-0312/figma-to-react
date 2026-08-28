@@ -1,0 +1,102 @@
+name: Variant coverage
+
+# Figma variant 커버리지 감사 — 기존 파이프라인의 **사각지대**를 담당한다.
+#
+# figma-poll 의 노드 지문은 **델타(변경) 감지**라 "지난번과 뭐가 달라졌나"만 답한다.
+# 처음부터 존재했고 한 번도 바뀌지 않은 variant 는 영원히 잡히지 않는다
+# (실제 사례: Input 의 Type=File 이 몇 달간 미구현인 채 묻혔고, 이 게이트를 만들며
+#  Switch 의 Size=Small 도 같은 방식으로 누락돼 있던 것을 발견했다).
+#
+# 이 워크플로는 반대 질문을 던진다: **"Figma 에 있는데 우리가 모르는 게 있나?"**
+# 주 1회면 충분하다 — 드리프트는 발행 단위로 생기고 /nodes 호출이 무겁다.
+
+on:
+  schedule:
+    # 매주 월요일 UTC 00:17 (= KST 09:17). 분 오프셋으로 정시 혼잡 회피.
+    - cron: "17 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      audit:
+        description: "전수 감사(variantCoverage 미선언 항목까지 전부 보고)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: variant-coverage
+  cancel-in-progress: false
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Variant 커버리지 검사
+        id: check
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          AUDIT: ${{ github.event.inputs.audit }}
+        run: |
+          set +e
+          FLAG=""
+          [ "$AUDIT" = "true" ] && FLAG="--audit"
+          node scripts/check-variant-coverage.mjs $FLAG > /tmp/coverage.txt 2>&1
+          CODE=$?
+          cat /tmp/coverage.txt
+          echo "exitcode=$CODE" >> "$GITHUB_OUTPUT"
+
+      # 드리프트/미선언 발견 → 이슈. 결과 해시를 마커로 심어 같은 내용이면 재생성하지 않는다.
+      - name: 갭 발견 시 이슈
+        if: steps.check.outputs.exitcode == '10'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          HASH=$(sha256sum /tmp/coverage.txt | cut -c1-12)
+          MARKER="<!-- coverage-hash: ${HASH} -->"
+          for N in $(gh issue list --state open --search 'in:title Variant 커버리지' --json number --jq '.[].number'); do
+            if gh issue view "$N" --json body --jq .body | grep -qF "$MARKER"; then
+              echo "동일 결과 이슈 #$N 이미 열려 있음 — 생략."
+              exit 0
+            fi
+          done
+          # 내용이 달라졌으면 기존 것을 닫고 새로 연다(항상 최신 상태 1건만 유지)
+          for N in $(gh issue list --state open --search 'in:title Variant 커버리지' --json number --jq '.[].number'); do
+            gh issue close "$N" --comment "커버리지 상태가 갱신되어 새 이슈로 대체합니다." || true
+          done
+          {
+            echo "$MARKER"
+            echo "Figma 에 있으나 코드/매니페스트가 모르는 variant 가 발견되었습니다."
+            echo
+            echo '```'
+            cat /tmp/coverage.txt
+            echo '```'
+            echo
+            echo "**대응**"
+            echo "- 실제 구현이 필요하면 → 컴포넌트에 반영 후 \`node scripts/check-variant-coverage.mjs --record\`"
+            echo "- 의도적 미구현이면 → \`figma.manifest.json\` 의 해당 컴포넌트 \`variantCoverage\` 에 \`\"축=값\": \"n/a: 사유\"\` 로 명시"
+            echo "- 단순 개명/제거면 → \`--record\` 로 스냅샷 갱신"
+            echo
+            echo "— 자동 감사(.github/workflows/variant-coverage.yml)"
+          } > /tmp/issue.md
+          gh issue create --title "🧩 Variant 커버리지 — Figma 에 있으나 미반영된 항목" --body-file /tmp/issue.md
+
+      - name: 이상 없으면 기존 이슈 정리
+        if: steps.check.outputs.exitcode == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for N in $(gh issue list --state open --search 'in:title Variant 커버리지' --json number --jq '.[].number'); do
+            gh issue close "$N" --comment "모든 Figma variant 가 반영되어 자동 종료합니다." || true
+          done
+          echo "커버리지 이상 없음."
+
+      - name: 오류 보고 (non-blocking)
+        if: steps.check.outputs.exitcode == '2'
+        run: echo "::warning::variant 커버리지 검사 오류(exit 2) — 토큰/레이트리밋 확인 필요."
