@@ -5,7 +5,7 @@ import { cn } from "../../lib/utils";
 /**
  * Switch — Figma "BO UI Kit" Switch(node 7715:1962). 설정 on/off 토글.
  *
- * Figma 변형: Size(Default 18×30 / Large 24×44) · Checked · Disabled.
+ * Figma 변형: Size(Small 14×24 / Default 18×30 / Large 24×44) · Checked · Disabled.
  * 트랙: off=input(테두리 8%) / on=success(#00bba7) + 안쪽 그림자. thumb: card(흰색) + shadow-xs.
  * 제어/비제어(`checked`/`defaultChecked`/`onCheckedChange`). 접근성: role=switch + aria-checked.
  */
@@ -19,7 +19,8 @@ const switchVariants = cva(
     "data-[state=on]:bg-success data-[state=off]:bg-input",
   {
     variants: {
-      size: { md: "h-[18px] w-[30px]", lg: "h-6 w-11" },
+      // Figma Size: Small 24x14 / Default 30x18 / Large 44x24 (트랙 padding 2px 공통)
+      size: { sm: "h-[14px] w-6", md: "h-[18px] w-[30px]", lg: "h-6 w-11" },
     },
     defaultVariants: { size: "md" },
   }
@@ -30,6 +31,8 @@ const thumbVariants = cva(
   {
     variants: {
       size: {
+        // 이동거리 = 트랙너비 - padding(2*2) - thumb
+        sm: "size-2 data-[state=on]:translate-x-3",
         md: "size-[14px] data-[state=on]:translate-x-3",
         lg: "size-5 data-[state=on]:translate-x-5",
       },
