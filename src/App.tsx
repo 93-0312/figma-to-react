@@ -43,6 +43,7 @@ import { cardStory } from "./stories/card.story";
 import { fieldsetStory } from "./stories/fieldset.story";
 import { checkboxGroupStory } from "./stories/checkbox-group.story";
 import { inputGroupStory } from "./stories/input-group.story";
+import { fileInputStory } from "./stories/file-input.story";
 import { popoverStory } from "./stories/popover.story";
 import { toolbarStory } from "./stories/toolbar.story";
 import { paginationStory } from "./stories/pagination.story";
@@ -101,6 +102,7 @@ const STORIES: Story[] = [
   fieldsetStory,
   checkboxGroupStory,
   inputGroupStory,
+  fileInputStory,
   popoverStory,
   toolbarStory,
   paginationStory,

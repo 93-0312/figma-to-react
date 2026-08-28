@@ -61,6 +61,7 @@ const STORIES = [
   "DatePicker",
   "Slider",
   "Tooltip (withCursor)",
+  "File Input",
 ] as const;
 
 test.beforeEach(async ({ page }) => {

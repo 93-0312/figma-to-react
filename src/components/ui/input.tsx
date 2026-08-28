@@ -18,8 +18,18 @@ import { cn } from "../../lib/utils";
  *              (2026-07 Figma 갱신: 이전엔 disabled 회색 링이었으나 primary/ring 파랑으로 재바인딩됨.)
  * 사이즈(Figma Size): Small h28 / Default h32 / Large h36.
  *
- * ※ 미구현(특수 변형 — 필요 시 추가): 인라인 Button, Badge, Kbd 단축키, MultiSelect,
- *    File, InnerLabel(플로팅 라벨), Fill=True(채움 배경), darkBackground.
+ * Figma `Fill` variant 은 **배경 채움이 아니다** — Label 텍스트 색만 다르다(2026-08 재확인):
+ *    Fill=False → #8d95a2(tertiary-foreground, placeholder) / Fill=True → #212226(foreground, 값 입력됨).
+ *    즉 브라우저의 placeholder↔value 전환이 그대로 대응하므로 **별도 prop 이 필요 없다**
+ *    (`placeholder:text-tertiary-foreground` + `text-foreground`).
+ *
+ * ※ 다른 Type 변형의 처리 위치:
+ *    - 인라인 Button/Badge/Kbd, InnerLabel → `InputGroup` (input-group.tsx)
+ *    - File → `FileInput` (file-input.tsx)
+ *    - MultiSelect → **Figma 미완성**. 6개 variant 전부 Default 와 구조·렌더가 동일하고
+ *      태그/칩 디자인이 없다. 디자인이 확정되면 그때 추출한다.
+ *    - darkBackground → **컴포넌트 상태가 아니다.** 48개 variant 전부에서 `visible:false` 인
+ *      디자인 파일 내부 헬퍼(배경 대비 확인용 스와치)라 구현 대상이 아니다.
  *
  * @see https://coss.com/ui/docs/components/input
  */
@@ -97,7 +107,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           type={type}
           className={cn(
-            "min-w-0 flex-1 bg-transparent px-1 text-foreground outline-none placeholder:text-muted-foreground",
+            "min-w-0 flex-1 bg-transparent px-1 text-foreground outline-none placeholder:text-tertiary-foreground",
             className
           )}
           {...props}
