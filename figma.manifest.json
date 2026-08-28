@@ -99,7 +99,7 @@
           true
         ]
       },
-      "notes": "슬롯형 입력(left/right icon, prefix/suffix). 상태: Default/Error(border destructive)/Disabled(opacity64)/Focus(ring). 사이즈 sm/md/lg(h28/32/36). 미구현: 인라인 Button/Badge/Kbd/MultiSelect/File/InnerLabel/Fill=True/darkBackground."
+      "notes": "슬롯형 입력(left/right icon, prefix/suffix). 상태: Default/Error(border destructive)/Disabled(opacity64)/Focus(ring). 사이즈 sm/md/lg(h28/32/36). 변형 처리 위치: 인라인 Button/Badge/Kbd·InnerLabel→InputGroup, File→FileInput. Fill 은 배경이 아니라 placeholder(#8d95a2)↔값(#212226) 텍스트 색이라 prop 불필요. MultiSelect 는 Figma 미완성(Default 와 동일, 칩 디자인 없음). darkBackground 는 48개 variant 전부 visible:false 인 디자인 파일 헬퍼라 구현 대상 아님."
     },
     {
       "name": "Label",
@@ -773,6 +773,13 @@
       "story": "src/stories/accordion.story.tsx",
       "figmaNodeId": "1673:181",
       "notes": "추적 전용 — AccordionItem 컨테이너(SLOT). 기존 Accordion 구현이 커버, 별도 추출 없음."
+    },
+    {
+      "name": "File Input",
+      "file": "src/components/ui/file-input.tsx",
+      "story": "src/stories/file-input.story.tsx",
+      "figmaNodeId": "7751:45",
+      "notes": "Input 세트의 Type=File 변형(6종 = Size 3 × Fill 2). inputVariants 재사용, label+숨긴 input[type=file]. Fill 은 배경이 아니라 placeholder↔값 텍스트 색이라 prop 없음."
     }
   ]
 }

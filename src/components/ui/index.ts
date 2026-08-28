@@ -83,7 +83,9 @@ export { Fieldset, FieldsetLegend } from "./fieldset";
 export { CheckboxGroup, CheckboxGroupItem } from "./checkbox-group";
 export type { CheckboxGroupProps, CheckboxGroupItemProps } from "./checkbox-group";
 export { InputGroup, InputGroupKbd } from "./input-group";
+export { FileInput } from "./file-input";
 export type { InputGroupProps } from "./input-group";
+export type { FileInputProps } from "./file-input";
 export {
   Popover, PopoverTrigger, PopoverClose, PopoverContent, PopoverHeader, PopoverTitle, PopoverDescription,
 } from "./popover";
