@@ -2,7 +2,7 @@ import { Switch } from "../components/ui/switch";
 import type { SwitchProps } from "../components/ui/switch";
 import type { Story } from "../playground/types";
 
-const SIZES: NonNullable<SwitchProps["size"]>[] = ["md", "lg"];
+const SIZES: NonNullable<SwitchProps["size"]>[] = ["sm", "md", "lg"];
 
 export const switchStory: Story = {
   name: "Switch",
